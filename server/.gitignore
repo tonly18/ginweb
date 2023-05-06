@@ -5,7 +5,7 @@
 *.so
 
 # Folders
-_obj
+#_obj
 #_test
 
 # Architecture specific extensions/prefixes
