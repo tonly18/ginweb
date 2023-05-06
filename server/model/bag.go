@@ -75,7 +75,7 @@ func (m *Bag) Add(uid int) merror.Error {
 	if err := m.dao.Modify(uid, data); err.GetError() == dao.ErrorNoRows {
 		return merror.NewError(m.req, &merror.ErrorTemp{
 			Code:  20230433,
-			Error: err.GetError(),
+			Error: ErrorNoRows,
 			Type:  1,
 		})
 	} else if err != nil {
