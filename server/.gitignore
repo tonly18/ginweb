@@ -6,7 +6,7 @@
 
 # Folders
 _obj
-_test
+#_test
 
 # Architecture specific extensions/prefixes
 *.[568vq]
@@ -21,7 +21,7 @@ _cgo_export.*
 _testmain.go
 
 *.exe
-*.test
+#*.test
 *.prof
 
 #ignore
