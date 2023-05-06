@@ -18,8 +18,7 @@ func main() {
 	r := router.RouterInit()
 
 	//listen: 0.0.0.0:8080
-	err := endless.ListenAndServe(config.Config.Http.Host+":"+config.Config.Http.Port, r)
-	if err != nil {
+	if err := endless.ListenAndServe(config.Config.Http.Host+":"+config.Config.Http.Port, r); err != nil {
 		fmt.Println(err)
 	}
 
