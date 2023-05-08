@@ -13,3 +13,4 @@
 {"IP":"127.0.0.1","TraceId":"8766389933061222098","UserId":"101","level":"error","msg":"[user id:101, code:1006666666, data:<nil>, message:<nil>]","time":"2023-05-06 19:24:22"}
 {"IP":"127.0.0.1","TraceId":"8766389933061222098","UserId":"101","level":"debug","msg":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]","time":"2023-05-06 19:24:22"}
 {"IP":null,"TraceId":null,"UserId":null,"level":"debug","msg":"[create a new redis cluster connect]","time":"2023-05-06 19:24:51"}
+
