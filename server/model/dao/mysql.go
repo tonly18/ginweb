@@ -15,13 +15,13 @@ import (
 	"time"
 )
 
-//DBBase struct
+// DBBase struct
 type DBBase struct {
 	db  *sql.DB
 	ctx context.Context
 }
 
-//db connect struct
+// db connect struct
 var dbConn *sql.DB
 
 func init() {
@@ -32,13 +32,14 @@ func init() {
 	}
 }
 
-//create db connect
+// create db connect
 func createConnDB(ctx context.Context) error {
 	host := config.Config.Mysql.Host
 	port := config.Config.Mysql.Port
 	user := config.Config.Mysql.Username
-	pass := config.Config.Mysql.Passworld
+	pass := config.Config.Mysql.Password
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
+	print(dataSource)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
 		logger.Error(ctx, fmt.Sprintf(`mysql connect is error: %v`, err))
@@ -63,7 +64,7 @@ func createConnDB(ctx context.Context) error {
 	return nil
 }
 
-//NewDBBase
+// NewDBBase
 func NewDBBase(ctx context.Context) *DBBase {
 	if dbConn == nil {
 		if err := createConnDB(ctx); err != nil {
@@ -79,7 +80,7 @@ func NewDBBase(ctx context.Context) *DBBase {
 	}
 }
 
-//get
+// get
 func (d *DBBase) Get(table string, uid int) (any, error) {
 	sqlText := fmt.Sprintf(`SELECT content FROM %v WHERE uid = ? LIMIT 1`, getTableName(uid, table))
 	stmt, err := d.db.Prepare(sqlText)
@@ -109,7 +110,7 @@ func (d *DBBase) Get(table string, uid int) (any, error) {
 	return nil, errors.New("unknow error")
 }
 
-//modify
+// modify
 func (d *DBBase) Modify(table string, uid int, data []byte) error {
 	sql := fmt.Sprintf(`UPDATE %v SET content=?, stime=? WHERE uid=? LIMIT 1`, getTableName(uid, table))
 	stmt, err := d.db.Prepare(sql)
@@ -141,7 +142,7 @@ func (d *DBBase) Modify(table string, uid int, data []byte) error {
 	return errors.New("unknow error")
 }
 
-//init
+// init
 func (d *DBBase) initData(table string, uid int) (any, error) {
 	defaultData := config.GetDefaultDBValue(table)
 	sqltext := fmt.Sprintf(`INSERT INTO %v(uid, content, stime) VALUES(?, ?, ?)`, getTableName(uid, table))
@@ -175,7 +176,7 @@ func (d *DBBase) initData(table string, uid int) (any, error) {
 
 /* ----------------------------------run raw sql---------------------------------- */
 
-//查询单条数据并返回error
+// 查询单条数据并返回error
 func (d *DBBase) QueryRow(rawsql string, scanArgs ...any) error {
 	if err := d.db.QueryRow(rawsql).Scan(scanArgs...); err == sql.ErrNoRows {
 		logger.Error(d.ctx, fmt.Sprintf(`[1000140] query row error: %v`, err))
@@ -189,7 +190,7 @@ func (d *DBBase) QueryRow(rawsql string, scanArgs ...any) error {
 	return nil
 }
 
-//查询多条数据并返回*sql.Row、error
+// 查询多条数据并返回*sql.Row、error
 func (d *DBBase) Query(rawsql string) (*sql.Rows, error) {
 	rows, err := d.db.Query(rawsql)
 	if err == sql.ErrNoRows { //这里不会被触发,通常会在Scan时触发error
@@ -205,7 +206,7 @@ func (d *DBBase) Query(rawsql string) (*sql.Rows, error) {
 	return rows, nil
 }
 
-//执行SQL并返回是否成功
+// 执行SQL并返回是否成功
 func (d *DBBase) Exec(rawsql string, args ...any) error {
 	result, err := d.db.Exec(rawsql, args...)
 	if err != nil {
@@ -229,7 +230,7 @@ func (d *DBBase) Exec(rawsql string, args ...any) error {
 	return errors.New("exec unknow error.")
 }
 
-//插入并返回error
+// 插入并返回error
 func (d *DBBase) Inert(rawsql string, args ...any) error {
 	result, err := d.db.Exec(rawsql, args...)
 	if err != nil {
@@ -250,7 +251,7 @@ func (d *DBBase) Inert(rawsql string, args ...any) error {
 	return errors.New("insert unknow error")
 }
 
-//插入并返回ID
+// 插入并返回ID
 func (d *DBBase) InertID(rawsql string, args ...any) (int64, error) {
 	result, err := d.db.Exec(rawsql, args...)
 	if err != nil {
@@ -276,7 +277,7 @@ func (d *DBBase) InertID(rawsql string, args ...any) (int64, error) {
 	return 0, errors.New("insert id unknow error")
 }
 
-//程序结束之后的清理工作
+// 程序结束之后的清理工作
 func FinishClear() {
 	dbConn.Close()
 	dbConn = nil

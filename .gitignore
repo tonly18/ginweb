@@ -23,3 +23,5 @@ go.work
 #ignore
 .idea
 tmp
+pag.sql
+server/log/logrus.log
