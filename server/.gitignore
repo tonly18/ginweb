@@ -27,3 +27,5 @@ _testmain.go
 #ignore
 .idea
 tmp
+
+conf/config_local.toml

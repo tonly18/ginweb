@@ -11,16 +11,16 @@ logFilePath = "./log/logrus.log"
 host = "localhost"
 port = "3306"
 username = "root"
-password = "root"
+password = ""
 
 [redis]
-host = "127.0.0.1:6389"
-password = "yTo11xh0"
+host = "192.168.1.30:6379"
+password = ""
 poolSize = 50
 minIdleConns = 20
 db = 0
 
 [memcache]
-host = "127.0.0.1:11211"
+host = "192.168.1.30:11211"
 maxIdleConns = 2
 timeout = 100

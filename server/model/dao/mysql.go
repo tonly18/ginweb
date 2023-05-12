@@ -12,8 +12,18 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"server/config"
 	"server/core/logger"
+	"strings"
 	"time"
 )
+
+// SchemaMeta struct
+type SchemaMeta struct {
+	DBName    string //数据库名
+	TableName string //表
+	Field     string //字段名
+	Type      string //字段类型
+	Comment   string //字段备注
+}
 
 // DBBase struct
 type DBBase struct {
@@ -39,7 +49,6 @@ func createConnDB(ctx context.Context) error {
 	user := config.Config.Mysql.Username
 	pass := config.Config.Mysql.Password
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
-	print(dataSource)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
 		logger.Error(ctx, fmt.Sprintf(`mysql connect is error: %v`, err))
@@ -277,7 +286,80 @@ func (d *DBBase) InertID(rawsql string, args ...any) (int64, error) {
 	return 0, errors.New("insert id unknow error")
 }
 
-// 程序结束之后的清理工作
+/* ----------------------------------schema meta---------------------------------- */
+
+//获取表结构
+func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, error) {
+	//list, _ := db.Query(fmt.Sprintf(`show columns from %s`, tableName))
+	list, err := d.db.Query(fmt.Sprintf("SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_COMMENT` FROM `COLUMNS` WHERE TABLE_NAME='%v'", tableName))
+	if err != nil {
+		return nil, err
+	}
+	defer list.Close()
+
+	metas := make([]SchemaMeta, 0, 50)
+	for list.Next() {
+		var data SchemaMeta
+		err := list.Scan(&data.DBName, &data.TableName, &data.Field, &data.Type, &data.Comment)
+		if err != nil {
+			return nil, err
+		}
+		metas = append(metas, data)
+	}
+
+	return metas, nil
+}
+
+//生成表表结构Struct
+func (d *DBBase) GenTableStruct(tableName string, metas []SchemaMeta) string {
+	var fieldValue string
+
+	//字段处理
+	for _, v := range metas {
+		ftype := "any"
+		if strings.Contains(v.Type, "int") {
+			ftype = "int"
+		} else if strings.Contains(v.Type, "char") {
+			ftype = "string"
+		} else if strings.Contains(v.Type, "datetime") {
+			ftype = "time.Time"
+		}
+
+		field := v.Field
+		if strings.Contains(field, "_") {
+			fields := strings.Split(field, "_")
+			for k, v := range fields {
+				fields[k] = fmt.Sprintf(`%s%s`, strings.ToUpper(v[:1]), v[1:])
+			}
+			field = fmt.Sprintf(`%s`, strings.Join(fields, ""))
+		} else {
+			field = strings.ToUpper(field[:1]) + field[1:]
+		}
+
+		comment := ""
+		if v.Comment != "" {
+			comment = "//" + v.Comment
+		}
+		fieldValue += fmt.Sprintf("%s %s	`json:\"%v\"` %s \n", field, ftype, strings.ToLower(v.Field), comment)
+	}
+
+	//表名处理
+	if strings.Contains(tableName, "_") {
+		tblName := strings.Split(tableName, "_")
+		for k, v := range tblName {
+			tblName[k] = fmt.Sprintf(`%s%s`, strings.ToUpper(v[:1]), v[1:])
+		}
+		tableName = fmt.Sprintf(`%s%s`, strings.Join(tblName, ""), "Table")
+	}
+
+	//备注
+	structComment := fmt.Sprintf("//%v Struct \n", tableName)
+
+	//return
+	return fmt.Sprintf("%stype %s struct {\n%s}", structComment, tableName, fieldValue)
+}
+
+//程序结束之后的清理工作
 func FinishClear() {
 	dbConn.Close()
 	dbConn = nil

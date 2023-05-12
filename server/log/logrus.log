@@ -14,3 +14,6 @@
 {"IP":"127.0.0.1","TraceId":"8766389933061222098","UserId":"101","level":"debug","msg":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]","time":"2023-05-06 19:24:22"}
 {"IP":null,"TraceId":null,"UserId":null,"level":"debug","msg":"[create a new redis cluster connect]","time":"2023-05-06 19:24:51"}
 
+{"IP":null,"TraceId":null,"UserId":null,"level":"error","msg":"[1100605] memcached ping error: memcache: connect timeout to 127.0.0.1:11211","time":"2023-05-12 11:30:51"}
+{"IP":null,"TraceId":null,"UserId":null,"level":"error","msg":"[1100005] redis ping error: ERR Client sent AUTH, but no password is set","time":"2023-05-12 11:34:24"}
+{"IP":null,"TraceId":null,"UserId":null,"level":"debug","msg":"[create a new redis cluster connect]","time":"2023-05-12 11:34:50"}
