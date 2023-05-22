@@ -7,7 +7,7 @@ import (
 )
 
 type errorStruct struct {
-	Error   error
+	Err     error
 	Code    int32
 	Message string
 	Type    int8 //1 error|2 debug
@@ -19,23 +19,29 @@ type ErrorTemp errorStruct
 //myError Struct
 type myError errorStruct
 
+//NewError
+//
+//@params
+//	err *ErrorTemp
+//		Type	int8	1 error|2 debug
+//@return
 func NewError(c context.Context, err *ErrorTemp) Error {
 	if err.Type == 1 {
-		logger.Error(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Error))
+		logger.Error(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
 	} else if err.Type == 2 {
-		logger.Debug(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Error))
+		logger.Debug(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
 	}
 
 	//return
 	return &myError{
-		Error:   err.Error,
+		Err:     fmt.Errorf(`%w`, err.Err),
 		Code:    err.Code,
 		Message: err.Message,
 	}
 }
 
 func (e *myError) GetError() error {
-	return e.Error
+	return e.Err
 }
 
 func (e *myError) GetCode() int32 {
@@ -48,4 +54,8 @@ func (e *myError) GetMsg() string {
 
 func (e *myError) GetType() int8 {
 	return e.Type
+}
+
+func (e *myError) Error() string {
+	return e.Err.Error()
 }

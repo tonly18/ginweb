@@ -5,4 +5,5 @@ type Error interface {
 	GetCode() int32
 	GetMsg() string
 	GetType() int8
+	Error() string
 }

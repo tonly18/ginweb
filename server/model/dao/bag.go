@@ -51,7 +51,7 @@ func (d *Bag) Get(uid int) (map[int]*BagTable, merror.Error) {
 	//redisBag, err := d.redis.HGetRd(config.REDIS_KEY_BAG, strconv.Itoa(uid))
 	//if err == nil {
 	//	if err := json.Unmarshal([]byte(redisBag), bagData); err != nil {
-	//		//logger.Error(d.req.GinCtx, "[bag get] redis json.unmarshal, table:%v, uid: %v, error: %v", d.tbl, uid, err.Error())
+	//		//logger.Err(d.req.GinCtx, "[bag get] redis json.unmarshal, table:%v, uid: %v, error: %v", d.tbl, uid, err.Err())
 	//		return nil, err
 	//	}
 	//	return bagData, nil
@@ -61,27 +61,27 @@ func (d *Bag) Get(uid int) (map[int]*BagTable, merror.Error) {
 	data, err := d.Query(uid, fmt.Sprintf(`uid = %v`, uid))
 	if err != nil {
 		return nil, merror.NewError(d.req, &merror.ErrorTemp{
-			Code:  30000000,
-			Error: fmt.Errorf(`[bag get uid: %v error:%v]`, uid, err.GetError()),
-			Type:  1,
+			Code: 30000000,
+			Err:  fmt.Errorf(`[bag get uid: %v error: %w]`, uid, err.GetError()),
+			Type: 1,
 		})
 	}
 	if len(data) == 0 {
 		return nil, merror.NewError(d.req, &merror.ErrorTemp{
-			Code:  30000002,
-			Error: fmt.Errorf(`[bag get uid: %v error:%v]`, uid, ErrorNoRows),
-			Type:  1,
+			Code: 30000002,
+			Err:  fmt.Errorf(`[bag get uid: %v error: %w]`, uid, ErrorNoRows),
+			Type: 1,
 		})
 	}
 	bagdata[uid] = data[uid]
 
 	//if err := json.Unmarshal([]byte(cast.ToString(dbBag)), bagData); err != nil {
-	//	logger.Error(d.req.GinCtx, fmt.Sprintf(`[bag get] db.get json.unmarshal, table:%v, uid: %v, error: %v`, d.tbl, uid, err))
+	//	logger.Err(d.req.GinCtx, fmt.Sprintf(`[bag get] db.get json.unmarshal, table:%v, uid: %v, error: %v`, d.tbl, uid, err))
 	//	return nil, err
 	//}
 	////redis
 	//if err := d.redis.HSetRd(config.REDIS_KEY_BAG, uid, dbBag); err != nil {
-	//	logger.Error(d.req.GinCtx, fmt.Sprintf(`[bag get] redis.HSetRd, table:%v, uid: %v, error: %v`, d.tbl, uid, err))
+	//	logger.Err(d.req.GinCtx, fmt.Sprintf(`[bag get] redis.HSetRd, table:%v, uid: %v, error: %v`, d.tbl, uid, err))
 	//}
 
 	return bagdata, nil
@@ -94,9 +94,9 @@ func (d *Bag) Query(id int, where string) (map[int]*BagTable, merror.Error) {
 	rows, err := d.db.Query(rawsql)
 	if err != nil {
 		return nil, merror.NewError(d.req, &merror.ErrorTemp{
-			Code:  30000020,
-			Error: fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
-			Type:  1,
+			Code: 30000020,
+			Err:  fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
+			Type: 1,
 		})
 	}
 	defer rows.Close()
@@ -105,18 +105,18 @@ func (d *Bag) Query(id int, where string) (map[int]*BagTable, merror.Error) {
 		bag := &BagTable{}
 		if err := rows.Scan(&bag.Uid, &bag.Item, &bag.Expire, &bag.Itime); err != nil {
 			return nil, merror.NewError(d.req, &merror.ErrorTemp{
-				Code:  30000021,
-				Error: fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
-				Type:  1,
+				Code: 30000021,
+				Err:  fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
+				Type: 1,
 			})
 		}
 		bagList[bag.Uid] = bag
 	}
 	if rows.Err() != nil {
 		return nil, merror.NewError(d.req, &merror.ErrorTemp{
-			Code:  30000029,
-			Error: fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
-			Type:  1,
+			Code: 30000029,
+			Err:  fmt.Errorf(`[query sql: %v, error:%v]`, rawsql, err),
+			Type: 1,
 		})
 	}
 
@@ -129,18 +129,18 @@ func (d *Bag) Modify(uid int, data []byte) merror.Error {
 		if err := d.redis.HSetRd(config.REDIS_KEY_BAG, uid, data); err != nil {
 			//d.redis.HDelRd(config.REDIS_KEY_BAG, strconv.Itoa(uid))
 			return merror.NewError(d.req, &merror.ErrorTemp{
-				Code:  30000010,
-				Error: fmt.Errorf(`[bag modify redis.HSetRd, key:%v, uid: %v, error:%v]`, config.REDIS_KEY_BAG, uid, err),
-				Type:  1,
+				Code: 30000010,
+				Err:  fmt.Errorf(`[bag modify redis.HSetRd, key:%v, uid: %v, error:%v]`, config.REDIS_KEY_BAG, uid, err),
+				Type: 1,
 			})
 		}
 		return nil
 	}
 
 	return merror.NewError(d.req, &merror.ErrorTemp{
-		Code:  30000012,
-		Error: fmt.Errorf(`[bag modify table:%v, uid: %v, error:%v]`, d.tbl, uid, err),
-		Type:  1,
+		Code: 30000012,
+		Err:  fmt.Errorf(`[bag modify table:%v, uid: %v, error:%v]`, d.tbl, uid, err),
+		Type: 1,
 	})
 }
 
@@ -152,9 +152,9 @@ func (d *Bag) initData(id int) (*BagTable, merror.Error) {
 	rawsql := fmt.Sprintf(`INSERT INTO %v(uid, gold, diamond, cash, life, stime) VALUES(?, ?, ?, ?, ?, ?)`, getTableName(id, d.tbl))
 	if err := d.db.Exec(rawsql, id, 100, 100, 100, 100, time.Now().Unix()); err != nil {
 		return nil, merror.NewError(d.req, &merror.ErrorTemp{
-			Code:  30000015,
-			Error: fmt.Errorf(`[bag init sql:%v, uid:%v, error:%v]`, rawsql, id, err),
-			Type:  1,
+			Code: 30000015,
+			Err:  fmt.Errorf(`[bag init sql:%v, uid:%v, error:%v]`, rawsql, id, err),
+			Type: 1,
 		})
 	}
 

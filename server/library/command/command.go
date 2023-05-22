@@ -61,7 +61,7 @@ func ShuffleUnixNano() int64 {
 	rand.Shuffle(len(nano), func(i, j int) {
 		nano[i], nano[j] = nano[j], nano[i]
 	})
-	traceId, _ := strconv.ParseInt(string(nano), 10, 64)
+	nano64, _ := strconv.ParseInt(string(nano), 10, 64)
 
-	return traceId
+	return nano64
 }
