@@ -24,5 +24,4 @@ go.work
 .idea
 tmp
 pag.sql
-server/log/logrus.log
 wph.md
