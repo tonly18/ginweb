@@ -29,3 +29,4 @@ _testmain.go
 tmp
 
 conf/config_local.toml
+log/logrus.log
