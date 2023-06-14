@@ -25,5 +25,5 @@ func (r routerGroupPath) verifyLoginNot() {
 
 //verifyLogin 须验证登录状态
 func (r *routerGroupPath) verifyLogin() {
-	//TODO: fix me
+	//r.ginRouterGroup.GET("/v1/test", wrapper.HandlerFuncWrapper(&controller.TestHandler{}))
 }

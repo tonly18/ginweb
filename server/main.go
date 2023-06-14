@@ -22,9 +22,9 @@ func main() {
 		fmt.Println(err)
 	}
 
-	//程序结束后，完成清理工作
+	//程序结束后,完成清理工作
 	utils.Finish()
 
 	//over
-	fmt.Println("Game Server is ready to stop...")
+	fmt.Println("Game Server is ready to stop!")
 }
