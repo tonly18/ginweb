@@ -1,7 +1,3 @@
-/*
- * error code: 30001000 ` 30001999
- */
-
 package dao
 
 import (
@@ -10,8 +6,8 @@ import (
 	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
+	"runtime"
 	"server/config"
-	"server/core/logger"
 	"strings"
 	"time"
 )
@@ -25,10 +21,22 @@ type SchemaMeta struct {
 	Comment   string //字段备注
 }
 
-// DBBase struct
+// DBBase Struct
 type DBBase struct {
-	db  *sql.DB
 	ctx context.Context
+	db  *sql.DB
+
+	table     string   //表名
+	fields    []string //字段
+	values    []any    //字段-值
+	where     []string //条件
+	order     string   //排序
+	group     string   //分组
+	have      string   //分组条件
+	leftJoin  string   //左关联
+	rightJoin string   //右关联
+	on        string   //on条件
+	sql       string   //sql
 }
 
 // db connect struct
@@ -38,11 +46,11 @@ func init() {
 	if err := createConnDB(context.TODO()); err != nil {
 		panic("[create db connect error]")
 	} else {
-		fmt.Println("[database init successfully] host:", config.Config.Mysql.Host)
+		fmt.Println("[database init successfully]")
 	}
 }
 
-// create db connect
+// createConnDB create db connect
 func createConnDB(ctx context.Context) error {
 	host := config.Config.Mysql.Host
 	port := config.Config.Mysql.Port
@@ -51,11 +59,9 @@ func createConnDB(ctx context.Context) error {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
-		logger.Error(ctx, fmt.Sprintf(`mysql connect is error: %v`, err))
 		return err
 	}
 	if err := db.Ping(); err != nil {
-		logger.Error(ctx, fmt.Sprintf(`mysql ping is error: %v`, err))
 		return err
 	}
 	//设置连接可以重用的最长时间
@@ -69,226 +75,271 @@ func createConnDB(ctx context.Context) error {
 	//dbConn
 	dbConn = db
 
+	runtime.SetFinalizer(dbConn, CleanMySQL)
+
 	//return
 	return nil
 }
 
-// NewDBBase
+// NewDBBase 创建db
 func NewDBBase(ctx context.Context) *DBBase {
 	if dbConn == nil {
 		if err := createConnDB(ctx); err != nil {
-			logger.Error(ctx, "[1000100] create db connect err")
 			return nil
 		}
 	}
 
 	//return
 	return &DBBase{
-		db:  dbConn,
-		ctx: ctx,
+		db:     dbConn,
+		ctx:    ctx,
+		fields: make([]string, 0, 20),
+		values: make([]any, 0, 20),
+		where:  make([]string, 0, 5),
 	}
 }
 
-// get
-func (d *DBBase) Get(table string, uid int) (any, error) {
-	sqlText := fmt.Sprintf(`SELECT content FROM %v WHERE uid = ? LIMIT 1`, getTableName(uid, table))
-	stmt, err := d.db.Prepare(sqlText)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000110] get error: %v`, err))
-		return nil, err
-	}
-	defer stmt.Close()
+// Table 字段
+func (d *DBBase) Table(field string) *DBBase {
+	d.table = field
 
-	var data any
-	if err := stmt.QueryRow(uid).Scan(&data); err == sql.ErrNoRows {
-		defaultData, err := d.initData(table, uid)
-		if err != nil {
-			logger.Error(d.ctx, fmt.Sprintf(`[1000112] get error: %v`, err))
-			return nil, err
-		}
-		return defaultData, nil
-	} else if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000114] get error: %v`, err))
-		return nil, err
-	}
-	if data != nil {
-		return data, nil
-	}
-
-	logger.Error(d.ctx, "[1000119] get unknow error")
-	return nil, errors.New("unknow error")
+	//return
+	return d
 }
 
-// modify
-func (d *DBBase) Modify(table string, uid int, data []byte) error {
-	sql := fmt.Sprintf(`UPDATE %v SET content=?, stime=? WHERE uid=? LIMIT 1`, getTableName(uid, table))
-	stmt, err := d.db.Prepare(sql)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000120] modify error: %v`, err))
-		return err
-	}
-	defer stmt.Close()
+// Fields 字段
+func (d *DBBase) Fields(fields ...string) *DBBase {
+	d.fields = append(d.fields, fields...)
 
-	result, err := stmt.Exec(data, time.Now().Unix(), uid)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000122] modify error: %v`, err))
-		return err
-	}
-	num, err := result.RowsAffected()
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000124] modify error: %v`, err))
-		return err
-	}
-	if num == 1 {
-		return nil
-	}
-	if num == 0 {
-		logger.Error(d.ctx, "[1000128] modify error")
-		return ErrorNoRows
-	}
-
-	logger.Error(d.ctx, `[1000129] modify unknow error`)
-	return errors.New("unknow error")
+	//return
+	return d
 }
 
-// init
-func (d *DBBase) initData(table string, uid int) (any, error) {
-	defaultData := config.GetDefaultDBValue(table)
-	sqltext := fmt.Sprintf(`INSERT INTO %v(uid, content, stime) VALUES(?, ?, ?)`, getTableName(uid, table))
-	stmt, err := d.db.Prepare(sqltext)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000130] init data error: %v`, err))
-		return nil, err
-	}
-	defer stmt.Close()
-
-	result, err := stmt.Exec(uid, defaultData, time.Now().Unix())
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000132] init data error: %v`, err))
-		return nil, err
-	}
-	num, err := result.RowsAffected()
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000134] init data error: %v`, err))
-		return nil, err
-	}
-	if num == 0 {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000138] init data error: %v`, err))
-		return nil, ErrorNoRows
-	} else if num == 1 {
-		return defaultData, nil
-	}
-
-	logger.Error(d.ctx, "[1000139] nuknow error")
-	return nil, errors.New("nuknow error")
-}
-
-/* ----------------------------------run raw sql---------------------------------- */
-
-// 查询单条数据并返回error
-func (d *DBBase) QueryRow(rawsql string, scanArgs ...any) error {
-	if err := d.db.QueryRow(rawsql).Scan(scanArgs...); err == sql.ErrNoRows {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000140] query row error: %v`, err))
-		return ErrorNoRows
-	} else if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000142] query row error: %v`, err))
-		return err
+// Where 条件
+func (d *DBBase) Where(condition string) *DBBase {
+	if len(d.where) == 0 {
+		d.where = append(d.where, condition)
+	} else {
+		d.where = append(d.where, " AND ", condition)
 	}
 
 	//return
-	return nil
+	return d
 }
 
-// 查询多条数据并返回*sql.Row、error
-func (d *DBBase) Query(rawsql string) (*sql.Rows, error) {
-	rows, err := d.db.Query(rawsql)
+// ORWhere 条件
+func (d *DBBase) ORWhere(condition string) *DBBase {
+	if len(d.where) == 0 {
+		d.where = append(d.where, condition)
+	} else {
+		d.where = append(d.where, " OR ", condition)
+	}
+
+	//return
+	return d
+}
+
+// GroupBy 分组
+func (d *DBBase) GroupBy(group string) *DBBase {
+	d.group = group
+
+	//return
+	return d
+}
+
+// Having 分组条件
+func (d *DBBase) Having(having string) *DBBase {
+	d.have = having
+
+	//return
+	return d
+}
+
+// LeftJoin 关联
+func (d *DBBase) LeftJoin(join string) *DBBase {
+	d.leftJoin = join
+
+	//return
+	return d
+}
+
+// RightJoin 关联
+func (d *DBBase) RightJoin(join string) *DBBase {
+	d.rightJoin = join
+
+	//return
+	return d
+}
+
+// ON 关联
+func (d *DBBase) ON(on string) *DBBase {
+	d.on = on
+
+	//return
+	return d
+}
+
+// OrderBy 排序
+func (d *DBBase) OrderBy(order string) *DBBase {
+	d.order = order
+
+	//return
+	return d
+}
+
+// Query 查询数据并返回
+func (d *DBBase) Query() (*sql.Rows, error) {
+	defer func() {
+		//rows.Close()
+		d.RestSQL()
+	}()
+
+	rawsql, err := d.GenRawSQL()
+	if err != nil {
+		return nil, err
+	}
+	d.sql = rawsql
+	rows, err := d.db.Query(d.sql)
 	if err == sql.ErrNoRows { //这里不会被触发,通常会在Scan时触发error
-		//logger.Error(d.ctx, fmt.Sprintf(`[1000150] query error: %v`, err))
 		return nil, ErrorNoRows
 	}
 	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000154] query error: %v`, err))
 		return nil, err
 	}
-	//defer rows.Close()
 
+	//return
 	return rows, nil
 }
 
-// 执行SQL并返回是否成功
-func (d *DBBase) Exec(rawsql string, args ...any) error {
-	result, err := d.db.Exec(rawsql, args...)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000155] exec error: %v`, err))
-		return err
+// GenRawSQL 生成查询SQL
+func (d *DBBase) GenRawSQL() (string, error) {
+	if d.table == "" {
+		return "", errors.New("table cannot be empty")
 	}
-	n, err := result.RowsAffected()
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000156] exec error: %v`, err))
-		return err
-	}
-	if n == 0 {
-		logger.Error(d.ctx, "[1000158] exec the affected rows is the zero.")
-		return ErrorNoRows
-	}
-	if n > 0 {
-		return nil
+	if len(d.fields) == 0 {
+		return "", errors.New("field cannot be empty")
 	}
 
-	logger.Error(d.ctx, "[1000159] exec unknow error.")
-	return errors.New("exec unknow error.")
+	rawsql := fmt.Sprintf("SELECT %v FROM %v", strings.Join(d.fields, ","), d.table)
+	if len(d.where) > 0 {
+		rawsql = fmt.Sprintf(`%v WHERE %v`, rawsql, strings.Join(d.where, ""))
+	}
+	if d.group != "" {
+		rawsql = fmt.Sprintf(`%v GROUP BY %v`, rawsql, d.order)
+	}
+	if d.have != "" {
+		rawsql = fmt.Sprintf(`%v HAVING %v`, rawsql, d.have)
+	}
+	if d.leftJoin != "" {
+		rawsql = fmt.Sprintf(`%v LEFT JOIN %v`, rawsql, d.leftJoin)
+	}
+	if d.rightJoin != "" {
+		rawsql = fmt.Sprintf(`%v RIGHT JOIN %v`, rawsql, d.rightJoin)
+	}
+	if d.on != "" {
+		rawsql = fmt.Sprintf(`%v ON %v`, rawsql, d.on)
+	}
+	if d.order != "" {
+		rawsql = fmt.Sprintf(`%v ORDER BY %v`, rawsql, d.order)
+	}
+
+	//d.sql
+	d.sql = rawsql
+
+	//return
+	return d.sql, nil
 }
 
-// 插入并返回error
-func (d *DBBase) Inert(rawsql string, args ...any) error {
-	result, err := d.db.Exec(rawsql, args...)
-	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000170] insert error: %v`, err))
-		return err
+// Insert 插入数据
+func (d *DBBase) Insert(params map[string]any) *DBBase {
+	for k, v := range params {
+		d.fields = append(d.fields, k)
+		d.values = append(d.values, v)
 	}
-	if n, err := result.RowsAffected(); err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000175] insert error: %v`, err))
-		return err
-	} else if n == 0 {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000178] insert error: %v`, "the affected rows is the zero"))
-		return ErrorNoRows
-	} else if n > 0 {
-		return nil
-	}
+	d.sql = fmt.Sprintf("INSERT INTO %v(%v) VALUES (%v)", d.table, strings.Join(d.fields, ","), strings.Repeat(",?", len(d.fields))[1:])
 
-	logger.Error(d.ctx, "[1000169] insert unknow error")
-	return errors.New("insert unknow error")
+	//return
+	return d
 }
 
-// 插入并返回ID
-func (d *DBBase) InertID(rawsql string, args ...any) (int64, error) {
-	result, err := d.db.Exec(rawsql, args...)
+// Modify 修改数据
+func (d *DBBase) Modify(params map[string]any) *DBBase {
+	for k, v := range params {
+		d.fields = append(d.fields, fmt.Sprintf(`%v=?`, k))
+		d.values = append(d.values, v)
+	}
+	d.sql = fmt.Sprintf(`UPDATE %v SET %v WHERE %v`, d.table, strings.Join(d.fields, ","), strings.Join(d.where, ""))
+
+	//return
+	return d
+}
+
+// Delete 删除数据
+func (d *DBBase) Delete() *DBBase {
+	d.sql = fmt.Sprintf(`DELETE FROM %v WHERE %v`, d.table, strings.Join(d.where, ""))
+
+	//return
+	return d
+}
+
+// Exec 执行SQL
+func (d *DBBase) Exec() (int, error) {
+	defer d.RestSQL()
+
+	if d.sql == "" {
+		return 0, errors.New("exec: sql is empty")
+	}
+
+	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000180] insert id error: %v`, err))
 		return 0, err
 	}
-	if n, err := result.RowsAffected(); err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000182] insert id error: %v`, err))
+	defer stmt.Close()
+
+	result, err := stmt.Exec(d.values...)
+	if err != nil {
 		return 0, err
-	} else if n == 0 {
-		logger.Error(d.ctx, fmt.Sprintf(`[1000184] insert id error: %v`, "affected row is the zero"))
+	}
+	count, err := result.RowsAffected()
+	if err != nil {
+		return 0, err
+	}
+	if count == 0 {
 		return 0, ErrorNoRows
-	} else if n == 1 {
-		newId, err := result.LastInsertId()
-		if err != nil {
-			logger.Error(d.ctx, fmt.Sprintf(`[1000188] insert id error: %v`, err))
-			return 0, err
-		}
-		return newId, nil
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, err
+	}
+	if id > 0 {
+		return int(id), nil
 	}
 
-	logger.Error(d.ctx, `[1000189] insert id unknow error`)
-	return 0, errors.New("insert id unknow error")
+	//return
+	return int(count), nil
+}
+
+// RestSQL 重置SQL(属性)
+func (d *DBBase) RestSQL() {
+	d.table = ""
+	d.fields = make([]string, 0, 20)
+	d.values = make([]any, 0, 20)
+	d.where = make([]string, 0, 10)
+	d.group, d.have = "", ""
+	d.order = ""
+	d.leftJoin, d.rightJoin, d.on = "", "", ""
+
+	d.sql = ""
+}
+
+// GetSQL 获取SQL(属性)
+func (d *DBBase) GetSQL() string {
+	return d.sql
 }
 
 /* ----------------------------------schema meta---------------------------------- */
 
-//获取表结构
+// GetTableSchemaMeta 获取表结构
 func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, error) {
 	//list, _ := db.Query(fmt.Sprintf(`show columns from %s`, tableName))
 	list, err := d.db.Query(fmt.Sprintf("SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_COMMENT` FROM `COLUMNS` WHERE TABLE_NAME='%v'", tableName))
@@ -310,7 +361,7 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, error) {
 	return metas, nil
 }
 
-//生成表表结构Struct
+// GenTableStruct 生成表表结构Struct
 func (d *DBBase) GenTableStruct(tableName string, metas []SchemaMeta) string {
 	var fieldValue string
 
@@ -359,8 +410,8 @@ func (d *DBBase) GenTableStruct(tableName string, metas []SchemaMeta) string {
 	return fmt.Sprintf("%stype %s struct {\n%s}", structComment, tableName, fieldValue)
 }
 
-//程序结束之后的清理工作
-func FinishClear() {
-	dbConn.Close()
-	dbConn = nil
+/* ----------------------------------function---------------------------------- */
+
+func CleanMySQL(db *sql.DB) {
+	db.Close()
 }

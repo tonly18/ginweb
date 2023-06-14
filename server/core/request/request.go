@@ -1,28 +1,23 @@
 package request
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
 	"time"
 )
 
 //Request 请求
 type Request struct {
-	//gin context
-	ginCtx *gin.Context
-	//user id
-	userID int
-	//client ip
-	clientIP string
-	//trace id
-	traceId string
-	//data
-	data map[string]any
+	ctx      context.Context //context
+	userID   int             //user id
+	clientIP string          //client ip
+	traceId  string          //trace id
+	data     map[string]any  //data
 }
 
 //NewRequest
-func NewRequest(ctx *gin.Context, userId int, clientIp, traceId string) *Request {
+func NewRequest(ctx context.Context, userId int, clientIp, traceId string) *Request {
 	return &Request{
-		ginCtx:   ctx,
+		ctx:      ctx,
 		userID:   userId,
 		clientIP: clientIp,
 		traceId:  traceId,
@@ -30,43 +25,27 @@ func NewRequest(ctx *gin.Context, userId int, clientIp, traceId string) *Request
 	}
 }
 
-//Get Gin Context
-func (r *Request) GetGinCtx() *gin.Context {
-	return r.ginCtx
+//GetCtx
+func (r *Request) GetCtx() context.Context {
+	return r.ctx
 }
-
-//func (r *Request) SetGinCtx(ctx *gin.Context) {
-//	r.ginCtx = ctx
-//}
 
 //GetUserID
 func (r *Request) GetUserID() int {
 	return r.userID
 }
 
-//func (r *Request) SetUserID(uid int) {
-//	r.userID = uid
-//}
-
-//client ip
+//GetClientIP
 func (r *Request) GetClientIP() string {
 	return r.clientIP
 }
 
-//func (r *Request) SetClientIP(ip string) {
-//	r.clientIP = ip
-//}
-
-//trace id
+//GetTraceID
 func (r *Request) GetTraceID() string {
 	return r.traceId
 }
 
-//func (r *Request) SetTraceID(id string) {
-//	r.traceId = id
-//}
-
-//Data
+//GetData
 func (r *Request) GetData(key string) any {
 	return r.data[key]
 }
@@ -76,20 +55,20 @@ func (r *Request) SetData(key string, value any) {
 
 //Deadline
 func (r *Request) Deadline() (deadline time.Time, ok bool) {
-	return r.ginCtx.Deadline()
+	return r.ctx.Deadline()
 }
 
 //Done
 func (r *Request) Done() <-chan struct{} {
-	return r.ginCtx.Done()
+	return r.ctx.Done()
 }
 
 //Err
 func (r *Request) Err() error {
-	return r.ginCtx.Err()
+	return r.ctx.Err()
 }
 
 //Value
 func (r *Request) Value(key any) any {
-	return r.ginCtx.Value(key)
+	return r.ctx.Value(key)
 }

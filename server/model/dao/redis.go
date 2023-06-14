@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
+	"runtime"
 	"server/config"
 	"server/core/logger"
 	"time"
@@ -80,6 +81,10 @@ func createRedisCluster(ctx context.Context) error {
 		logger.Error(ctx, fmt.Sprintf(`[1100005] redis ping error: %v`, err))
 		return err
 	}
+
+	runtime.SetFinalizer(redisConn, func(conn *redis.Client) {
+		conn.Close()
+	})
 
 	//return
 	return nil

@@ -25,11 +25,11 @@ type myError errorStruct
 //	err *ErrorTemp
 //		Type	int8	1 error|2 debug
 //@return
-func NewError(c context.Context, err *ErrorTemp) Error {
+func NewError(ctx context.Context, err *ErrorTemp) Error {
 	if err.Type == 1 {
-		logger.Error(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
+		logger.Error(ctx, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
 	} else if err.Type == 2 {
-		logger.Debug(c, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
+		logger.Debug(ctx, fmt.Sprintf(`[%v] message:%v, error:%v`, err.Code, err.Message, err.Err))
 	}
 
 	//return

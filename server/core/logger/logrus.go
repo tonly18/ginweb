@@ -101,5 +101,4 @@ func Info(ctx context.Context, args string) {
 //关闭文件句柄
 func FinishClear() {
 	fileLog.Close()
-	fileLog = nil
 }

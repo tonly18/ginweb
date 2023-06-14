@@ -11,7 +11,7 @@ import (
 
 //常量定义
 const (
-	MapInitCount = 100 //map初始化容量
+//...
 )
 
 //全局变量
