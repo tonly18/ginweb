@@ -28,5 +28,4 @@ _testmain.go
 .idea
 tmp
 
-conf/config_local.toml
 log/logrus.log
