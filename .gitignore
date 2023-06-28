@@ -8,8 +8,10 @@
 *.so
 *.dylib
 
+*.prof
+
 # Test binary, built with `go test -c`
-#*.test
+*.test
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
@@ -22,7 +24,7 @@ go.work
 
 #ignore
 .idea
-tmp
+server/tmp
 pag.sql
 server/log/logrus.log
 wph.md
