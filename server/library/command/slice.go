@@ -9,10 +9,10 @@ import (
 )
 
 //SliceTrans slice数据类型之间的相互转换
-func SliceTrans[input generic.Int | generic.Uint, output generic.Int | generic.Uint](s []input) []output {
-	slice := make([]output, 0, len(s))
+func SliceTrans[T generic.Int | generic.Uint, R generic.Int | generic.Uint](s []T) []R {
+	slice := make([]R, 0, len(s))
 	for _, v := range s {
-		slice = append(slice, output(v))
+		slice = append(slice, R(v))
 	}
 
 	//return
