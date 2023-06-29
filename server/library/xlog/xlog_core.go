@@ -58,6 +58,9 @@ func CleanLogger(logger *Logger) {
 
 //SetLogFile 设置日志文件
 func (logger *Logger) SetLogFile(file *os.File) {
+	if logger.file != nil {
+		logger.file.Close()
+	}
 	logger.file = file
 	logger.writer = NewWriter(bufio.NewWriter(file))
 }
