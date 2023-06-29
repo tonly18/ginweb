@@ -1,10 +1,6 @@
 package utils
 
-import (
-	"server/core/logger"
-)
-
 //Finish 程序退出时执行一些清理工作
 func Finish() {
-	logger.FinishClear()
+	//logger.FinishClear()
 }

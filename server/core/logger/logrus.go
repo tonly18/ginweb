@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"os"
+	"runtime"
 	"server/config"
 )
 
@@ -36,6 +37,7 @@ func init() {
 		logFilePath = config.Config.Log.LogFilePath
 	}
 	if fileLog, _ = os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); fileLog != nil {
+		runtime.SetFinalizer(fileLog, FinishClear)
 		logrus.SetOutput(fileLog)
 	} else {
 		logrus.SetOutput(os.Stdout)
@@ -98,7 +100,7 @@ func Info(ctx context.Context, args string) {
 //	logrus.Infof(format, args...)
 //}
 
-//关闭文件句柄
-func FinishClear() {
-	fileLog.Close()
+//FinishClear 关闭文件句柄
+func FinishClear(f *os.File) {
+	f.Close()
 }
