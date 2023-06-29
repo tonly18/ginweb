@@ -13,9 +13,6 @@ func handlerLogrus() {
 	fmt.Println("logrus handler......")
 }
 
-//log file
-var fileLog *os.File
-
 //Logrus日志
 func init() {
 	//设置日志级别
@@ -36,7 +33,7 @@ func init() {
 	if config.Config.Log.LogFilePath != "" {
 		logFilePath = config.Config.Log.LogFilePath
 	}
-	if fileLog, _ = os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); fileLog != nil {
+	if fileLog, _ := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); fileLog != nil {
 		runtime.SetFinalizer(fileLog, FinishClear)
 		logrus.SetOutput(fileLog)
 	} else {
