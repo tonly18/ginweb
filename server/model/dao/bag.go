@@ -23,22 +23,26 @@ type BagTable struct {
 //Bag struct
 type Bag struct {
 	ctx      context.Context
-	tbl      string //表名
 	db       *DBBase
 	redisKey string //redis key
 	redis    *RedisPoolConn
+
+	tbl    string //表名
+	fields []string
 }
 
 func NewBag(ctx context.Context) *Bag {
 	return &Bag{
 		ctx:   ctx,
-		tbl:   "bag",
 		db:    NewDBBase(ctx),
 		redis: NewRedis(ctx),
+
+		tbl:    "bag",
+		fields: []string{"uid", "item", "expire", "itime"},
 	}
 }
 
-func (d *Bag) GenBagTable(fields []string, values []any) *BagTable {
+func (d *Bag) genTable(fields []string, values []any) *BagTable {
 	entity := BagTable{}
 	for k, v := range fields {
 		if v == "uid" {
@@ -60,6 +64,9 @@ func (d *Bag) GenBagTable(fields []string, values []any) *BagTable {
 }
 
 func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...string) ([]*BagTable, xerror.Error) {
+	if fields == nil {
+		fields = d.fields
+	}
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
@@ -89,7 +96,7 @@ func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...s
 				Message: "bag.Query(dao)",
 			})
 		}
-		data = append(data, d.GenBagTable(fields, entity))
+		data = append(data, d.genTable(fields, entity))
 	}
 	if len(data) == 0 {
 		return data, xerror.Wrap(d.ctx, nil, &xerror.TempError{
@@ -131,7 +138,7 @@ func (d *Bag) QueryMap(serverId, uid int, fields []string, where string, order .
 				Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 			})
 		}
-		record := d.GenBagTable(fields, entity)
+		record := d.genTable(fields, entity)
 		data[record.Uid] = record
 	}
 

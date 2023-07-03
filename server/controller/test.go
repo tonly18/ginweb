@@ -23,21 +23,22 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 //Handler 业务处理
 func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
 	bag := model.NewBag(req)
-	data, err := bag.Query(1, 444)
+	//data, err := bag.Query(1, 4)
+	data, err := bag.QueryMap(1, 4)
 	//panic("dfasdfasdf")
 
 	//s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	//num := command.SliceIntInsert(s, 22, 0)
 	//fmt.Printf("%T, %v::::::\n", num, num)
-	if err.Is(model.ErrorNoRows) {
-		return nil, xerror.Wrap(req, err, &xerror.TempError{
-			Code:    10000011,
-			Err:     errors.New("test handler bag.query"),
-			Message: "test bag.query",
-			Type:    1,
-		})
-	}
 	if err != nil {
+		if err.Is(model.ErrorNoRows) {
+			return nil, xerror.Wrap(req, err, &xerror.TempError{
+				Code:    10000000,
+				Err:     errors.New("test handler bag.query"),
+				Message: "test bag.query",
+				Type:    1,
+			})
+		}
 		return nil, xerror.Wrap(req, err, &xerror.TempError{
 			Code:    10000005,
 			Err:     err.GetErr(),

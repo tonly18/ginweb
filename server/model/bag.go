@@ -26,16 +26,16 @@ func NewBag(req *request.Request) *Bag {
 }
 
 func (m *Bag) Query(serverId, uid int) ([]*dao.BagTable, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, []string{"uid", "item", "expire", "itime"}, "uid = 44", "uid DESC")
-	if err.Is(dao.ErrorNoRows) {
-		return nil, xerror.Wrap(m.req, err, &xerror.TempError{
-			Code:    20005000,
-			Err:     ErrorNoRows,
-			Message: "bag.Query(model)",
-		})
-	}
+	data, err := m.dao.Query(serverId, uid, nil, "uid < 44", "uid DESC")
 	if err != nil {
-		return nil, xerror.Wrap(m.req, nil, &xerror.TempError{
+		if err.Is(dao.ErrorNoRows) {
+			return nil, xerror.Wrap(m.req, err, &xerror.TempError{
+				Code:    20005000,
+				Err:     ErrorNoRows,
+				Message: "bag.Query(model)",
+			})
+		}
+		return nil, xerror.Wrap(m.req, err, &xerror.TempError{
 			Code:    20005009,
 			Err:     err.GetErr(),
 			Message: "bag.Query(model)",
@@ -46,16 +46,16 @@ func (m *Bag) Query(serverId, uid int) ([]*dao.BagTable, xerror.Error) {
 }
 
 func (m *Bag) QueryMap(serverId, uid int) (map[int]*dao.BagTable, xerror.Error) {
-	data, err := m.dao.QueryMap(serverId, uid, []string{"uid", "item", "expire", "itime"}, "uid<40", "uid DESC")
-	if err.Is(dao.ErrorNoRows) {
-		return nil, xerror.Wrap(m.req, err, &xerror.TempError{
-			Code:    20005010,
-			Err:     err.GetErr(),
-			Message: "bag.QueryMap",
-			Type:    1,
-		})
-	}
+	data, err := m.dao.QueryMap(serverId, uid, []string{"uid", "item"}, "uid<40", "uid DESC")
 	if err != nil {
+		if err.Is(dao.ErrorNoRows) {
+			return nil, xerror.Wrap(m.req, err, &xerror.TempError{
+				Code:    20005010,
+				Err:     err.GetErr(),
+				Message: "bag.QueryMap",
+				Type:    1,
+			})
+		}
 		return nil, xerror.Wrap(m.req, err, &xerror.TempError{
 			Code:    20005019,
 			Err:     err.GetErr(),
