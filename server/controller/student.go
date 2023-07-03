@@ -5,6 +5,7 @@ import (
 	"server/core/controller"
 	"server/core/request"
 	"server/core/response"
+	"server/core/xerror"
 )
 
 //StudentHandler
@@ -16,7 +17,7 @@ type StudentHandler struct {
 //	fmt.Println("PerHandler----------------")
 //}
 
-func (c *StudentHandler) Handler(req *request.Request) *response.Response {
+func (c *StudentHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
 
 	fmt.Println("00000000000000000000000000")
 
@@ -44,7 +45,7 @@ func (c *StudentHandler) Handler(req *request.Request) *response.Response {
 	//return
 	return &response.Response{
 		Data: "this is ok!",
-	}
+	}, nil
 }
 
 func (c *StudentHandler) PostHandler(req *request.Request) {

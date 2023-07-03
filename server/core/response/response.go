@@ -2,10 +2,9 @@ package response
 
 //Response
 type Response struct {
-	Code int  `json:"code"`
-	Data any  `json:"data"`
-	Msg  any  `json:"msg"`
-	Type int8 `json:"-"` //保存到日志文件: 0不保存 | 1保存
+	Code int `json:"code"`
+	Data any `json:"data"`
+	Msg  any `json:"msg"`
 }
 
 func (r *Response) GetCode() int {
