@@ -104,13 +104,11 @@ func (e *TempError) Contain(err error) bool {
 func Wrap(ctx context.Context, originalError, newError Error) Error {
 	if newError == nil {
 		panic("the parameter newError cannot be nil")
-		return nil
 	}
 
 	switch newError.GetErr().(type) {
 	case Error:
 		panic(fmt.Sprintf(`the Err field cannot be *Error, error:%v, code:%v, message:%v`, newError, newError.GetCode(), newError.GetMsg()))
-		return nil
 	}
 
 	//error
