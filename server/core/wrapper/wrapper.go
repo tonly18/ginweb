@@ -22,21 +22,17 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 		handler.PostHandler(req)
 
 		//response data
-		var data gin.H
 		if err != nil {
-			data = gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"code": err.GetCode(),
 				"msg":  err.GetMsg(),
-			}
+			})
 		} else {
-			data = gin.H{
+			c.JSON(http.StatusOK, gin.H{
 				"code": resp.Code,
 				"msg":  resp.Msg,
 				"data": resp.Data,
-			}
+			})
 		}
-
-		//result
-		c.JSON(http.StatusOK, data)
 	}
 }
