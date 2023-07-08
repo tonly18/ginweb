@@ -18,7 +18,7 @@ func newRouterGroupPath(routerGroup *gin.RouterGroup) *routerGroupPath {
 }
 
 //verifyLoginNot 不需验证登录状态
-func (r routerGroupPath) verifyLoginNot() {
+func (r *routerGroupPath) verifyLoginNot() {
 	r.ginRouterGroup.GET("/v1/test", wrapper.HandlerFuncWrapper(&controller.TestHandler{}))
 	r.ginRouterGroup.GET("/v1/stu", wrapper.HandlerFuncWrapper(&controller.StudentHandler{}))
 }

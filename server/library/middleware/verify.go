@@ -2,13 +2,21 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 //LoginVerify 中间件: 验证登录状态
 func LoginVerify() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//验证登录
-		//uid, sid, err := checkLogin(c)
+		_, _, err := checkLogin(c)
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusOK, gin.H{
+				"code": 1000,
+				"msg":  nil,
+				"data": nil,
+			})
+		}
 
 		// before request
 		c.Next()
@@ -24,6 +32,8 @@ func LoginNotVerify() gin.HandlerFunc {
 }
 
 //checkLogin 中间件: 验证登录
-func checkLogin(c *gin.Context) (string, string, error) {
-	return "", "", nil
+func checkLogin(c *gin.Context) (int, int, error) {
+	//TODO: fix me
+
+	return 0, 0, nil
 }
