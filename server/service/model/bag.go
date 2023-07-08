@@ -25,7 +25,7 @@ func NewBagMode(ctx context.Context) *BagMode {
 }
 
 func (m *BagMode) Query(serverId, uid int) ([]*dao.BagTable, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, nil, "uid < 44", "uid DESC")
+	data, err := m.dao.Query(serverId, uid, nil, "uidd < 44", "uid DESC")
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
 			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{

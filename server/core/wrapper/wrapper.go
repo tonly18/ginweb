@@ -26,6 +26,7 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 			c.JSON(http.StatusOK, gin.H{
 				"code": err.GetCode(),
 				"msg":  err.GetMsg(),
+				"data": nil,
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
