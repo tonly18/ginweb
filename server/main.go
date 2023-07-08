@@ -12,7 +12,7 @@ import (
 func main() {
 	//Running Environment
 	fmt.Printf("[Server Running Environment: %v]\n", global.SERVER_RUN_ENV)
-	fmt.Printf("[Gin Mode: %v]\n", global.GINMODE)
+	fmt.Printf("[Gin Mode: %v]\n", global.GIN_MODE)
 
 	//init router
 	r := router.RouterInit()

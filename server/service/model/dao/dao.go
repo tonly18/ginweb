@@ -1,7 +1,3 @@
-/*
- * error code: 30000000 ` 30000999
- */
-
 package dao
 
 import (

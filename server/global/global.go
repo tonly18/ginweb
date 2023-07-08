@@ -9,29 +9,26 @@ import (
 	"strings"
 )
 
-//常量定义
-const (
-//...
-)
-
 //全局变量
 var (
-	//工作目录
+	// 工作目录
 	SERVER_WORK_PATH_ENV, _ = os.Getwd()
 
-	//GINMODE run environment: 'release' or 'debug'
-	GINMODE string = os.Getenv("GIN_MODE")
-	//运行环境: local、dev、test、prod
+	// GIN_MODE gin run environment: 'release' or 'debug'
+	GIN_MODE string = os.Getenv("GIN_MODE")
+
+	// SERVER_RUN_ENV 运行环境: local、dev、test、prod
 	SERVER_RUN_ENV string = strings.ToLower(os.Getenv("GIN_SERVER_RUN_ENV"))
-	//配置文件路径
+
+	// SERVER_CONFIG_PATH 配置文件路径
 	SERVER_CONFIG_PATH string = os.Getenv("GIN_SERVER_CONFIG_PATH_ENV")
 )
 
 //init
 func init() {
 	//gin运行模式
-	if GINMODE == "" {
-		GINMODE = "debug"
+	if GIN_MODE == "" {
+		GIN_MODE = "debug"
 	}
 	//server运行环境
 	if SERVER_RUN_ENV == "" {

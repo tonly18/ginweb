@@ -3,8 +3,8 @@ package xerror
 type Error interface {
 	GetErr() error
 	SetErr(error)
-	GetCode() int32
-	SetCode(int32)
+	GetCode() uint32
+	SetCode(uint32)
 	GetMsg() string
 	SetMsg(string)
 	GetType() int8

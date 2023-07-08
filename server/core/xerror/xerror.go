@@ -8,7 +8,7 @@ import (
 
 type TempError struct {
 	Err       error
-	Code      int32
+	Code      uint32
 	Message   string
 	ErrorList []Error
 	Type      int8 //1 error|2 debug
@@ -22,11 +22,11 @@ func (e *TempError) SetErr(err error) {
 	e.Err = err
 }
 
-func (e *TempError) GetCode() int32 {
+func (e *TempError) GetCode() uint32 {
 	return e.Code
 }
 
-func (e *TempError) SetCode(code int32) {
+func (e *TempError) SetCode(code uint32) {
 	e.Code = code
 }
 

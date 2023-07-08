@@ -1,5 +1,5 @@
 /* *
- * error code: 30001000 ` 30001999
+ * error code: 1000000000 ` 1000000199
  */
 
 package dao
@@ -20,19 +20,18 @@ type BagTable struct {
 	Itime  int    `json:"itime"`
 }
 
-//Bag struct
-type Bag struct {
-	ctx      context.Context
-	db       *DBBase
-	redisKey string //redis key
-	redis    *RedisPoolConn
+//BagDao struct
+type BagDao struct {
+	ctx   context.Context
+	db    *DBBase
+	redis *RedisPoolConn
 
 	tbl    string //表名
 	fields []string
 }
 
-func NewBag(ctx context.Context) *Bag {
-	return &Bag{
+func NewBagDao(ctx context.Context) *BagDao {
+	return &BagDao{
 		ctx:   ctx,
 		db:    NewDBBase(ctx),
 		redis: NewRedis(ctx),
@@ -42,7 +41,7 @@ func NewBag(ctx context.Context) *Bag {
 	}
 }
 
-func (d *Bag) genTable(fields []string, values []any) *BagTable {
+func (d *BagDao) genTable(fields []string, values []any) *BagTable {
 	entity := BagTable{}
 	for k, v := range fields {
 		if v == "uid" {
@@ -63,7 +62,7 @@ func (d *Bag) genTable(fields []string, values []any) *BagTable {
 	return &entity
 }
 
-func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...string) ([]*BagTable, xerror.Error) {
+func (d *BagDao) Query(serverId, uid int, fields []string, where string, order ...string) ([]*BagTable, xerror.Error) {
 	if fields == nil {
 		fields = d.fields
 	}
@@ -75,9 +74,9 @@ func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...s
 	rows, err := d.db.Query()
 	if err != nil {
 		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001000,
+			Code:    1000000000,
 			Err:     err,
-			Message: "bag.Query",
+			Message: "bag.Query(dao)",
 		})
 	}
 	defer rows.Close()
@@ -91,7 +90,7 @@ func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...s
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
 			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-				Code:    30001009,
+				Code:    1000000009,
 				Err:     err,
 				Message: "bag.Query(dao)",
 			})
@@ -100,7 +99,7 @@ func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...s
 	}
 	if len(data) == 0 {
 		return data, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001010,
+			Code:    1000000010,
 			Err:     ErrorNoRows,
 			Message: "bag.Query(dao)",
 		})
@@ -109,7 +108,7 @@ func (d *Bag) Query(serverId, uid int, fields []string, where string, order ...s
 	return data, nil
 }
 
-func (d *Bag) QueryMap(serverId, uid int, fields []string, where string, order ...string) (map[int]*BagTable, xerror.Error) {
+func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, order ...string) (map[int]*BagTable, xerror.Error) {
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
@@ -117,7 +116,7 @@ func (d *Bag) QueryMap(serverId, uid int, fields []string, where string, order .
 	rows, err := d.db.Query()
 	if err != nil {
 		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001020,
+			Code:    1000000020,
 			Err:     err,
 			Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 		})
@@ -133,7 +132,7 @@ func (d *Bag) QueryMap(serverId, uid int, fields []string, where string, order .
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
 			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-				Code:    30001025,
+				Code:    1000000025,
 				Err:     err,
 				Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 			})
@@ -145,11 +144,11 @@ func (d *Bag) QueryMap(serverId, uid int, fields []string, where string, order .
 	return data, nil
 }
 
-func (d *Bag) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
 	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001030,
+			Code:    1000000030,
 			Err:     err,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		})
@@ -158,11 +157,11 @@ func (d *Bag) Insert(serverId, uid int, params map[string]any) (int, xerror.Erro
 	return id, nil
 }
 
-func (d *Bag) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
+func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001040,
+			Code:    1000000040,
 			Err:     err,
 			Message: "bag.Modify",
 		})
@@ -171,11 +170,11 @@ func (d *Bag) Modify(serverId, uid int, where string, params map[string]any) (in
 	return count, nil
 }
 
-func (d *Bag) Delete(serverId, uid int, where string) (int, xerror.Error) {
+func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    30001045,
+			Code:    1000000045,
 			Err:     err,
 			Message: "bag.Delete",
 		})

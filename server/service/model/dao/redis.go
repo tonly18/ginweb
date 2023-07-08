@@ -1,7 +1,3 @@
-/*
- * error code: 30002000 ` 30002999
- */
-
 package dao
 
 import (
@@ -10,24 +6,22 @@ import (
 	"github.com/go-redis/redis/v8"
 	"runtime"
 	"server/config"
-	"server/core/logger"
 	"time"
 )
 
-//Base RedisPool
+//RedisPoolConn Struct
 type RedisPoolConn struct {
 	rd  *redis.Client
 	ctx context.Context
 }
 
-//redis mc
+//redis conn
 var redisConn *redis.Client
 
 //NewRedis
 func NewRedis(ctx context.Context) *RedisPoolConn {
 	if redisConn == nil {
 		if err := createRedisCluster(ctx); err != nil {
-			logger.Error(ctx, fmt.Sprintf(`[1100000] create new redis cluster error: %v`, err))
 			return nil
 		}
 	}
@@ -73,12 +67,10 @@ func createRedisCluster(ctx context.Context) error {
 
 		//仅当客户端执行命令时需要从连接池获取连接时，如果连接池需要新建连接时则会调用此钩子函数。
 		OnConnect: func(ctx context.Context, cn *redis.Conn) error {
-			logger.Debug(ctx, "[create a new redis cluster connect]")
 			return nil
 		},
 	})
 	if _, err := redisConn.Ping(context.Background()).Result(); err != nil {
-		logger.Error(ctx, fmt.Sprintf(`[1100005] redis ping error: %v`, err))
 		return err
 	}
 
@@ -93,10 +85,8 @@ func createRedisCluster(ctx context.Context) error {
 func (d *RedisPoolConn) HGetRd(key, id string) (string, error) {
 	data, err := d.rd.HGet(context.Background(), key, id).Result()
 	if err == redis.Nil { //Key不存在
-		//logger.Debug(d.ctx, fmt.Sprintf(`[1100010] HGetRd, key: %v, id: %v, error: %v`, key, id, err))
 		return "", redis.Nil
 	} else if err != nil { //panic(err)
-		logger.Debug(d.ctx, fmt.Sprintf(`[1100011] HGetRd, key: %v, id: %v, error: %v`, key, id, err))
 		return "", err
 	} else {
 		return data, nil
@@ -106,7 +96,6 @@ func (d *RedisPoolConn) HGetRd(key, id string) (string, error) {
 func (d *RedisPoolConn) HSetRd(key string, id, value any) error {
 	_, err := d.rd.HSet(context.Background(), key, id, value).Result()
 	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1100020] HSetRd, key: %v, id: %v, value: %v, error: %v`, key, id, value, err))
 		return err
 	}
 
@@ -116,7 +105,6 @@ func (d *RedisPoolConn) HSetRd(key string, id, value any) error {
 func (d *RedisPoolConn) HDelRd(key, id string) error {
 	_, err := d.rd.HDel(context.Background(), key, id).Result()
 	if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1100025] HDelRd, key: %v, id: %v, error: %v`, key, id, err))
 		return err
 	}
 
@@ -126,10 +114,8 @@ func (d *RedisPoolConn) HDelRd(key, id string) error {
 func (d *RedisPoolConn) GetRd(key string) (string, error) {
 	data, err := d.rd.Get(context.Background(), key).Result()
 	if err == redis.Nil {
-		logger.Debug(d.ctx, fmt.Sprintf(`[1100025] GetRd, key: %v, error: %v`, key, err))
 		return "", redis.Nil
 	} else if err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1100029] GetRd, key: %v, error: %v`, key, err))
 		return "", err
 	} else {
 		return data, nil
@@ -138,7 +124,6 @@ func (d *RedisPoolConn) GetRd(key string) (string, error) {
 
 func (d *RedisPoolConn) SetRd(key string, value any) error {
 	if _, err := d.rd.Set(context.Background(), key, value, time.Hour*24*30).Result(); err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1100030] SetRd, key: %v, value: %v, error: %v`, key, value, err))
 		return err
 	}
 
@@ -147,7 +132,6 @@ func (d *RedisPoolConn) SetRd(key string, value any) error {
 
 func (d *RedisPoolConn) DelRd(key string) error {
 	if _, err := d.rd.Del(context.Background(), key).Result(); err != nil {
-		logger.Error(d.ctx, fmt.Sprintf(`[1100040] DelRd, key: %v, error: %v`, key, err))
 		return err
 	}
 
