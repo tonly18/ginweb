@@ -71,9 +71,11 @@ func (e *TempError) GetErrorList() []Error {
 
 func (e *TempError) Copy() Error {
 	return &TempError{
-		Err:     e.GetErr(),
-		Code:    e.GetCode(),
-		Message: e.GetMsg(),
+		Err:       e.GetErr(),
+		Code:      e.GetCode(),
+		Message:   e.GetMsg(),
+		ErrorList: e.GetErrorList(),
+		Type:      e.GetType(),
 	}
 }
 
@@ -97,7 +99,7 @@ func (e *TempError) Contain(err error) bool {
 //
 //@params
 //	ctx		context.Context	上下文
-//	originalError	  Error	老的Error
+//	originalError	  Error	原始Error
 //	newError		  Error	新的Error
 //@return
 //	Error
@@ -108,26 +110,24 @@ func Wrap(ctx context.Context, originalError, newError Error) Error {
 
 	switch newError.GetErr().(type) {
 	case Error:
-		panic(fmt.Sprintf(`the Err field cannot be *Error, error:%v, code:%v, message:%v`, newError, newError.GetCode(), newError.GetMsg()))
+		panic(fmt.Sprintf(`the Err field cannot be Error interface type, error:%v, code:%v, message:%v`, newError, newError.GetCode(), newError.GetMsg()))
 	}
 
 	//error
-	var err Error
 	if originalError == nil {
-		err = newError.AddError(newError.Copy())
-	} else {
-		err = originalError.AddError(newError)
+		originalError = newError.Copy()
 	}
+	originalError.AddError(newError)
 
 	//log
-	if err.GetType() == 1 {
-		for _, e := range err.GetErrorList() {
-			//fmt.Println("error-list:", e.GetCode(), e.GetErr(), e.GetMsg(), e.GetType())
+	if originalError.GetType() == 1 {
+		for _, e := range originalError.GetErrorList() {
+			fmt.Println("error-list:", e.GetCode(), e.GetErr(), e.GetMsg(), e.GetType())
 			//xlog.Errorf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr())
 			logger.Error(ctx, fmt.Sprintf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr()))
 		}
 	}
 
 	//return
-	return err
+	return originalError
 }
