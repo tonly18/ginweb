@@ -2,7 +2,7 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"server/library/middleware"
+	"server/middleware"
 )
 
 //routerGroupInit 初始化路由组
