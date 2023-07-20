@@ -15,7 +15,7 @@ func main() {
 	fmt.Printf("[Gin Mode: %v]\n", global.GIN_MODE)
 
 	//init router
-	r := router.RouterInit()
+	r := router.InitRouter()
 
 	//listen: 0.0.0.0:8080
 	if err := endless.ListenAndServe(config.Config.Http.Host+":"+config.Config.Http.Port, r); err != nil {

@@ -5,8 +5,8 @@ import (
 	"server/middleware"
 )
 
-//RouterInit 初始化路由
-func RouterInit() *gin.Engine {
+//InitRouter 初始化路由
+func InitRouter() *gin.Engine {
 	r := gin.New()
 
 	//添加中间件:全局中间件
