@@ -26,7 +26,7 @@ type BagDao struct {
 	db    *DBBase
 	redis *RedisPoolConn
 
-	tbl    string //表名
+	tbl    string
 	fields []string
 }
 
@@ -109,6 +109,10 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 }
 
 func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, order ...string) (map[int]*BagTable, xerror.Error) {
+	if fields == nil {
+		fields = d.fields
+	}
+
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
