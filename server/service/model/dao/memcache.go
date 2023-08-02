@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
 	"server/config"
+	"server/core/xerror"
 	"strings"
 )
 
@@ -41,16 +42,19 @@ func init() {
 	}
 }
 
-func createMC(ctx context.Context) error {
+func createMC(ctx context.Context) xerror.Error {
 	mcClient = memcache.New(strings.Split(config.Config.Memcache.Host, ";")...)
 	if err := mcClient.Ping(); err != nil {
-		return err
+		return xerror.Wrap(ctx, nil, &xerror.TempError{
+			Code: 120000,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) Set(key string, data []byte, expire ...int32) error {
+func (d *MCClient) Set(key string, data []byte, expire ...int32) xerror.Error {
 	expiration := int32(0)
 	if len(expire) > 0 {
 		expiration = expire[0]
@@ -59,24 +63,33 @@ func (d *MCClient) Set(key string, data []byte, expire ...int32) error {
 	if err := d.mc.Set(ItemStruck{
 		Item: &memcache.Item{Key: key, Value: data, Expiration: expiration},
 	}.Item); err != nil {
-		return err
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120010,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) Get(key string) (*ItemStruck, error) {
+func (d *MCClient) Get(key string) (*ItemStruck, xerror.Error) {
 	if item, err := d.mc.Get(key); err != nil {
-		return nil, err
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120020,
+			Err:  err,
+		})
 	} else {
 		return &ItemStruck{item}, nil
 	}
 }
 
-func (d *MCClient) MGet(keys []string) (map[string]*ItemStruck, error) {
+func (d *MCClient) MGet(keys []string) (map[string]*ItemStruck, xerror.Error) {
 	items, err := d.mc.GetMulti(keys)
 	if err != nil {
-		return nil, err
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120030,
+			Err:  err,
+		})
 	}
 
 	data := make(map[string]*ItemStruck, len(items))
@@ -89,7 +102,7 @@ func (d *MCClient) MGet(keys []string) (map[string]*ItemStruck, error) {
 	return data, nil
 }
 
-func (d *MCClient) Add(key string, data []byte, expire ...int32) error {
+func (d *MCClient) Add(key string, data []byte, expire ...int32) xerror.Error {
 	expiration := int32(0)
 	if len(expire) > 0 {
 		expiration = expire[0]
@@ -98,13 +111,16 @@ func (d *MCClient) Add(key string, data []byte, expire ...int32) error {
 	if err := d.mc.Add(ItemStruck{
 		Item: &memcache.Item{Key: key, Value: data, Expiration: expiration},
 	}.Item); err != nil {
-		return err
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120040,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) Replace(key string, data []byte, expire ...int32) error {
+func (d *MCClient) Replace(key string, data []byte, expire ...int32) xerror.Error {
 	expiration := int32(0)
 	if len(expire) > 0 {
 		expiration = expire[0]
@@ -113,56 +129,90 @@ func (d *MCClient) Replace(key string, data []byte, expire ...int32) error {
 	if err := d.mc.Replace(ItemStruck{
 		Item: &memcache.Item{Key: key, Value: data, Expiration: expiration},
 	}.Item); err != nil {
-		return err
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120050,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) Increment(key string, delta uint64) (newValue uint64, err error) {
-	newVAlue, err := d.mc.Increment(key, delta)
+func (d *MCClient) Increment(key string, delta uint64) (uint64, xerror.Error) {
+	newValue, err := d.mc.Increment(key, delta)
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120060,
+			Err:  err,
+		})
 	}
 
-	return newVAlue, nil
+	return newValue, nil
 }
 
-func (d *MCClient) Decrement(key string, delta uint64) (newValue uint64, err error) {
-	newVAlue, err := d.mc.Increment(key, delta)
+func (d *MCClient) Decrement(key string, delta uint64) (uint64, xerror.Error) {
+	newValue, err := d.mc.Increment(key, delta)
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120065,
+			Err:  err,
+		})
 	}
 
-	return newVAlue, nil
+	return newValue, nil
 }
 
-func (d *MCClient) Expire(key string, seconds int32) error {
+func (d *MCClient) Expire(key string, seconds int32) xerror.Error {
 	if err := d.mc.Touch(key, seconds); err != nil {
-		return err
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120070,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) SetWithExpire(key string, data []byte, expire int32) error {
+func (d *MCClient) SetWithExpire(key string, data []byte, expire int32) xerror.Error {
 	if err := d.mc.Set(ItemStruck{
 		Item: &memcache.Item{Key: key, Value: data, Expiration: expire},
 	}.Item); err != nil {
-		return err
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120075,
+			Err:  err,
+		})
 	}
 
 	return nil
 }
 
-func (d *MCClient) Del(key string) error {
-	return d.mc.Delete(key)
+func (d *MCClient) Del(key string) xerror.Error {
+	if err := d.mc.Delete(key); err != nil {
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120080,
+			Err:  err,
+		})
+	}
+	return nil
 }
 
-func (d *MCClient) DelAll() error {
-	return d.mc.DeleteAll()
+func (d *MCClient) DelAll() xerror.Error {
+	if err := d.mc.DeleteAll(); err != nil {
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120085,
+			Err:  err,
+		})
+	}
+
+	return nil
 }
 
-func (d *MCClient) Flush() error {
-	return d.mc.FlushAll()
+func (d *MCClient) Flush() xerror.Error {
+	if err := d.mc.FlushAll(); err != nil {
+		return xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 120090,
+			Err:  err,
+		})
+	}
+	return nil
 }

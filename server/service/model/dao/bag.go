@@ -73,9 +73,8 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 
 	rows, err := d.db.Query()
 	if err != nil {
-		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return nil, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    1000000000,
-			Err:     err,
 			Message: "bag.Query(dao)",
 		})
 	}
@@ -119,9 +118,8 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, orde
 	}
 	rows, err := d.db.Query()
 	if err != nil {
-		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return nil, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    1000000020,
-			Err:     err,
 			Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 		})
 	}
@@ -151,9 +149,8 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, orde
 func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
 	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    1000000030,
-			Err:     err,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		})
 	}
@@ -164,9 +161,8 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    1000000040,
-			Err:     err,
 			Message: "bag.Modify",
 		})
 	}
@@ -177,9 +173,8 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    1000000045,
-			Err:     err,
 			Message: "bag.Delete",
 		})
 	}

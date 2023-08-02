@@ -37,7 +37,7 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 	if err != nil {
 		if err.Is(model.ErrorNoRows) {
 			return nil, xerror.Wrap(req, err, &xerror.TempError{
-				Code:    500000000,
+				Code:    500000011,
 				Err:     errors.New("test handler bag.query"),
 				Message: "test bag.query",
 				Type:    1,

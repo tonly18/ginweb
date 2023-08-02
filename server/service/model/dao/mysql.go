@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
 	"server/config"
+	"server/core/xerror"
 	"strings"
 	"time"
 )
@@ -51,7 +52,7 @@ func init() {
 }
 
 // createConnDB create db connect
-func createConnDB(ctx context.Context) error {
+func createConnDB(ctx context.Context) xerror.Error {
 	host := config.Config.Mysql.Host
 	port := config.Config.Mysql.Port
 	user := config.Config.Mysql.Username
@@ -59,10 +60,16 @@ func createConnDB(ctx context.Context) error {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
-		return err
+		return xerror.Wrap(ctx, nil, &xerror.TempError{
+			Code: 100000,
+			Err:  err,
+		})
 	}
 	if err := db.Ping(); err != nil {
-		return err
+		return xerror.Wrap(ctx, nil, &xerror.TempError{
+			Code: 100005,
+			Err:  err,
+		})
 	}
 	//设置连接可以重用的最长时间
 	db.SetConnMaxLifetime(5 * time.Minute)
@@ -188,23 +195,32 @@ func (d *DBBase) OrderBy(order string) *DBBase {
 }
 
 // Query 查询数据并返回
-func (d *DBBase) Query() (*sql.Rows, error) {
+func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 	defer func() {
 		//rows.Close()
 		d.RestSQL()
 	}()
 
-	rawsql, err := d.GenRawSQL()
-	if err != nil {
-		return nil, err
+	rawsql, xerr := d.GenRawSQL()
+	if xerr != nil {
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100050,
+			Err:  xerr,
+		})
 	}
 	d.sql = rawsql
 	rows, err := d.db.Query(d.sql)
-	if err == sql.ErrNoRows { //这里不会被触发,通常会在Scan时触发error
-		return nil, ErrorNoRows
-	}
 	if err != nil {
-		return nil, err
+		if errors.Is(err, sql.ErrNoRows) { //这里不会被触发,通常会在Scan时触发error
+			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+				Code: 100055,
+				Err:  ErrorNoRows,
+			})
+		}
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100059,
+			Err:  err,
+		})
 	}
 
 	//return
@@ -212,12 +228,18 @@ func (d *DBBase) Query() (*sql.Rows, error) {
 }
 
 // GenRawSQL 生成查询SQL
-func (d *DBBase) GenRawSQL() (string, error) {
+func (d *DBBase) GenRawSQL() (string, xerror.Error) {
 	if d.table == "" {
-		return "", errors.New("table cannot be empty")
+		return "", xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100060,
+			Err:  errors.New("table cannot be empty"),
+		})
 	}
 	if len(d.fields) == 0 {
-		return "", errors.New("field cannot be empty")
+		return "", xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100062,
+			Err:  errors.New("field cannot be empty"),
+		})
 	}
 
 	rawsql := fmt.Sprintf("SELECT %v FROM %v", strings.Join(d.fields, ","), d.table)
@@ -283,33 +305,51 @@ func (d *DBBase) Delete() *DBBase {
 }
 
 // Exec 执行SQL
-func (d *DBBase) Exec() (int, error) {
+func (d *DBBase) Exec() (int, xerror.Error) {
 	defer d.RestSQL()
 
 	if d.sql == "" {
-		return 0, errors.New("exec: sql is empty")
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100080,
+			Err:  errors.New("exec: sql is empty"),
+		})
 	}
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100082,
+			Err:  err,
+		})
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(d.values...)
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100084,
+			Err:  err,
+		})
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100085,
+			Err:  err,
+		})
 	}
 	if count == 0 {
-		return 0, ErrorNoRows
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100086,
+			Err:  ErrorNoRows,
+		})
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return 0, err
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100088,
+			Err:  err,
+		})
 	}
 	if id > 0 {
 		return int(id), nil
@@ -340,11 +380,14 @@ func (d *DBBase) GetSQL() string {
 /* ----------------------------------schema meta---------------------------------- */
 
 // GetTableSchemaMeta 获取表结构
-func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, error) {
+func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Error) {
 	//list, _ := db.Query(fmt.Sprintf(`show columns from %s`, tableName))
 	list, err := d.db.Query(fmt.Sprintf("SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_COMMENT` FROM `COLUMNS` WHERE TABLE_NAME='%v'", tableName))
 	if err != nil {
-		return nil, err
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			Code: 100090,
+			Err:  err,
+		})
 	}
 	defer list.Close()
 
@@ -353,7 +396,10 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, error) {
 		var data SchemaMeta
 		err := list.Scan(&data.DBName, &data.TableName, &data.Field, &data.Type, &data.Comment)
 		if err != nil {
-			return nil, err
+			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+				Code: 100099,
+				Err:  err,
+			})
 		}
 		metas = append(metas, data)
 	}

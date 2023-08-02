@@ -47,7 +47,11 @@ func (e *TempError) SetType(itype int8) {
 }
 
 func (e *TempError) Error() string {
-	return e.Err.Error()
+	var errMsg string
+	if e.Err != nil {
+		errMsg = e.Err.Error()
+	}
+	return fmt.Sprintf(`code:%v, message:%v, error:%v`, e.Code, e.Message, errMsg)
 }
 
 func (e *TempError) AddError(err Error) Error {
