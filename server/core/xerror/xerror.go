@@ -38,24 +38,8 @@ func (e *TempError) SetMsg(msg string) {
 	e.Message = msg
 }
 
-func (e *TempError) GetType() int8 {
-	return e.Type
-}
-
-func (e *TempError) SetType(itype int8) {
-	e.Type = itype
-}
-
-func (e *TempError) Error() string {
-	var errMsg string
-	if e.Err != nil {
-		errMsg = e.Err.Error()
-	}
-	return fmt.Sprintf(`code:%v, message:%v, error:%v`, e.Code, e.Message, errMsg)
-}
-
 func (e *TempError) AddError(err Error) Error {
-	if cap(e.ErrorList) == 0 {
+	if len(e.ErrorList) == 0 {
 		e.ErrorList = make([]Error, 0, 10)
 	}
 	e.ErrorList = append(e.ErrorList, err)
@@ -71,6 +55,22 @@ func (e *TempError) AddError(err Error) Error {
 
 func (e *TempError) GetErrorList() []Error {
 	return e.ErrorList
+}
+
+func (e *TempError) GetType() int8 {
+	return e.Type
+}
+
+func (e *TempError) SetType(itype int8) {
+	e.Type = itype
+}
+
+func (e *TempError) Error() string {
+	var errMsg string
+	if e.Err != nil {
+		errMsg = e.Err.Error()
+	}
+	return fmt.Sprintf(`code:%v, message:%v, error:%v`, e.Code, e.Message, errMsg)
 }
 
 func (e *TempError) Copy() Error {
@@ -112,9 +112,11 @@ func Wrap(ctx context.Context, originalError, newError Error) Error {
 		panic("the parameter newError cannot be nil")
 	}
 
-	switch newError.GetErr().(type) {
-	case Error:
-		panic(fmt.Sprintf(`the Err field cannot be Error interface type, error:%v, code:%v, message:%v`, newError, newError.GetCode(), newError.GetMsg()))
+	if newError.GetErr() != nil {
+		switch newError.GetErr().(type) {
+		case Error:
+			panic(fmt.Sprintf(`the Err field cannot be Error interface type, error:%v, code:%v, message:%v`, newError, newError.GetCode(), newError.GetMsg()))
+		}
 	}
 
 	//error
@@ -126,7 +128,7 @@ func Wrap(ctx context.Context, originalError, newError Error) Error {
 	//log
 	if originalError.GetType() == 1 {
 		for _, e := range originalError.GetErrorList() {
-			fmt.Println("error-list:", e.GetCode(), e.GetErr(), e.GetMsg(), e.GetType())
+			//fmt.Println("error-list:", e.GetCode(), e.GetErr(), e.GetMsg(), e.GetType())
 			//xlog.Errorf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr())
 			logger.Error(ctx, fmt.Sprintf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr()))
 		}
