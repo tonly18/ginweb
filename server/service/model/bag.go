@@ -29,13 +29,13 @@ func (m *BagMode) Query(serverId, uid int) ([]*dao.BagTable, xerror.Error) {
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
 			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
-				Code:    2000000000,
+				Code:    200000000,
 				Err:     ErrorNoRows,
 				Message: "bag.Query(model)",
 			})
 		}
 		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
-			Code:    2000000009,
+			Code:    200000009,
 			Err:     err.GetErr(),
 			Message: "bag.Query(model)",
 		})
@@ -49,14 +49,14 @@ func (m *BagMode) QueryMap(serverId, uid int) (map[int]*dao.BagTable, xerror.Err
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
 			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
-				Code:    2000000030,
+				Code:    200000030,
 				Err:     err.GetErr(),
 				Message: "bag.QueryMap",
 				Type:    1,
 			})
 		}
 		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
-			Code:    2000000040,
+			Code:    200000040,
 			Err:     err.GetErr(),
 			Message: "bag.QueryMap",
 			Type:    1,

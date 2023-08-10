@@ -44,7 +44,7 @@ func (s *TestService) GetDataList(serverId, uid int) ([]int, xerror.Error) {
 	data, err := bagMode.Query(serverId, uid)
 	if err != nil {
 		return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
-			Code:    3000000000,
+			Code:    300000000,
 			Err:     model.ErrorNoRows,
 			Message: "bag.Query(service)",
 		})
