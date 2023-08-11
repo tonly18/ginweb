@@ -4,7 +4,9 @@
 
 package model
 
-import "errors"
+import (
+	"errors"
+)
 
 var (
 	ErrorNoRows = errors.New("sql: no rows in result set(model)")

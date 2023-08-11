@@ -2,6 +2,7 @@ package xerror
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"server/core/logger"
 )
@@ -66,11 +67,11 @@ func (e *TempError) SetType(itype int8) {
 }
 
 func (e *TempError) Error() string {
-	var errMsg string
+	var err string
 	if e.Err != nil {
-		errMsg = e.Err.Error()
+		err = e.Err.Error()
 	}
-	return fmt.Sprintf(`code:%v, message:%v, error:%v`, e.Code, e.Message, errMsg)
+	return fmt.Sprintf(`code:%v, message:%v, error:%v`, e.Code, e.Message, err)
 }
 
 func (e *TempError) Copy() Error {
@@ -84,15 +85,12 @@ func (e *TempError) Copy() Error {
 }
 
 func (e *TempError) Is(err error) bool {
-	if e.GetErr() == err {
-		return true
-	}
-	return false
+	return errors.Is(e.GetErr(), err)
 }
 
 func (e *TempError) Contain(err error) bool {
 	for _, v := range e.ErrorList {
-		if v.GetErr() == err {
+		if errors.Is(v.GetErr(), err) {
 			return true
 		}
 	}

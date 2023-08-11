@@ -2,7 +2,6 @@ package controller
 
 import (
 	"errors"
-	"fmt"
 	"server/core/controller"
 	"server/core/request"
 	"server/core/response"
@@ -18,49 +17,35 @@ type TestHandler struct {
 
 //PreHandler 在Handler之前执行
 func (c *TestHandler) PreHandler(req *request.Request) {
-	fmt.Println("test.PerHandler----------------")
+	//fmt.Println("test.PerHandler - 1111111111111111")
 }
 
 //Handler 业务处理
 func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
-	//bag := model.NewBag(req)
-	//data, err := bag.Query(1, 4)
-	//data, err := bag.QueryMap(1, 4)
-	//panic("dfasdfasdf")
-
-	//s := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
-	//num := command.SliceIntInsert(s, 22, 0)
-	//fmt.Printf("%T, %v::::::\n", num, num)
-
 	testService := service.NewTestService(req)
-	data, err := testService.GetDataList(1, 1)
+	//data, err := testService.Query(1, 4)
+	//data, err := testService.QueryMap(1, 2)
+	data, err := testService.Get(1, 2)
+	//data, err := testService.GetMap(1, 2)
 	if err != nil {
 		if err.Is(model.ErrorNoRows) {
 			return nil, xerror.Wrap(req, err, &xerror.TempError{
-				Code:    500000011,
+				Code:    500000010,
 				Err:     errors.New("test handler bag.query"),
 				Message: "test bag.query",
 				Type:    1,
 			})
 		}
 		return nil, xerror.Wrap(req, err, &xerror.TempError{
-			Code:    500000005,
+			Code:    500000011,
 			Err:     err.GetErr(),
 			Message: "test handler bag.query",
 			Type:    1,
 		})
 	}
-
-	//if err.GetError() == model.ErrorNoRows {
-	//	return &response.Response{
-	//		Code: 1000,
-	//		Type: 1,
-	//	}
-	//} else if err != nil {
-	//	return &response.Response{
-	//		Code: 1006,
-	//		Type: 1,
-	//	}
+	//for k, v := range data {
+	//	fmt.Println("k-v::::::", k, v.Uid, v.Item, v.Expire, v.Itime)
+	//	fmt.Println("k-v::::::", k, v)
 	//}
 
 	return &response.Response{
@@ -70,5 +55,5 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 
 //PostHandler 在Handler之后执行
 func (c *TestHandler) PostHandler(req *request.Request) {
-	fmt.Println("test.PostHandler+++++++++++++++")
+	//fmt.Println("test.PostHandler - 333333333333333")
 }

@@ -6,10 +6,11 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"github.com/samber/lo"
 	"server/core/xerror"
 	"server/service/model"
+	"server/service/model/dao"
 )
 
 //TestService Struct
@@ -23,34 +24,91 @@ func NewTestService(ctx context.Context) *TestService {
 	}
 }
 
-func (s *TestService) GetDataList(serverId, uid int) ([]int, xerror.Error) {
-	//data, err := s.model.Query(serverId, uid, nil, "uid < 44", "uid DESC")
-	//if err != nil {
-	//	if err.Is(dao.ErrorNoRows) {
-	//		return nil, xerror.Wrap(m.req, err, &xerror.TempError{
-	//			Code:    20005000,
-	//			Err:     ErrorNoRows,
-	//			Message: "bag.Query(model)",
-	//		})
-	//	}
-	//	return nil, xerror.Wrap(m.req, err, &xerror.TempError{
-	//		Code:    20005009,
-	//		Err:     err.GetErr(),
-	//		Message: "bag.Query(model)",
-	//	})
-	//}
-
+func (s *TestService) Query(serverId, uid int) ([]*model.BagTable, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Query(serverId, uid)
+	data, err := bagMode.Query(serverId, uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
 	if err != nil {
+		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
+			return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+				Code:    300000000,
+				Err:     model.ErrorNoRows,
+				Message: "bag.Query(service)",
+			})
+		}
 		return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
-			Code:    300000000,
-			Err:     model.ErrorNoRows,
+			Code:    300000009,
+			Err:     err.GetErr(),
 			Message: "bag.Query(service)",
 		})
 	}
-	fmt.Println("data:::::", data)
 
+	return data, nil
+}
+
+func (s *TestService) QueryMap(serverId, uid int) (map[int]*model.BagTable, xerror.Error) {
+	bagMode := model.NewBagMode(s.ctx)
+	data, err := bagMode.QueryMap(serverId, uid, []string{"uid", "item"})
+	if err != nil {
+		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
+			return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+				Code:    300000010,
+				Err:     model.ErrorNoRows,
+				Message: "bag.Query(service)",
+			})
+		}
+		return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+			Code:    300000011,
+			Err:     err.GetErr(),
+			Message: "bag.Query(service)",
+		})
+	}
+
+	return data, nil
+}
+
+func (s *TestService) Get(serverId, uid int) ([]map[string]any, xerror.Error) {
+	bagMode := model.NewBagMode(s.ctx)
+	data, err := bagMode.Get(serverId, uid, []string{"uid", "item", "expire", "abc"}, "uid desc")
+	if err != nil {
+		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
+			return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+				Code:    300000020,
+				Err:     model.ErrorNoRows,
+				Message: "bag.Query(service)",
+			})
+		}
+		return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+			Code:    300000021,
+			Err:     err.GetErr(),
+			Message: "bag.Query(service)",
+		})
+	}
+
+	return data, nil
+}
+
+func (s *TestService) GetMap(serverId, uid int) (map[int]map[string]any, xerror.Error) {
+	bagMode := model.NewBagMode(s.ctx)
+	data, err := bagMode.GetMap(serverId, uid, []string{"uid", "item", "expire"})
+	if err != nil {
+		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
+			return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+				Code:    300000030,
+				Err:     model.ErrorNoRows,
+				Message: "bag.Query(service)",
+			})
+		}
+		return nil, xerror.Wrap(s.ctx, err, &xerror.TempError{
+			Code:    300000031,
+			Err:     err.GetErr(),
+			Message: "bag.Query(service)",
+		})
+	}
+
+	return data, nil
+}
+
+func (s *TestService) FilterSlice(serverId, uid int) ([]int, xerror.Error) {
 	stu := []int{1, 2, 3, 4, 5, 6}
 	stu = lo.Filter(stu, func(item int, _ int) bool {
 		return item%2 == 0

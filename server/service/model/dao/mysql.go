@@ -107,8 +107,8 @@ func NewDBBase(ctx context.Context) *DBBase {
 }
 
 // Table 字段
-func (d *DBBase) Table(field string) *DBBase {
-	d.table = field
+func (d *DBBase) Table(table string) *DBBase {
+	d.table = table
 
 	//return
 	return d
@@ -116,7 +116,9 @@ func (d *DBBase) Table(field string) *DBBase {
 
 // Fields 字段
 func (d *DBBase) Fields(fields ...string) *DBBase {
-	d.fields = append(d.fields, fields...)
+	if len(fields) > 0 {
+		d.fields = append(d.fields, fields...)
+	}
 
 	//return
 	return d
@@ -124,10 +126,12 @@ func (d *DBBase) Fields(fields ...string) *DBBase {
 
 // Where 条件
 func (d *DBBase) Where(condition string) *DBBase {
-	if len(d.where) == 0 {
-		d.where = append(d.where, condition)
-	} else {
-		d.where = append(d.where, " AND ", condition)
+	if condition != "" {
+		if len(d.where) == 0 {
+			d.where = append(d.where, condition)
+		} else {
+			d.where = append(d.where, " AND ", condition)
+		}
 	}
 
 	//return
@@ -136,10 +140,12 @@ func (d *DBBase) Where(condition string) *DBBase {
 
 // ORWhere 条件
 func (d *DBBase) ORWhere(condition string) *DBBase {
-	if len(d.where) == 0 {
-		d.where = append(d.where, condition)
-	} else {
-		d.where = append(d.where, " OR ", condition)
+	if condition != "" {
+		if len(d.where) == 0 {
+			d.where = append(d.where, condition)
+		} else {
+			d.where = append(d.where, " OR ", condition)
+		}
 	}
 
 	//return
@@ -197,29 +203,26 @@ func (d *DBBase) OrderBy(order string) *DBBase {
 // Query 查询数据并返回
 func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 	defer func() {
-		//rows.Close()
 		d.RestSQL()
 	}()
 
-	rawsql, xerr := d.GenRawSQL()
-	if xerr != nil {
-		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100050,
-			Err:  xerr,
-		})
-	}
-	d.sql = rawsql
+	//生成SQL
+	d.sql = d.GenRawSQL()
+
+	//QUERY
 	rows, err := d.db.Query(d.sql)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) { //这里不会被触发,通常会在Scan时触发error
+		if errors.Is(err, sql.ErrNoRows) {
 			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-				Code: 100055,
-				Err:  ErrorNoRows,
+				Code:    100055,
+				Err:     ErrorNoRows,
+				Message: fmt.Sprintf(`SQL: %v`, d.sql),
 			})
 		}
 		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100059,
-			Err:  err,
+			Code:    100059,
+			Err:     err,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 
@@ -228,20 +231,7 @@ func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 }
 
 // GenRawSQL 生成查询SQL
-func (d *DBBase) GenRawSQL() (string, xerror.Error) {
-	if d.table == "" {
-		return "", xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100060,
-			Err:  errors.New("table cannot be empty"),
-		})
-	}
-	if len(d.fields) == 0 {
-		return "", xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100062,
-			Err:  errors.New("field cannot be empty"),
-		})
-	}
-
+func (d *DBBase) GenRawSQL() string {
 	rawsql := fmt.Sprintf("SELECT %v FROM %v", strings.Join(d.fields, ","), d.table)
 	if len(d.where) > 0 {
 		rawsql = fmt.Sprintf(`%v WHERE %v`, rawsql, strings.Join(d.where, ""))
@@ -265,11 +255,8 @@ func (d *DBBase) GenRawSQL() (string, xerror.Error) {
 		rawsql = fmt.Sprintf(`%v ORDER BY %v`, rawsql, d.order)
 	}
 
-	//d.sql
-	d.sql = rawsql
-
 	//return
-	return d.sql, nil
+	return rawsql
 }
 
 // Insert 插入数据
@@ -306,20 +293,16 @@ func (d *DBBase) Delete() *DBBase {
 
 // Exec 执行SQL
 func (d *DBBase) Exec() (int, xerror.Error) {
-	defer d.RestSQL()
-
-	if d.sql == "" {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100080,
-			Err:  errors.New("exec: sql is empty"),
-		})
-	}
+	defer func() {
+		d.RestSQL()
+	}()
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100082,
-			Err:  err,
+			Code:    100080,
+			Err:     err,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	defer stmt.Close()
@@ -327,28 +310,32 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 	result, err := stmt.Exec(d.values...)
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100084,
-			Err:  err,
+			Code:    100082,
+			Err:     err,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100085,
-			Err:  err,
+			Code:    100085,
+			Err:     err,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	if count == 0 {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100086,
-			Err:  ErrorNoRows,
+			Code:    100086,
+			Err:     ErrorNoRows,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
 		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code: 100088,
-			Err:  err,
+			Code:    100088,
+			Err:     err,
+			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	if id > 0 {
@@ -367,17 +354,12 @@ func (d *DBBase) RestSQL() {
 	d.where = make([]string, 0, 10)
 	d.group, d.have = "", ""
 	d.order = ""
-	d.leftJoin, d.rightJoin, d.on = "", "", ""
+	d.on, d.leftJoin, d.rightJoin = "", "", ""
 
 	d.sql = ""
 }
 
-// GetSQL 获取SQL(属性)
-func (d *DBBase) GetSQL() string {
-	return d.sql
-}
-
-/* ----------------------------------schema meta---------------------------------- */
+/* -------------------------------------schema meta----------------------------------- */
 
 // GetTableSchemaMeta 获取表结构
 func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Error) {
@@ -456,7 +438,7 @@ func (d *DBBase) GenTableStruct(tableName string, metas []SchemaMeta) string {
 	return fmt.Sprintf("%stype %s struct {\n%s}", structComment, tableName, fieldValue)
 }
 
-/* ----------------------------------function---------------------------------- */
+/* -------------------------------------function------------------------------------- */
 
 func CleanMySQL(db *sql.DB) {
 	db.Close()

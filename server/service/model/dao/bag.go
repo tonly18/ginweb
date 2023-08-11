@@ -6,28 +6,17 @@ package dao
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 	"github.com/spf13/cast"
 	"server/core/xerror"
 )
-
-//BagTable Struct
-type BagTable struct {
-	Uid    int    `json:"uid"`
-	Item   string `json:"item"`
-	Expire int    `json:"expire"`
-	Itime  int    `json:"itime"`
-}
 
 //BagDao struct
 type BagDao struct {
 	ctx   context.Context
 	db    *DBBase
 	redis *RedisPoolConn
-
-	tbl    string
-	fields []string
+	tbl   string
 }
 
 func NewBagDao(ctx context.Context) *BagDao {
@@ -35,37 +24,11 @@ func NewBagDao(ctx context.Context) *BagDao {
 		ctx:   ctx,
 		db:    NewDBBase(ctx),
 		redis: NewRedis(ctx),
-
-		tbl:    "bag",
-		fields: []string{"uid", "item", "expire", "itime"},
+		tbl:   "bag",
 	}
 }
 
-func (d *BagDao) genTable(fields []string, values []any) *BagTable {
-	entity := BagTable{}
-	for k, v := range fields {
-		if v == "uid" {
-			entity.Uid = cast.ToInt(b2String(*(values[k]).(*sql.RawBytes)))
-		}
-		if v == "item" {
-			entity.Item = b2String(*(values[k]).(*sql.RawBytes))
-		}
-		if v == "expire" {
-			entity.Expire = cast.ToInt(b2String(*(values[k]).(*sql.RawBytes)))
-		}
-		if v == "itime" {
-			entity.Itime = cast.ToInt(b2String(*(values[k]).(*sql.RawBytes)))
-		}
-	}
-
-	//return
-	return &entity
-}
-
-func (d *BagDao) Query(serverId, uid int, fields []string, where string, order ...string) ([]*BagTable, xerror.Error) {
-	if fields == nil {
-		fields = d.fields
-	}
+func (d *BagDao) Query(serverId, uid int, fields []string, where string, order ...string) ([]map[string]any, xerror.Error) {
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
@@ -75,47 +38,37 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	if err != nil {
 		return nil, xerror.Wrap(d.ctx, err, &xerror.TempError{
 			Code:    100000000,
+			Err:     err.GetErr(),
 			Message: "bag.Query(dao)",
 		})
 	}
 	defer rows.Close()
 
 	//字段 - 数据
-	data := make([]*BagTable, 0, 10)
-	entity := make([]any, 0, len(fields))
-	for i := 0; i < len(fields); i++ {
-		entity = append(entity, new(sql.RawBytes))
-	}
+	data := make([]map[string]any, 0, defaultCount)
+	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
 			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
 				Code:    100000009,
 				Err:     err,
-				Message: "bag.Query(dao)",
+				Message: fmt.Sprintf(`query uid:%v`, uid),
 			})
 		}
-		data = append(data, d.genTable(fields, entity))
+		data = append(data, genRecord(entity, fields))
 	}
 	if len(data) == 0 {
 		return data, xerror.Wrap(d.ctx, nil, &xerror.TempError{
-			Code:    100000010,
-			Err:     ErrorNoRows,
-			Message: "bag.Query(dao)",
+			Code: 100000010,
+			Err:  ErrorNoRows,
 		})
 	}
 
 	return data, nil
 }
 
-func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, order ...string) (map[int]*BagTable, xerror.Error) {
-	if fields == nil {
-		fields = d.fields
-	}
-
+func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
-	if len(order) > 0 {
-		d.db.OrderBy(order[0])
-	}
 	rows, err := d.db.Query()
 	if err != nil {
 		return nil, xerror.Wrap(d.ctx, err, &xerror.TempError{
@@ -126,21 +79,18 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string, orde
 	defer rows.Close()
 
 	//字段 - 数据
-	data := make(map[int]*BagTable, 50)
-	entity := make([]any, 0, len(fields))
-	for i := 0; i < len(fields); i++ {
-		entity = append(entity, new(sql.RawBytes))
-	}
+	data := make(map[int]map[string]any, defaultCount)
+	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
 			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
 				Code:    100000025,
 				Err:     err,
-				Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
+				Message: fmt.Sprintf(`query map uid:%v`, uid),
 			})
 		}
-		record := d.genTable(fields, entity)
-		data[record.Uid] = record
+		record := genRecord(entity, fields)
+		data[cast.ToInt(record["uid"])] = record
 	}
 
 	return data, nil

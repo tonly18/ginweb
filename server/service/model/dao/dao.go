@@ -1,6 +1,7 @@
 package dao
 
 import (
+	"database/sql"
 	"errors"
 	"fmt"
 	"github.com/spf13/cast"
@@ -14,10 +15,17 @@ var (
 	ErrorNoRows = errors.New("sql: no rows in result set(dao)")
 )
 
+const (
+	//默认map、slice容量
+	defaultCount = 50
+)
+
+//字节切片转字符串
 func b2String(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
+//字符串转字节切片
 func s2Bytes(s string) (b []byte) {
 	pbytes := (*reflect.SliceHeader)(unsafe.Pointer(&b))
 	pstring := (*reflect.StringHeader)(unsafe.Pointer(&s))
@@ -27,6 +35,7 @@ func s2Bytes(s string) (b []byte) {
 	return
 }
 
+//生成对应hash值
 func hashValue(value any) uint64 {
 	switch val := value.(type) {
 	case int:
@@ -54,4 +63,22 @@ func getTableName(key any, table string) string {
 	tblSuffix := fmt.Sprintf(`%04d`, hash)
 
 	return fmt.Sprintf(`%v_%v`, table, tblSuffix)
+}
+
+func genEntity(length int) []any {
+	entity := make([]any, 0, length)
+	for i := 0; i < length; i++ {
+		entity = append(entity, new(sql.RawBytes))
+	}
+
+	return entity
+}
+
+func genRecord(data []any, fields []string) map[string]any {
+	record := make(map[string]any, len(fields))
+	for k, v := range data {
+		record[fields[k]] = b2String(*v.(*sql.RawBytes))
+	}
+
+	return record
 }
