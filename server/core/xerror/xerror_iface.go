@@ -11,7 +11,7 @@ type Error interface {
 	SetType(int8)
 	Error() string
 	AddError(Error) Error
-	GetErrorList() []Error
+	GetErrorStack() []Error
 	Copy() Error
 	Is(error) bool
 	Contain(error) bool
