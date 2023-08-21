@@ -29,14 +29,14 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 	//data, err := testService.GetMap(1, 2)
 	if err != nil {
 		if err.Is(model.ErrorNoRows) {
-			return nil, xerror.Wrap(req, err, &xerror.TempError{
+			return nil, xerror.Wrap(req, err, &xerror.NewError{
 				Code:    500000010,
 				Err:     errors.New("test handler bag.query"),
 				Message: "test bag.query",
 				Type:    1,
 			})
 		}
-		return nil, xerror.Wrap(req, err, &xerror.TempError{
+		return nil, xerror.Wrap(req, err, &xerror.NewError{
 			Code:    500000011,
 			Err:     err.GetErr(),
 			Message: "test handler bag.query",

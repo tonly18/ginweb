@@ -7,7 +7,7 @@ import (
 	"server/core/logger"
 )
 
-type TempError struct {
+type NewError struct {
 	Err        error
 	Code       uint32
 	Message    string
@@ -15,31 +15,31 @@ type TempError struct {
 	Type       int8 //1 error|2 debug
 }
 
-func (e *TempError) GetErr() error {
+func (e *NewError) GetErr() error {
 	return e.Err
 }
 
-func (e *TempError) SetErr(err error) {
+func (e *NewError) SetErr(err error) {
 	e.Err = err
 }
 
-func (e *TempError) GetCode() uint32 {
+func (e *NewError) GetCode() uint32 {
 	return e.Code
 }
 
-func (e *TempError) SetCode(code uint32) {
+func (e *NewError) SetCode(code uint32) {
 	e.Code = code
 }
 
-func (e *TempError) GetMsg() string {
+func (e *NewError) GetMsg() string {
 	return e.Message
 }
 
-func (e *TempError) SetMsg(msg string) {
+func (e *NewError) SetMsg(msg string) {
 	e.Message = msg
 }
 
-func (e *TempError) AddError(err Error) Error {
+func (e *NewError) AddError(err Error) Error {
 	if len(e.ErrorStack) == 0 {
 		e.ErrorStack = make([]Error, 0, 10)
 	}
@@ -54,24 +54,24 @@ func (e *TempError) AddError(err Error) Error {
 	return e
 }
 
-func (e *TempError) GetErrorStack() []Error {
+func (e *NewError) GetErrorStack() []Error {
 	return e.ErrorStack
 }
 
-func (e *TempError) GetType() int8 {
+func (e *NewError) GetType() int8 {
 	return e.Type
 }
 
-func (e *TempError) SetType(itype int8) {
+func (e *NewError) SetType(itype int8) {
 	e.Type = itype
 }
 
-func (e *TempError) Error() string {
+func (e *NewError) Error() string {
 	return fmt.Sprintf(`code:%v, message:%v`, e.Code, e.Message)
 }
 
-func (e *TempError) Copy() Error {
-	return &TempError{
+func (e *NewError) Copy() Error {
+	return &NewError{
 		Err:        e.Err,
 		Code:       e.Code,
 		Message:    e.Message,
@@ -80,11 +80,11 @@ func (e *TempError) Copy() Error {
 	}
 }
 
-func (e *TempError) Is(err error) bool {
+func (e *NewError) Is(err error) bool {
 	return errors.Is(e.GetErr(), err)
 }
 
-func (e *TempError) Contain(err error) bool {
+func (e *NewError) Contain(err error) bool {
 	for _, v := range e.ErrorStack {
 		if errors.Is(v.GetErr(), err) {
 			return true

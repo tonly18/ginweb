@@ -13,7 +13,7 @@ import (
 
 func TestXError(t *testing.T) {
 
-	xErrorEntity := TempError{
+	xErrorEntity := NewError{
 		Type:       1,
 		Code:       20005000,
 		Err:        net.ErrClosed,
@@ -51,7 +51,7 @@ func A(uid int) (int, Error) {
 	//fmt.Println("a-err::::::", err.GetCode(), err.GetErr(), err.GetMsg())
 	if err.GetErr() == os.ErrClosed {
 		//fmt.Println("a-err::::::", err.GetErr())
-		xerr := Wrap(context.Background(), err, &TempError{
+		xerr := Wrap(context.Background(), err, &NewError{
 			Type:    1,
 			Code:    20005000,
 			Err:     net.ErrClosed,
@@ -67,7 +67,7 @@ func A(uid int) (int, Error) {
 func B(uid int) (int, Error) {
 	_, err := C(uid)
 	if err.GetErr() == sql.ErrNoRows {
-		xerr := Wrap(context.Background(), err, &TempError{
+		xerr := Wrap(context.Background(), err, &NewError{
 			Code:    20005010,
 			Err:     os.ErrClosed,
 			Message: "b-message",
@@ -82,7 +82,7 @@ func B(uid int) (int, Error) {
 func C(uid int) (int, Error) {
 	_, err := D(uid)
 	if err.GetErr() == io.ErrClosedPipe {
-		xerr := Wrap(context.Background(), err, &TempError{
+		xerr := Wrap(context.Background(), err, &NewError{
 			Code:    20005020,
 			Err:     sql.ErrNoRows,
 			Message: "c-message",
@@ -98,7 +98,7 @@ func D(uid int) (int, Error) {
 	_, err := E(uid)
 	//if err.GetErr() == os.ErrPermission {
 	if err.Is(os.ErrPermission) {
-		xerr := Wrap(context.Background(), err, &TempError{
+		xerr := Wrap(context.Background(), err, &NewError{
 			Code:    20005030,
 			Err:     io.ErrClosedPipe,
 			Message: "d-message",
@@ -113,7 +113,7 @@ func D(uid int) (int, Error) {
 func E(uid int) (int, Error) {
 	err := os.ErrPermission
 	if err == os.ErrPermission {
-		xerr := Wrap(context.Background(), nil, &TempError{
+		xerr := Wrap(context.Background(), nil, &NewError{
 			Code:    20005040,
 			Err:     err,
 			Message: "e-message",

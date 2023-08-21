@@ -60,13 +60,13 @@ func createConnDB(ctx context.Context) xerror.Error {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
-		return xerror.Wrap(ctx, nil, &xerror.TempError{
+		return xerror.Wrap(ctx, nil, &xerror.NewError{
 			Code: 100000,
 			Err:  err,
 		})
 	}
 	if err := db.Ping(); err != nil {
-		return xerror.Wrap(ctx, nil, &xerror.TempError{
+		return xerror.Wrap(ctx, nil, &xerror.NewError{
 			Code: 100005,
 			Err:  err,
 		})
@@ -213,13 +213,13 @@ func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 	rows, err := d.db.Query(d.sql)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 				Code:    100055,
 				Err:     ErrorNoRows,
 				Message: fmt.Sprintf(`SQL: %v`, d.sql),
 			})
 		}
-		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100059,
 			Err:     err,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
@@ -299,7 +299,7 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100080,
 			Err:     err,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
@@ -309,7 +309,7 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 
 	result, err := stmt.Exec(d.values...)
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100082,
 			Err:     err,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
@@ -317,14 +317,14 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100085,
 			Err:     err,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
 	if count == 0 {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100086,
 			Err:     ErrorNoRows,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
@@ -332,7 +332,7 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 	}
 	id, err := result.LastInsertId()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return 0, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code:    100088,
 			Err:     err,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
@@ -366,7 +366,7 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Erro
 	//list, _ := db.Query(fmt.Sprintf(`show columns from %s`, tableName))
 	list, err := d.db.Query(fmt.Sprintf("SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_COMMENT` FROM `COLUMNS` WHERE TABLE_NAME='%v'", tableName))
 	if err != nil {
-		return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+		return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 			Code: 100090,
 			Err:  err,
 		})
@@ -378,7 +378,7 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Erro
 		var data SchemaMeta
 		err := list.Scan(&data.DBName, &data.TableName, &data.Field, &data.Type, &data.Comment)
 		if err != nil {
-			return nil, xerror.Wrap(d.ctx, nil, &xerror.TempError{
+			return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
 				Code: 100099,
 				Err:  err,
 			})

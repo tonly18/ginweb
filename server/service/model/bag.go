@@ -60,13 +60,13 @@ func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]
 	data, err := m.dao.Query(serverId, uid, fields, "uid < 444", order...)
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+			return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 				Code:    200000000,
 				Err:     ErrorNoRows,
 				Message: "bag.query",
 			})
 		}
-		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+		return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 			Code:    200000009,
 			Err:     err.GetErr(),
 			Message: "bag.query",
@@ -88,14 +88,14 @@ func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]*BagTabl
 	data, err := m.dao.QueryMap(serverId, uid, fields, "uid<40")
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+			return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 				Code:    200000030,
 				Err:     ErrorNoRows,
 				Message: "bag.query map",
 				Type:    1,
 			})
 		}
-		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+		return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 			Code:    200000040,
 			Err:     err.GetErr(),
 			Message: "bag.query map",
@@ -118,13 +118,13 @@ func (m *BagMode) Get(serverId, uid int, fields []string, order ...string) ([]ma
 	data, err := m.dao.Query(serverId, uid, fields, "uid < 444", order...)
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+			return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 				Code:    200000030,
 				Err:     ErrorNoRows,
 				Message: "bag.get",
 			})
 		}
-		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+		return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 			Code:    200000039,
 			Err:     err.GetErr(),
 			Message: "bag.get",
@@ -141,13 +141,13 @@ func (m *BagMode) GetMap(serverId, uid int, fields []string) (map[int]map[string
 	data, err := m.dao.QueryMap(serverId, uid, fields, "uid < 444")
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+			return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 				Code:    200000040,
 				Err:     ErrorNoRows,
 				Message: "bag.get map",
 			})
 		}
-		return nil, xerror.Wrap(m.ctx, err, &xerror.TempError{
+		return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 			Code:    200000049,
 			Err:     err.GetErr(),
 			Message: "bag.get map",
