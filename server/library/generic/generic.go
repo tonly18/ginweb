@@ -11,3 +11,19 @@ type Uint interface {
 type Float interface {
 	~float32 | ~float64
 }
+
+type String interface {
+	~string
+}
+
+type Number interface {
+	Int | Uint | Float
+}
+
+type NumberInt interface {
+	Int | Uint
+}
+
+type NumberString interface {
+	Int | Uint | Float | String
+}

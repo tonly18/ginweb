@@ -6,31 +6,32 @@ import (
 	"unsafe"
 )
 
-//StringGenRandom 生成随即字符串
-func StringGenRandom(count int, str ...string) string {
-	rand.Seed(ShuffleUnixNano())
-	letters := []byte(`abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ`)
-	if len(str) > 0 {
-		letters = []byte(str[0])
+//StringGenRandom 生成随机字符串
+func StringGenRandom(count int, letters ...byte) []byte {
+	rand.Seed(GenRandomSeed())
+	if len(letters) == 0 {
+		letters = []byte(`abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ`)
 	}
 	length := len(letters)
-	for i := 0; i < length; i++ {
+	for i := 0; i < 5; i++ {
+		rand.Seed(GenRandomSeed())
 		rand.Shuffle(length, func(i, j int) {
 			letters[i], letters[j] = letters[j], letters[i]
 		})
 	}
 	newStr := make([]byte, 0, count)
 	for m := 0; m < count; m++ {
+		rand.Seed(GenRandomSeed())
 		newStr = append(newStr, letters[rand.Intn(length)])
 	}
 
-	return string(newStr)
+	return newStr
 }
 
 //StringShuffle 随机打乱字符串
 func StringShuffle(s string) string {
 	ru := []rune(s)
-	rand.Seed(ShuffleUnixNano())
+	rand.Seed(GenRandomSeed())
 	rand.Shuffle(len(ru), func(i, j int) {
 		ru[i], ru[j] = ru[j], ru[i]
 	})

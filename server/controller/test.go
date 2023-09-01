@@ -2,10 +2,12 @@ package controller
 
 import (
 	"errors"
+	"fmt"
 	"server/core/controller"
 	"server/core/request"
 	"server/core/response"
 	"server/core/xerror"
+	"server/library/command"
 	"server/service"
 	"server/service/model"
 )
@@ -18,6 +20,18 @@ type TestHandler struct {
 //PreHandler 在Handler之前执行
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
+
+	raw := []int{1, 2, 3, 4, 5}
+	//fmt.Println("dddddddd:::", raw[0:0], len(raw[0:0]), cap(raw[0:0]))
+	//fmt.Printf("raw-0::::: %T %v\n", raw, raw)
+
+	ret := command.SliceHeaderPush(raw, 0)
+
+	fmt.Printf("raw::::: %T %v\n", raw, raw)
+	fmt.Printf("ret::::: %T %v \n", ret, ret)
+
+	fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
+
 }
 
 //Handler 业务处理
