@@ -21,11 +21,11 @@ type TestHandler struct {
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
-	raw := []int{1, 2, 3, 4, 5}
+	raw := []int{1, 2, 3, 4, 5, 4}
 	//fmt.Println("dddddddd:::", raw[0:0], len(raw[0:0]), cap(raw[0:0]))
 	//fmt.Printf("raw-0::::: %T %v\n", raw, raw)
 
-	ret := command.SliceHeaderPush(raw, 0)
+	ret := command.SliceRemoveRepeat(raw)
 
 	fmt.Printf("raw::::: %T %v\n", raw, raw)
 	fmt.Printf("ret::::: %T %v \n", ret, ret)

@@ -166,3 +166,22 @@ func SliceSum[T generic.Number](s []T) int {
 	}
 	return sum
 }
+
+//SliceSum 就地删除重复元素(元素可比较)
+func SliceRemoveRepeat(s []int) []int {
+	j := 0
+	//sort.Ints(s)
+	//for i := 1; i < len(s); i++ {
+	//	if s[j] == s[i] {
+	//		continue
+	//	}
+	//	j++
+	//
+	//	//需要保存原始数据时
+	//	//in[i], in[j] = in[j], in[i]
+	//	//只需要保存需要的数据时
+	//	s[j] = s[i]
+	//}
+	//
+	return s[:j+1]
+}
