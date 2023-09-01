@@ -47,14 +47,12 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 				Code:    500000010,
 				Err:     errors.New("test handler bag.query"),
 				Message: "test bag.query",
-				Type:    1,
 			})
 		}
 		return nil, xerror.Wrap(req, err, &xerror.NewError{
 			Code:    500000011,
 			Err:     err.GetErr(),
 			Message: "test handler bag.query",
-			Type:    1,
 		})
 	}
 	//for k, v := range data {

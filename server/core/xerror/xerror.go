@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"server/core/logger"
 )
 
 type NewError struct {
@@ -12,7 +11,6 @@ type NewError struct {
 	Code       uint32
 	Message    string
 	ErrorStack []Error
-	Type       int8 //1 error|2 debug
 }
 
 func (e *NewError) GetErr() error {
@@ -49,21 +47,12 @@ func (e *NewError) AddError(err Error) Error {
 	e.SetErr(err.GetErr())
 	e.SetCode(err.GetCode())
 	e.SetMsg(err.GetMsg())
-	e.SetType(err.GetType())
 
 	return e
 }
 
 func (e *NewError) GetErrorStack() []Error {
 	return e.ErrorStack
-}
-
-func (e *NewError) GetType() int8 {
-	return e.Type
-}
-
-func (e *NewError) SetType(itype int8) {
-	e.Type = itype
 }
 
 func (e *NewError) Error() string {
@@ -76,7 +65,6 @@ func (e *NewError) Copy() Error {
 		Code:       e.Code,
 		Message:    e.Message,
 		ErrorStack: e.ErrorStack,
-		Type:       e.Type,
 	}
 }
 
@@ -111,15 +99,6 @@ func Wrap(ctx context.Context, originalError, newError Error) Error {
 		originalError = newError.Copy()
 	}
 	originalError.AddError(newError)
-
-	//log
-	if newError.GetType() == 1 {
-		for _, e := range originalError.GetErrorStack() {
-			//fmt.Println("error-list:", e.GetCode(), e.GetErr(), e.GetMsg(), e.GetType())
-			//xlog.Errorf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr())
-			logger.Error(ctx, fmt.Sprintf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr()))
-		}
-	}
 
 	//return
 	return originalError

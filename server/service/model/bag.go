@@ -92,14 +92,12 @@ func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]*BagTabl
 				Code:    200000030,
 				Err:     ErrorNoRows,
 				Message: "bag.query map",
-				Type:    1,
 			})
 		}
 		return nil, xerror.Wrap(m.ctx, err, &xerror.NewError{
 			Code:    200000040,
 			Err:     err.GetErr(),
 			Message: "bag.query map",
-			Type:    1,
 		})
 	}
 

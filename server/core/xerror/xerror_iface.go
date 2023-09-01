@@ -7,8 +7,6 @@ type Error interface {
 	SetCode(uint32)
 	GetMsg() string
 	SetMsg(string)
-	GetType() int8
-	SetType(int8)
 	Error() string
 	AddError(Error) Error
 	GetErrorStack() []Error
