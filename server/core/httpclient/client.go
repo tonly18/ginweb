@@ -1,12 +1,14 @@
 package httpclient
 
 import (
+	"bytes"
 	"crypto/tls"
 	"fmt"
 	"github.com/spf13/cast"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
+	"server/core/pool"
 	"strings"
 	"time"
 )
@@ -92,25 +94,23 @@ func (c *HttpClient) Do() (*HttpResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	//response
+	retData := pool.Buffer4096Pool.Get().(*bytes.Buffer)
+	retData.Reset()
 	defer func() {
+		pool.Buffer4096Pool.Put(retData)
 		c.httpRequest.Request.Body.Close()
 		resp.Body.Close()
 	}()
-
-	//response
-	//retData := bytes.Buffer{}
-	//if _, err := io.Copy(&retData, resp.Body); err != nil {
-	//	return nil, err
-	//}
-	retData, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+	if _, err := io.Copy(retData, resp.Body); err != nil {
 		return nil, err
 	}
 
 	//return
 	return &HttpResponse{
 		Response: resp,
-		Data:     retData,
+		Data:     retData.Bytes(),
 		Close:    true,
 	}, nil
 }
