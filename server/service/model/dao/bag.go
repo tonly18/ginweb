@@ -13,22 +13,27 @@ import (
 
 //BagDao struct
 type BagDao struct {
-	ctx   context.Context
-	db    *DBBase
-	redis *RedisPoolConn
-	tbl   string
+	ctx    context.Context
+	db     *DBBase
+	redis  *RedisPoolConn
+	tbl    string
+	fields []string
 }
 
 func NewBagDao(ctx context.Context) *BagDao {
 	return &BagDao{
-		ctx:   ctx,
-		db:    NewDBBase(ctx),
-		redis: NewRedis(ctx),
-		tbl:   "bag",
+		ctx:    ctx,
+		db:     NewDBBase(ctx),
+		redis:  NewRedis(ctx),
+		tbl:    "bag",
+		fields: []string{"uid", "item", "expire", "itime"},
 	}
 }
 
 func (d *BagDao) Query(serverId, uid int, fields []string, where string, order ...string) ([]map[string]any, xerror.Error) {
+	if len(fields) == 0 {
+		fields = d.fields
+	}
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
@@ -36,7 +41,7 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 
 	rows, err := d.db.Query()
 	if err != nil {
-		return nil, xerror.Wrap(d.ctx, err, &xerror.NewError{
+		return nil, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000000,
 			Err:     err.GetErr(),
 			Message: "bag.Query(dao)",
@@ -49,7 +54,7 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
-			return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
+			return nil, xerror.Wrap(nil, &xerror.NewError{
 				Code:    100000009,
 				Err:     err,
 				Message: fmt.Sprintf(`query uid:%v`, uid),
@@ -58,7 +63,7 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 		data = append(data, genRecord(entity, fields))
 	}
 	if len(data) == 0 {
-		return data, xerror.Wrap(d.ctx, nil, &xerror.NewError{
+		return data, xerror.Wrap(nil, &xerror.NewError{
 			Code: 100000010,
 			Err:  ErrorNoRows,
 		})
@@ -68,10 +73,13 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 }
 
 func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
+	if len(fields) == 0 {
+		fields = d.fields
+	}
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	rows, err := d.db.Query()
 	if err != nil {
-		return nil, xerror.Wrap(d.ctx, err, &xerror.NewError{
+		return nil, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000020,
 			Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 		})
@@ -83,7 +91,7 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
-			return nil, xerror.Wrap(d.ctx, nil, &xerror.NewError{
+			return nil, xerror.Wrap(nil, &xerror.NewError{
 				Code:    100000025,
 				Err:     err,
 				Message: fmt.Sprintf(`query map uid:%v`, uid),
@@ -99,7 +107,7 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
 	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, err, &xerror.NewError{
+		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000030,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		})
@@ -111,7 +119,7 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, err, &xerror.NewError{
+		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000040,
 			Message: "bag.Modify",
 		})
@@ -123,7 +131,7 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
-		return 0, xerror.Wrap(d.ctx, err, &xerror.NewError{
+		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000045,
 			Message: "bag.Delete",
 		})

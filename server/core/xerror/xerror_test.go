@@ -1,7 +1,6 @@
 package xerror
 
 import (
-	"context"
 	"database/sql"
 	"fmt"
 	"io"
@@ -14,17 +13,15 @@ import (
 func TestXError(t *testing.T) {
 
 	xErrorEntity := NewError{
-		Type:       1,
 		Code:       20005000,
 		Err:        net.ErrClosed,
 		Message:    "message",
 		ErrorStack: nil,
 	}
-	sizeType := unsafe.Sizeof(xErrorEntity.Type)
 	size := unsafe.Sizeof(xErrorEntity.Code)
 	sizeErr := unsafe.Sizeof(xErrorEntity.Err)
 	sizeMsg := unsafe.Sizeof(xErrorEntity.Message)
-	fmt.Println("size::::::", sizeType, size, sizeErr, sizeMsg)
+	fmt.Println("size::::::", size, sizeErr, sizeMsg)
 	fmt.Println("sizeTotal::::::", unsafe.Sizeof(xErrorEntity.ErrorStack))
 	fmt.Println("sizeTotal::::::", unsafe.Sizeof(xErrorEntity))
 
@@ -51,8 +48,7 @@ func A(uid int) (int, Error) {
 	//fmt.Println("a-err::::::", err.GetCode(), err.GetErr(), err.GetMsg())
 	if err.GetErr() == os.ErrClosed {
 		//fmt.Println("a-err::::::", err.GetErr())
-		xerr := Wrap(context.Background(), err, &NewError{
-			Type:    1,
+		xerr := Wrap(err, &NewError{
 			Code:    20005000,
 			Err:     net.ErrClosed,
 			Message: "a-message",
@@ -67,7 +63,7 @@ func A(uid int) (int, Error) {
 func B(uid int) (int, Error) {
 	_, err := C(uid)
 	if err.GetErr() == sql.ErrNoRows {
-		xerr := Wrap(context.Background(), err, &NewError{
+		xerr := Wrap(err, &NewError{
 			Code:    20005010,
 			Err:     os.ErrClosed,
 			Message: "b-message",
@@ -82,7 +78,7 @@ func B(uid int) (int, Error) {
 func C(uid int) (int, Error) {
 	_, err := D(uid)
 	if err.GetErr() == io.ErrClosedPipe {
-		xerr := Wrap(context.Background(), err, &NewError{
+		xerr := Wrap(err, &NewError{
 			Code:    20005020,
 			Err:     sql.ErrNoRows,
 			Message: "c-message",
@@ -98,7 +94,7 @@ func D(uid int) (int, Error) {
 	_, err := E(uid)
 	//if err.GetErr() == os.ErrPermission {
 	if err.Is(os.ErrPermission) {
-		xerr := Wrap(context.Background(), err, &NewError{
+		xerr := Wrap(err, &NewError{
 			Code:    20005030,
 			Err:     io.ErrClosedPipe,
 			Message: "d-message",
@@ -113,7 +109,7 @@ func D(uid int) (int, Error) {
 func E(uid int) (int, Error) {
 	err := os.ErrPermission
 	if err == os.ErrPermission {
-		xerr := Wrap(context.Background(), nil, &NewError{
+		xerr := Wrap(nil, &NewError{
 			Code:    20005040,
 			Err:     err,
 			Message: "e-message",

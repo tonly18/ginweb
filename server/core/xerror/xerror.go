@@ -1,7 +1,6 @@
 package xerror
 
 import (
-	"context"
 	"errors"
 	"fmt"
 )
@@ -89,7 +88,7 @@ func (e *NewError) Contain(err error) bool {
 //	newError		Error			新的Error
 //@return
 //	Error
-func Wrap(ctx context.Context, originalError, newError Error) Error {
+func Wrap(originalError, newError Error) Error {
 	if newError == nil {
 		panic("the parameter newError cannot be nil")
 	}

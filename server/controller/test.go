@@ -28,10 +28,9 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 	ret := command.SliceRemoveRepeat(raw)
 
 	fmt.Printf("raw::::: %T %v\n", raw, raw)
-	fmt.Printf("ret::::: %T %v \n", ret, ret)
+	fmt.Printf("ret::::: %T %v\n", ret, ret)
 
 	fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
-
 }
 
 //Handler 业务处理
@@ -43,13 +42,13 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 	//data, err := testService.GetMap(1, 2)
 	if err != nil {
 		if err.Is(model.ErrorNoRows) {
-			return nil, xerror.Wrap(req, err, &xerror.NewError{
+			return nil, xerror.Wrap(err, &xerror.NewError{
 				Code:    500000010,
 				Err:     errors.New("test handler bag.query"),
 				Message: "test bag.query",
 			})
 		}
-		return nil, xerror.Wrap(req, err, &xerror.NewError{
+		return nil, xerror.Wrap(err, &xerror.NewError{
 			Code:    500000011,
 			Err:     err.GetErr(),
 			Message: "test handler bag.query",
