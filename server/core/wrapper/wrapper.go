@@ -16,7 +16,6 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				logger.Error(c, fmt.Sprintf(`[wrapper panic] Error(1): %v`, err))
-				logger.Error(c, fmt.Sprintf(`[wrapper panic] User Id: %v, Client IP: %v`, c.GetString("user_id"), c.GetString("client_ip")))
 				for i := 1; i < 20; i++ {
 					if pc, file, line, ok := runtime.Caller(i); ok {
 						logger.Error(c, fmt.Sprintf(`[wrapper panic] goroutine:%v, file:%s, function name:%s, line:%d`, pc, file, runtime.FuncForPC(pc).Name(), line))
