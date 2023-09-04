@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"server/library/generic"
+	"sort"
 )
 
 //SliceTrans slice数据类型之间的相互转换
@@ -167,21 +168,22 @@ func SliceSum[T generic.Number](s []T) int {
 	return sum
 }
 
-//SliceSum 就地删除重复元素(元素可比较)
-func SliceRemoveRepeat(s []int) []int {
-	j := 0
-	//sort.Ints(s)
-	//for i := 1; i < len(s); i++ {
-	//	if s[j] == s[i] {
-	//		continue
-	//	}
-	//	j++
-	//
-	//	//需要保存原始数据时
-	//	//in[i], in[j] = in[j], in[i]
-	//	//只需要保存需要的数据时
-	//	s[j] = s[i]
-	//}
-	//
-	return s[:j+1]
+//SliceRemoveRepeat 就地删除重复元素(元素可比较)
+func SliceRemoveRepeat[T generic.NumberString](s []T) []T {
+	if len(s) < 2 {
+		return s
+	}
+	sort.Slice(s, func(i, j int) bool {
+		return s[i] < s[j]
+	})
+	x := 0
+	for i := 1; i < len(s); i++ {
+		if s[x] == s[i] {
+			continue
+		}
+		x++
+		s[x] = s[i]
+	}
+
+	return s[:x+1]
 }

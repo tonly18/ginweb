@@ -21,14 +21,14 @@ type TestHandler struct {
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
-	raw := []int{1, 2, 3, 4, 5, 4}
+	raw := []string{"abc", "abc"}
 	//fmt.Println("dddddddd:::", raw[0:0], len(raw[0:0]), cap(raw[0:0]))
-	//fmt.Printf("raw-0::::: %T %v\n", raw, raw)
+	fmt.Printf("raw-0::::: %T %v %p\n", raw, raw, raw)
 
 	ret := command.SliceRemoveRepeat(raw)
 
-	fmt.Printf("raw::::: %T %v\n", raw, raw)
-	fmt.Printf("ret::::: %T %v\n", ret, ret)
+	fmt.Printf("raw::::: %T %v %p\n", raw, raw, ret)
+	fmt.Printf("ret::::: %T %v %v\n", ret, ret, cap(ret))
 
 	fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
 }
