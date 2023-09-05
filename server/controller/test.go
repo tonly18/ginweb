@@ -21,16 +21,16 @@ type TestHandler struct {
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
-	raw := []string{"abc", "abc"}
+	raw := map[int]int{1: 11, 4: 44, 3: 33, 2: 22, 5: 55, 6: 66}
 	//fmt.Println("dddddddd:::", raw[0:0], len(raw[0:0]), cap(raw[0:0]))
 	fmt.Printf("raw-0::::: %T %v %p\n", raw, raw, raw)
 
-	ret := command.SliceRemoveRepeat(raw)
+	ret := command.MapKeys(raw, 2)
 
-	fmt.Printf("raw::::: %T %v %p\n", raw, raw, ret)
-	fmt.Printf("ret::::: %T %v %v\n", ret, ret, cap(ret))
+	fmt.Printf("raw-1::::: %T %v %p\n", raw, raw, ret)
+	fmt.Printf("ret::::: %T %v %v\n", ret, ret, ret)
 
-	fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
+	//fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
 }
 
 //Handler 业务处理

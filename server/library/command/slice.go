@@ -146,24 +146,37 @@ func SliceToString[T generic.NumberString](data []T, sep string) string {
 	return buffer.String()
 }
 
-//SliceGetMinElement 获取切片中最小值
-func SliceGetMinElement[T generic.Number](s []T) (int, T) {
+//SliceGetMaxElement 获取切片中最大值
+func SliceGetMaxElement[T generic.Number](s []T) (int, T) {
 	accurateBit := 1000
-	index, lowestValue := 0, s[0]
+	index, maxValue := 0, s[0]
 	for k, v := range s {
-		if int(v*T(accurateBit)) < int(lowestValue*T(accurateBit)) {
-			index, lowestValue = k, v
+		if int(v*T(accurateBit)) > int(maxValue*T(accurateBit)) {
+			index, maxValue = k, v
 		}
 	}
 
-	return index, lowestValue
+	return index, maxValue
+}
+
+//SliceGetMinElement 获取切片中最小值
+func SliceGetMinElement[T generic.Number](s []T) (int, T) {
+	accurateBit := 1000
+	index, minValue := 0, s[0]
+	for k, v := range s {
+		if int(v*T(accurateBit)) < int(minValue*T(accurateBit)) {
+			index, minValue = k, v
+		}
+	}
+
+	return index, minValue
 }
 
 //SliceSum 获取切片中所有元素之和
-func SliceSum[T generic.Number](s []T) int {
-	var sum int
+func SliceSum[T generic.Number](s []T) T {
+	var sum T
 	for _, v := range s {
-		sum += int(v)
+		sum += v
 	}
 	return sum
 }

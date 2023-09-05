@@ -39,18 +39,12 @@ func StringShuffle(s string) string {
 	return string(ru)
 }
 
-//B2String []byte 转 string
-//
-//@params
-//@return
+//B2String []byte转string
 func B2String(b []byte) string {
 	return *(*string)(unsafe.Pointer(&b))
 }
 
-//S2Byte string 转 []byte
-//
-//@params
-//@return
+//S2Byte string 转[]byte
 func S2Byte(s string) (b []byte) {
 	bh := (*reflect.SliceHeader)(unsafe.Pointer(&b))
 	sh := (*reflect.StringHeader)(unsafe.Pointer(&s))

@@ -33,7 +33,7 @@ func LoginNotVerify() gin.HandlerFunc {
 
 //checkLogin 中间件: 验证登录
 func checkLogin(c *gin.Context) (int, int, error) {
-	//TODO: fix me
+	//TODO: fix me 验证具体逻辑
 
 	return 0, 0, nil
 }
