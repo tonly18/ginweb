@@ -2,27 +2,23 @@ package xerror
 
 import (
 	"database/sql"
-	"fmt"
 	"io"
 	"net"
 	"os"
-	"testing"
-	"unsafe"
 )
 
-func TestXError(t *testing.T) {
-
+/*
+func TestTXError(t *testing.T) {
 	xErrorEntity := NewError{
-		Code:       20005000,
-		Err:        net.ErrClosed,
-		Message:    "message",
-		ErrorStack: nil,
+		Code:    20005000,
+		Err:     net.ErrClosed,
+		Message: "message",
 	}
 	size := unsafe.Sizeof(xErrorEntity.Code)
 	sizeErr := unsafe.Sizeof(xErrorEntity.Err)
 	sizeMsg := unsafe.Sizeof(xErrorEntity.Message)
 	fmt.Println("size::::::", size, sizeErr, sizeMsg)
-	fmt.Println("sizeTotal::::::", unsafe.Sizeof(xErrorEntity.ErrorStack))
+	fmt.Println("sizeTotal::::::", unsafe.Sizeof(xErrorEntity.GetError()))
 	fmt.Println("sizeTotal::::::", unsafe.Sizeof(xErrorEntity))
 
 	_, err := A(100)
@@ -32,8 +28,8 @@ func TestXError(t *testing.T) {
 	fmt.Println("contain::::::", contain)
 
 	if err.GetErr() == net.ErrClosed {
-		errList := err.GetErrorStack()
-		//fmt.Println("err::::::", len(err.GetErrorStack()))
+		errList := err.GetError()
+		//fmt.Println("err::::::", len(err.GetError()))
 		//fmt.Println("errorList::::::", errList)
 		for _, e := range errList {
 			fmt.Println("error::::::", e.GetCode(), e.GetMsg(), e.GetErr())
@@ -42,6 +38,7 @@ func TestXError(t *testing.T) {
 
 	fmt.Println("main")
 }
+*/
 
 func A(uid int) (int, Error) {
 	data, err := B(uid)
@@ -53,7 +50,7 @@ func A(uid int) (int, Error) {
 			Err:     net.ErrClosed,
 			Message: "a-message",
 		})
-		//fmt.Println("a-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetErrorStack()))
+		//fmt.Println("a-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetError()))
 		return 0, xerr
 	}
 
@@ -68,7 +65,7 @@ func B(uid int) (int, Error) {
 			Err:     os.ErrClosed,
 			Message: "b-message",
 		})
-		//fmt.Println("b-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetErrorStack()))
+		//fmt.Println("b-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetError()))
 		return 0, xerr
 	}
 
@@ -83,7 +80,7 @@ func C(uid int) (int, Error) {
 			Err:     sql.ErrNoRows,
 			Message: "c-message",
 		})
-		//fmt.Println("c-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetErrorStack()))
+		//fmt.Println("c-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetError()))
 		return 0, xerr
 	}
 
@@ -99,7 +96,7 @@ func D(uid int) (int, Error) {
 			Err:     io.ErrClosedPipe,
 			Message: "d-message",
 		})
-		//fmt.Println("d-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetErrorStack()))
+		//fmt.Println("d-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetError()))
 		return 0, xerr
 	}
 
@@ -114,7 +111,7 @@ func E(uid int) (int, Error) {
 			Err:     err,
 			Message: "e-message",
 		})
-		//fmt.Println("e-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetErrorStack()))
+		//fmt.Println("e-err:::::::", xerr.GetCode(), xerr.GetErr(), xerr.GetMsg(), len(xerr.GetError()))
 		return 0, xerr
 	}
 

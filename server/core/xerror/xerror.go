@@ -6,10 +6,10 @@ import (
 )
 
 type NewError struct {
-	Err        error
-	Code       uint32
-	Message    string
-	ErrorStack []Error
+	Err     error
+	Code    uint32
+	Message string
+	error   []Error
 }
 
 func (e *NewError) GetErr() error {
@@ -37,10 +37,10 @@ func (e *NewError) SetMsg(msg string) {
 }
 
 func (e *NewError) AddError(err Error) Error {
-	if len(e.ErrorStack) == 0 {
-		e.ErrorStack = make([]Error, 0, 10)
+	if len(e.error) == 0 {
+		e.error = make([]Error, 0, 10)
 	}
-	e.ErrorStack = append(e.ErrorStack, err)
+	e.error = append(e.error, err)
 
 	//设置Error为当前最新的Error
 	e.SetErr(err.GetErr())
@@ -50,8 +50,8 @@ func (e *NewError) AddError(err Error) Error {
 	return e
 }
 
-func (e *NewError) GetErrorStack() []Error {
-	return e.ErrorStack
+func (e *NewError) GetError() []Error {
+	return e.error
 }
 
 func (e *NewError) Error() string {
@@ -60,10 +60,10 @@ func (e *NewError) Error() string {
 
 func (e *NewError) Copy() Error {
 	return &NewError{
-		Err:        e.Err,
-		Code:       e.Code,
-		Message:    e.Message,
-		ErrorStack: e.ErrorStack,
+		Err:     e.Err,
+		Code:    e.Code,
+		Message: e.Message,
+		error:   e.error,
 	}
 }
 
@@ -72,7 +72,7 @@ func (e *NewError) Is(err error) bool {
 }
 
 func (e *NewError) Contain(err error) bool {
-	for _, v := range e.ErrorStack {
+	for _, v := range e.error {
 		if errors.Is(v.GetErr(), err) {
 			return true
 		}

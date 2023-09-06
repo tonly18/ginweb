@@ -9,7 +9,7 @@ type Error interface {
 	SetMsg(string)
 	Error() string
 	AddError(Error) Error
-	GetErrorStack() []Error
+	GetError() []Error
 	Copy() Error
 	Is(error) bool
 	Contain(error) bool

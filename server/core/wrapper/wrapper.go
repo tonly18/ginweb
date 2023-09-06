@@ -39,7 +39,7 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 		//response data
 		if err != nil {
 			//error log
-			for _, e := range err.GetErrorStack() {
+			for _, e := range err.GetError() {
 				logger.Error(req, fmt.Sprintf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr()))
 			}
 			//gin
