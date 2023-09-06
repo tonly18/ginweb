@@ -3,6 +3,7 @@ package command
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/exp/slices"
 	"math/rand"
 	"server/library/generic"
 	"sort"
@@ -29,8 +30,8 @@ func SliceShuffle[T generic.NumberString](s []T) []T {
 	return s
 }
 
-//SliceGetRandomElement 切片中随机N个元素
-func SliceGetRandomElement[T generic.NumberString](s []T, count int) []T {
+//SliceRandomElement 切片中随机N个元素
+func SliceRandomElement[T generic.NumberString](s []T, count int) []T {
 	length := len(s)
 	if length == 0 || count < 1 || length < count {
 		return s
@@ -66,14 +67,6 @@ func SliceRemoveElement[T generic.NumberString](s []T, ele T) []T {
 	return s[:j]
 }
 
-//SliceCopy 切片复制
-func SliceCopy[T generic.NumberString](s []T) []T {
-	b := make([]T, len(s))
-	copy(b, s)
-
-	return b
-}
-
 //SliceRemoveRange 切片删除(开始位置,结束位置),包含两端
 func SliceRemoveRange[T generic.NumberString](s []T, i, j int) []T {
 	return append(s[:i], s[j+1:]...)
@@ -85,6 +78,34 @@ func SliceRemoveByIndex[T generic.NumberString](s []T, idx int) []T {
 		return s
 	}
 	return append(s[:idx], s[idx+1:]...)
+}
+
+//SliceRemoveRepeat 就地删除重复元素(元素可比较)
+func SliceRemoveRepeat[T generic.NumberString](s []T) []T {
+	if len(s) < 2 {
+		return s
+	}
+	sort.Slice(s, func(i, j int) bool {
+		return s[i] < s[j]
+	})
+	x := 0
+	for i := 1; i < len(s); i++ {
+		if s[x] == s[i] {
+			continue
+		}
+		x++
+		s[x] = s[i]
+	}
+
+	return s[:x+1]
+}
+
+//SliceCopy 切片复制
+func SliceCopy[T generic.NumberString](s []T) []T {
+	b := make([]T, len(s))
+	copy(b, s)
+
+	return b
 }
 
 //SliceHeaderPush 从头部将元素x插入切片s
@@ -146,8 +167,8 @@ func SliceToString[T generic.NumberString](data []T, sep string) string {
 	return buffer.String()
 }
 
-//SliceGetMaxElement 获取切片中最大值
-func SliceGetMaxElement[T generic.Number](s []T) (int, T) {
+//SliceMaxElement 获取切片中最大值
+func SliceMaxElement[T generic.Number](s []T) (int, T) {
 	accurateBit := 1000
 	index, maxValue := 0, s[0]
 	for k, v := range s {
@@ -159,8 +180,8 @@ func SliceGetMaxElement[T generic.Number](s []T) (int, T) {
 	return index, maxValue
 }
 
-//SliceGetMinElement 获取切片中最小值
-func SliceGetMinElement[T generic.Number](s []T) (int, T) {
+//SliceMinElement 获取切片中最小值
+func SliceMinElement[T generic.Number](s []T) (int, T) {
 	accurateBit := 1000
 	index, minValue := 0, s[0]
 	for k, v := range s {
@@ -181,22 +202,7 @@ func SliceSum[T generic.Number](s []T) T {
 	return sum
 }
 
-//SliceRemoveRepeat 就地删除重复元素(元素可比较)
-func SliceRemoveRepeat[T generic.NumberString](s []T) []T {
-	if len(s) < 2 {
-		return s
-	}
-	sort.Slice(s, func(i, j int) bool {
-		return s[i] < s[j]
-	})
-	x := 0
-	for i := 1; i < len(s); i++ {
-		if s[x] == s[i] {
-			continue
-		}
-		x++
-		s[x] = s[i]
-	}
-
-	return s[:x+1]
+//SliceContains 是否包含指定的值
+func SliceContains[E comparable](s []E, v E) bool {
+	return slices.Contains(s, v)
 }
