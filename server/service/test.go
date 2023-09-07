@@ -47,7 +47,7 @@ func (s *TestService) Query(serverId, uid int) ([]map[string]any, xerror.Error) 
 
 func (s *TestService) QueryMap(serverId, uid int) (map[int]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.QueryMap(serverId, uid, []string{"uid", "item"})
+	data, err := bagMode.QueryMap(serverId, uid, []string{"uid", "item", "expire", "itime"})
 	if err != nil {
 		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -58,48 +58,6 @@ func (s *TestService) QueryMap(serverId, uid int) (map[int]map[string]any, xerro
 		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
 			Code:    300000011,
-			Err:     err.GetErr(),
-			Message: "bag.Query(service)",
-		})
-	}
-
-	return data, nil
-}
-
-func (s *TestService) Get(serverId, uid int) ([]map[string]any, xerror.Error) {
-	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Get(serverId, uid, []string{"uid", "item", "expire", "abc"}, "uid desc")
-	if err != nil {
-		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000020,
-				Err:     model.ErrorNoRows,
-				Message: "bag.Query(service)",
-			})
-		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000021,
-			Err:     err.GetErr(),
-			Message: "bag.Query(service)",
-		})
-	}
-
-	return data, nil
-}
-
-func (s *TestService) GetMap(serverId, uid int) (map[int]map[string]any, xerror.Error) {
-	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.GetMap(serverId, uid, []string{"uid", "item", "expire"})
-	if err != nil {
-		if errors.Is(err.GetErr(), dao.ErrorNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000030,
-				Err:     model.ErrorNoRows,
-				Message: "bag.Query(service)",
-			})
-		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000031,
 			Err:     err.GetErr(),
 			Message: "bag.Query(service)",
 		})

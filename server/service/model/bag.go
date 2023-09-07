@@ -25,7 +25,7 @@ func NewBagMode(ctx context.Context) *BagMode {
 }
 
 func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, fields, "uid < 444", order...)
+	data, err := m.dao.Query(serverId, uid, fields, "uid = 444", order...)
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -45,7 +45,7 @@ func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]
 }
 
 func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[string]any, xerror.Error) {
-	data, err := m.dao.QueryMap(serverId, uid, fields, "uid<40")
+	data, err := m.dao.QueryMap(serverId, uid, fields, "uid < 40")
 	if err != nil {
 		if err.Is(dao.ErrorNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -58,46 +58,6 @@ func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[stri
 			Code:    200000040,
 			Err:     err.GetErr(),
 			Message: "bag.query map",
-		})
-	}
-
-	return data, nil
-}
-
-func (m *BagMode) Get(serverId, uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, fields, "uid < 444", order...)
-	if err != nil {
-		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    200000030,
-				Err:     ErrorNoRows,
-				Message: "bag.get",
-			})
-		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    200000039,
-			Err:     err.GetErr(),
-			Message: "bag.get",
-		})
-	}
-
-	return data, nil
-}
-
-func (m *BagMode) GetMap(serverId, uid int, fields []string) (map[int]map[string]any, xerror.Error) {
-	data, err := m.dao.QueryMap(serverId, uid, fields, "uid < 444")
-	if err != nil {
-		if err.Is(dao.ErrorNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    200000040,
-				Err:     ErrorNoRows,
-				Message: "bag.get map",
-			})
-		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    200000049,
-			Err:     err.GetErr(),
-			Message: "bag.get map",
 		})
 	}
 

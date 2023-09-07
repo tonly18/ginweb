@@ -9,24 +9,27 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"server/core/xerror"
+	"server/library/command"
 )
 
 //BagDao struct
 type BagDao struct {
-	ctx    context.Context
-	db     *DBBase
-	redis  *RedisPoolConn
-	tbl    string
-	fields []string
+	ctx     context.Context
+	db      *DBBase
+	redis   *RedisPoolConn
+	tbl     string   //表名
+	fields  []string //表字段
+	primary string   //表主键
 }
 
 func NewBagDao(ctx context.Context) *BagDao {
 	return &BagDao{
-		ctx:    ctx,
-		db:     NewDBBase(ctx),
-		redis:  NewRedis(ctx),
-		tbl:    "bag",
-		fields: []string{"uid", "item", "expire", "itime"},
+		ctx:     ctx,
+		db:      NewDBBase(ctx),
+		redis:   NewRedis(ctx),
+		tbl:     "bag",
+		fields:  []string{"uid", "item", "expire", "itime"},
+		primary: "uid",
 	}
 }
 
@@ -34,6 +37,10 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	if len(fields) == 0 {
 		fields = d.fields
 	}
+	if !command.SliceContains(fields, d.primary) {
+		fields = append(fields, d.primary)
+	}
+
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
@@ -76,6 +83,10 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 	if len(fields) == 0 {
 		fields = d.fields
 	}
+	if !command.SliceContains(fields, d.primary) {
+		fields = append(fields, d.primary)
+	}
+
 	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	rows, err := d.db.Query()
 	if err != nil {
@@ -98,7 +109,7 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 			})
 		}
 		record := genRecord(entity, fields)
-		data[cast.ToInt(record["uid"])] = record
+		data[cast.ToInt(record[d.primary])] = record
 	}
 
 	return data, nil
