@@ -6,6 +6,7 @@ package model
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"server/core/xerror"
 	"server/service/model/dao"
@@ -25,12 +26,12 @@ func NewBagMode(ctx context.Context) *BagMode {
 }
 
 func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, fields, "uid = 444", order...)
+	data, err := m.dao.Query(serverId, uid, fields, "uid5 = 444", order...)
 	if err != nil {
-		if err.Is(dao.ErrorNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
 				Code:    200000000,
-				Err:     ErrorNoRows,
+				Err:     err.GetErr(),
 				Message: "bag.query",
 			})
 		}
@@ -47,10 +48,10 @@ func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]
 func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[string]any, xerror.Error) {
 	data, err := m.dao.QueryMap(serverId, uid, fields, "uid < 40")
 	if err != nil {
-		if err.Is(dao.ErrorNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
 				Code:    200000030,
-				Err:     ErrorNoRows,
+				Err:     err.GetErr(),
 				Message: "bag.query map",
 			})
 		}
@@ -64,11 +65,11 @@ func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[stri
 	return data, nil
 }
 
-func (m *BagMode) Add(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (m *BagMode) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
 	return m.dao.Insert(serverId, uid, params)
 }
 
-func (m *BagMode) ModifyByUserId(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (m *BagMode) Modify(serverId, uid int, params map[string]any) (int, xerror.Error) {
 	return m.dao.Modify(serverId, uid, fmt.Sprintf(`uid=%v`, uid), params)
 }
 

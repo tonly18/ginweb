@@ -3,7 +3,6 @@ package dao
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"runtime"
@@ -202,9 +201,7 @@ func (d *DBBase) OrderBy(order string) *DBBase {
 
 // Query 查询数据并返回
 func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
-	defer func() {
-		d.RestSQL()
-	}()
+	defer d.RestSQL()
 
 	//生成SQL
 	d.sql = d.GenRawSQL()
@@ -212,13 +209,6 @@ func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 	//QUERY
 	rows, err := d.db.Query(d.sql)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, xerror.Wrap(nil, &xerror.NewError{
-				Code:    100055,
-				Err:     ErrorNoRows,
-				Message: fmt.Sprintf(`SQL: %v`, d.sql),
-			})
-		}
 		return nil, xerror.Wrap(nil, &xerror.NewError{
 			Code:    100059,
 			Err:     err,
@@ -292,10 +282,14 @@ func (d *DBBase) Delete() *DBBase {
 }
 
 // Exec 执行SQL
-func (d *DBBase) Exec() (int, xerror.Error) {
-	defer func() {
-		d.RestSQL()
-	}()
+//
+//@params:
+//	mark	bool	true插入 | false修改,删除
+//@return:
+//	int		insert时返回新增ID或影响行数 | modify时返回影响的行数
+//	xerror.Error
+func (d *DBBase) Exec(mark bool) (int, xerror.Error) {
+	defer d.RestSQL()
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
@@ -315,6 +309,8 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
+
+	//the number of rows affected
 	count, err := result.RowsAffected()
 	if err != nil {
 		return 0, xerror.Wrap(nil, &xerror.NewError{
@@ -326,23 +322,24 @@ func (d *DBBase) Exec() (int, xerror.Error) {
 	if count == 0 {
 		return 0, xerror.Wrap(nil, &xerror.NewError{
 			Code:    100086,
-			Err:     ErrorNoRows,
+			Err:     sql.ErrNoRows,
 			Message: fmt.Sprintf(`SQL: %v`, d.sql),
 		})
 	}
-	id, err := result.LastInsertId()
-	if err != nil {
-		return 0, xerror.Wrap(nil, &xerror.NewError{
-			Code:    100088,
-			Err:     err,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
-	}
-	if id > 0 {
-		return int(id), nil
+	if mark {
+		newId, err := result.LastInsertId()
+		if err != nil {
+			return 0, xerror.Wrap(nil, &xerror.NewError{
+				Code:    100088,
+				Err:     err,
+				Message: fmt.Sprintf(`SQL: %v`, d.sql),
+			})
+		}
+		if newId > 0 {
+			return int(newId), nil
+		}
 	}
 
-	//return
 	return int(count), nil
 }
 

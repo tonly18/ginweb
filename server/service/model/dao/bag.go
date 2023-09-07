@@ -6,9 +6,11 @@ package dao
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"github.com/spf13/cast"
 	"server/core/xerror"
+	"server/global"
 	"server/library/command"
 )
 
@@ -57,12 +59,12 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	defer rows.Close()
 
 	//字段 - 数据
-	data := make([]map[string]any, 0, defaultCount)
+	data := make([]map[string]any, 0, global.DefaultCount)
 	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
 			return nil, xerror.Wrap(nil, &xerror.NewError{
-				Code:    100000009,
+				Code:    100000006,
 				Err:     err,
 				Message: fmt.Sprintf(`query uid:%v`, uid),
 			})
@@ -71,8 +73,8 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	}
 	if len(data) == 0 {
 		return data, xerror.Wrap(nil, &xerror.NewError{
-			Code: 100000010,
-			Err:  ErrorNoRows,
+			Code: 100000009,
+			Err:  sql.ErrNoRows,
 		})
 	}
 
@@ -98,7 +100,7 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 	defer rows.Close()
 
 	//字段 - 数据
-	data := make(map[int]map[string]any, defaultCount)
+	data := make(map[int]map[string]any, global.DefaultCount)
 	entity := genEntity(len(fields))
 	for rows.Next() {
 		if err := rows.Scan(entity...); err != nil {
@@ -111,15 +113,22 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 		record := genRecord(entity, fields)
 		data[cast.ToInt(record[d.primary])] = record
 	}
+	if len(data) == 0 {
+		return data, xerror.Wrap(nil, &xerror.NewError{
+			Code: 100000029,
+			Err:  sql.ErrNoRows,
+		})
+	}
 
 	return data, nil
 }
 
 func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
-	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
+	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec(true)
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000030,
+			Err:     err,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		})
 	}
@@ -128,10 +137,11 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 }
 
 func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
-	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
+	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec(false)
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000040,
+			Err:     err.GetErr(),
 			Message: "bag.Modify",
 		})
 	}
@@ -140,10 +150,11 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 }
 
 func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
-	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
+	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec(false)
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000045,
+			Err:     err.GetErr(),
 			Message: "bag.Delete",
 		})
 	}

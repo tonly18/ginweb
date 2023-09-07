@@ -1,12 +1,12 @@
 package controller
 
 import (
+	"fmt"
 	"server/core/controller"
 	"server/core/request"
 	"server/core/response"
 	"server/core/xerror"
 	"server/service"
-	"server/service/model"
 )
 
 //TestHandler Test测试接口
@@ -33,16 +33,19 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 //Handler 业务处理
 func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
 	testService := service.NewTestService(req)
-	data, err := testService.Query(1, 4)
+	//data, err := testService.Query(1, 4)
 	//data, err := testService.QueryMap(1, 2)
+	id, err := testService.Insert(1, 8, map[string]any{
+		"uid":    8,
+		"item":   "item-8",
+		"expire": 1694086514,
+	})
+	//id, err := testService.Modify(1, 6, map[string]any{
+	//	"item":   "item-666",
+	//	"expire": 1694086514,
+	//})
+	fmt.Println("id::::::::::", id)
 	if err != nil {
-		if err.Is(model.ErrorNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    500000010,
-				Err:     err.GetErr(),
-				Message: "test bag.query",
-			})
-		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
 			Code:    500000011,
 			Err:     err.GetErr(),
@@ -55,7 +58,7 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 	//}
 
 	return &response.Response{
-		Data: data,
+		Data: id,
 	}, nil
 }
 

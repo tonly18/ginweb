@@ -2,22 +2,12 @@ package dao
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"github.com/spf13/cast"
 	"hash/crc32"
 	"reflect"
 	"strconv"
 	"unsafe"
-)
-
-var (
-	ErrorNoRows = errors.New("sql: no rows in result set(dao)")
-)
-
-const (
-	//默认map、slice容量
-	defaultCount = 50
 )
 
 //字节切片转字符串
