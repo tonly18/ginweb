@@ -12,6 +12,10 @@ type NewError struct {
 	error   []Error
 }
 
+func (e *NewError) Error() string {
+	return fmt.Sprintf(`code:%v, message:%v`, e.Code, e.Message)
+}
+
 func (e *NewError) GetErr() error {
 	return e.Err
 }
@@ -36,13 +40,13 @@ func (e *NewError) SetMsg(msg string) {
 	e.Message = msg
 }
 
-func (e *NewError) AddError(err Error) Error {
+func (e *NewError) addError(err Error) Error {
 	if len(e.error) == 0 {
 		e.error = make([]Error, 0, 10)
 	}
 	e.error = append(e.error, err)
 
-	//设置Error为当前最新的Error
+	//设置err为当前最新的Error
 	e.SetErr(err.GetErr())
 	e.SetCode(err.GetCode())
 	e.SetMsg(err.GetMsg())
@@ -52,10 +56,6 @@ func (e *NewError) AddError(err Error) Error {
 
 func (e *NewError) GetError() []Error {
 	return e.error
-}
-
-func (e *NewError) Error() string {
-	return fmt.Sprintf(`code:%v, message:%v`, e.Code, e.Message)
 }
 
 func (e *NewError) Copy() Error {
@@ -97,7 +97,7 @@ func Wrap(originalError, newError Error) Error {
 	if originalError == nil {
 		originalError = newError.Copy()
 	}
-	originalError.AddError(newError)
+	originalError.addError(newError)
 
 	//return
 	return originalError
