@@ -13,7 +13,6 @@ type Error interface {
 	addError(Error) Error
 	GetError() []Error
 
-	Copy() Error
+	copy() Error
 	Is(error) bool
-	Contain(error) bool
 }

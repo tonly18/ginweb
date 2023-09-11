@@ -128,7 +128,7 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000030,
-			Err:     err,
+			Err:     err.GetErr(),
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		})
 	}

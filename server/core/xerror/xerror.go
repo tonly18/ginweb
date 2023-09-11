@@ -1,7 +1,6 @@
 package xerror
 
 import (
-	"errors"
 	"fmt"
 )
 
@@ -58,7 +57,7 @@ func (e *NewError) GetError() []Error {
 	return e.error
 }
 
-func (e *NewError) Copy() Error {
+func (e *NewError) copy() Error {
 	return &NewError{
 		Err:     e.Err,
 		Code:    e.Code,
@@ -68,16 +67,7 @@ func (e *NewError) Copy() Error {
 }
 
 func (e *NewError) Is(err error) bool {
-	return errors.Is(e.GetErr(), err)
-}
-
-func (e *NewError) Contain(err error) bool {
-	for _, v := range e.error {
-		if errors.Is(v.GetErr(), err) {
-			return true
-		}
-	}
-	return false
+	return e.GetErr() == err
 }
 
 //Wrap 老的错误信息包裹新的错误信息
@@ -95,7 +85,7 @@ func Wrap(originalError, newError Error) Error {
 
 	//error
 	if originalError == nil {
-		originalError = newError.Copy()
+		originalError = newError.copy()
 	}
 	originalError.addError(newError)
 

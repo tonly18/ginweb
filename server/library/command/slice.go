@@ -3,17 +3,17 @@ package command
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/slices"
 	"math/rand"
-	"server/library/generic"
 	"sort"
 )
 
 //SliceTrans slice数据类型之间的相互转换
-func SliceTrans[I generic.Number, R generic.Number](s []I) []R {
-	slice := make([]R, 0, len(s))
+func SliceTrans[E constraints.Integer, T constraints.Integer](s []E) []T {
+	slice := make([]T, 0, len(s))
 	for _, v := range s {
-		slice = append(slice, R(v))
+		slice = append(slice, T(v))
 	}
 
 	//return
@@ -21,7 +21,7 @@ func SliceTrans[I generic.Number, R generic.Number](s []I) []R {
 }
 
 //SliceShuffle 随机打乱[]int
-func SliceShuffle[T generic.NumberString](s []T) []T {
+func SliceShuffle[T comparable](s []T) []T {
 	rand.Seed(GenRandomSeed())
 	rand.Shuffle(len(s), func(i, j int) {
 		s[i], s[j] = s[j], s[i]
@@ -31,7 +31,7 @@ func SliceShuffle[T generic.NumberString](s []T) []T {
 }
 
 //SliceRandomElement 切片中随机N个元素
-func SliceRandomElement[T generic.NumberString](s []T, count int) []T {
+func SliceRandomElement[T comparable](s []T, count int) []T {
 	length := len(s)
 	if length == 0 || count < 1 || length < count {
 		return s
@@ -56,7 +56,7 @@ func SliceRandomElement[T generic.NumberString](s []T, count int) []T {
 }
 
 //SliceIntRemoveElement 切片中删除指定的元素
-func SliceRemoveElement[T generic.NumberString](s []T, ele T) []T {
+func SliceRemoveElement[T comparable](s []T, ele T) []T {
 	j := 0
 	for _, v := range s {
 		if v != ele {
@@ -68,12 +68,12 @@ func SliceRemoveElement[T generic.NumberString](s []T, ele T) []T {
 }
 
 //SliceRemoveRange 切片删除(开始位置,结束位置),包含两端
-func SliceRemoveRange[T generic.NumberString](s []T, i, j int) []T {
-	return append(s[:i], s[j+1:]...)
+func SliceRemoveRange[T comparable](s []T, i, j int) []T {
+	return append(s[:i], s[j+2:]...)
 }
 
 //SliceRemoveByIndex 根据下标切片删除
-func SliceRemoveByIndex[T generic.NumberString](s []T, idx int) []T {
+func SliceRemoveByIndex[T comparable](s []T, idx int) []T {
 	if idx < 0 || idx > len(s)-1 {
 		return s
 	}
@@ -81,7 +81,7 @@ func SliceRemoveByIndex[T generic.NumberString](s []T, idx int) []T {
 }
 
 //SliceRemoveRepeat 就地删除重复元素(元素可比较)
-func SliceRemoveRepeat[T generic.NumberString](s []T) []T {
+func SliceRemoveRepeat[T constraints.Ordered](s []T) []T {
 	if len(s) < 2 {
 		return s
 	}
@@ -101,7 +101,7 @@ func SliceRemoveRepeat[T generic.NumberString](s []T) []T {
 }
 
 //SliceCopy 切片复制
-func SliceCopy[T generic.NumberString](s []T) []T {
+func SliceCopy[T comparable](s []T) []T {
 	b := make([]T, len(s))
 	copy(b, s)
 
@@ -109,19 +109,19 @@ func SliceCopy[T generic.NumberString](s []T) []T {
 }
 
 //SliceHeaderPush 从头部将元素x插入切片s
-func SliceHeaderPush[T generic.NumberString](s []T, x T) []T {
+func SliceHeaderPush[T comparable](s []T, x T) []T {
 	data := make([]T, 0, len(s)+1)
 	data = append(data, x)
 	return append(data, s...)
 }
 
 //SliceTailPush 从头部将元素x插入切片s
-func SliceTailPush[T generic.NumberString](s []T, x T) []T {
+func SliceTailPush[T comparable](s []T, x T) []T {
 	return append(s, x)
 }
 
 //SliceInsert 将元素x插入切片s的i(索引)处
-func SliceInsert[T generic.NumberString](s []T, x T, i int) []T {
+func SliceInsert[T comparable](s []T, x T, i int) []T {
 	if i < 0 || i > len(s)-1 {
 		return s
 	}
@@ -129,7 +129,7 @@ func SliceInsert[T generic.NumberString](s []T, x T, i int) []T {
 }
 
 //SliceHeaderPop 从头部弹出元素x
-func SliceHeaderPop[T generic.NumberString](s []T) (T, []T) {
+func SliceHeaderPop[T comparable](s []T) (T, []T) {
 	var t T
 	if len(s) == 0 {
 		return t, nil
@@ -138,7 +138,7 @@ func SliceHeaderPop[T generic.NumberString](s []T) (T, []T) {
 }
 
 //SliceTailPop 从尾部弹出元素x
-func SliceTailPop[T generic.NumberString](s []T) (T, []T) {
+func SliceTailPop[T comparable](s []T) (T, []T) {
 	var t T
 	if len(s) == 0 {
 		return t, nil
@@ -147,7 +147,7 @@ func SliceTailPop[T generic.NumberString](s []T) (T, []T) {
 }
 
 //SliceToString slice转string 默认使用逗号(,)为分割符
-func SliceToString[T generic.NumberString](data []T, sep string) string {
+func SliceToString[T comparable](data []T, sep string) string {
 	length := len(data)
 	if length == 0 {
 		return ""
@@ -168,7 +168,7 @@ func SliceToString[T generic.NumberString](data []T, sep string) string {
 }
 
 //SliceMaxElement 获取切片中最大值
-func SliceMaxElement[T generic.Number](s []T) (int, T) {
+func SliceMaxElement[T constraints.Integer](s []T) (int, T) {
 	accurateBit := 1000
 	index, maxValue := 0, s[0]
 	for k, v := range s {
@@ -181,7 +181,7 @@ func SliceMaxElement[T generic.Number](s []T) (int, T) {
 }
 
 //SliceMinElement 获取切片中最小值
-func SliceMinElement[T generic.Number](s []T) (int, T) {
+func SliceMinElement[T constraints.Integer](s []T) (int, T) {
 	accurateBit := 1000
 	index, minValue := 0, s[0]
 	for k, v := range s {
@@ -194,7 +194,7 @@ func SliceMinElement[T generic.Number](s []T) (int, T) {
 }
 
 //SliceSum 获取切片中所有元素之和
-func SliceSum[T generic.Number](s []T) T {
+func SliceSum[T constraints.Integer](s []T) T {
 	var sum T
 	for _, v := range s {
 		sum += v
