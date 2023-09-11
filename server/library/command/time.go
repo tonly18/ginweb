@@ -33,9 +33,9 @@ func ParseTimeFromString(data string) (int, error) {
 }
 
 //TransDateByTime 年-月-日
-func TransDateByTime(data int64) string {
+func TransDateByTime(date int64) string {
 	tz, _ := time.LoadLocation("Local") //设置时区
-	return time.Unix(data, 0).In(tz).Format("2006-01-02")
+	return time.Unix(date, 0).In(tz).Format("2006-01-02")
 }
 
 //TransDateByTime 年-月-日 时:分:钞
