@@ -17,7 +17,7 @@ func Round(val float64, precision int) float64 {
 //GetRandom 随即数
 //在一个区间内求随机数
 //不含上下限 (min, max)
-func GetRandom(min, max int) int {
+func Random(min, max int) int {
 	if min > max {
 		min, max = max, min
 	}
@@ -26,7 +26,7 @@ func GetRandom(min, max int) int {
 	return rand.Intn(max-min) + min
 }
 
-//GetRandomWithAll 随即数
+//RandomWithAll 随即数
 //在一个区间内求随机数
 //包含上下限 [min, max]
 func GetRandomWithBorder(min, max int) int64 {
