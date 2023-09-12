@@ -19,12 +19,12 @@ type TestHandler struct {
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
-	//raw := map[int]int{1: 11, 4: 44, 3: 33, 2: 22, 5: 55, 6: 66}
+	raw := map[int]int{1: 11, 4: 44, 3: 33, 2: 22, 5: 55, 6: 66}
 	//raw := []string{"1", "2", "3", "4", "5", "6", "abcdf", "abc"}
-	raw := []int{1, 2, 3, 4, 4, 5, 5, 6}
+	//raw := []int{1, 2, 3, 4, 4, 5, 5, 6}
 	fmt.Printf("raw:::::: %T %p %v\n", raw, raw, raw)
 
-	ret := command.SliceTailPush(raw, 0)
+	ret := command.MapKeys[int, int](raw, 2)
 	fmt.Printf("ret:::::: %T %p %v\n", ret, ret, ret)
 
 	//fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))

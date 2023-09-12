@@ -1,9 +1,9 @@
 package command
 
 import (
+	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
-	"server/library/generic"
 )
 
 //MapKeys 获取map所有key
@@ -12,7 +12,7 @@ import (
 //	m		map[K]V	map
 //	order	int8	0不排序|1升序|2降序
 //@return:
-func MapKeys[K generic.NumberString, V any](m map[K]V, order int8) []K {
+func MapKeys[K constraints.Ordered, V any](m map[K]V, order int8) []K {
 	//keys
 	result := maps.Keys(m)
 
