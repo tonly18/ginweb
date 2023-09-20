@@ -7,13 +7,12 @@ package service
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"github.com/samber/lo"
 	"server/core/xerror"
 	"server/service/model"
 )
 
-//TestService Struct
+// TestService Struct
 type TestService struct {
 	ctx context.Context
 }
@@ -28,7 +27,7 @@ func (s *TestService) Query(serverId, uid int) ([]map[string]any, xerror.Error) 
 	bagMode := model.NewBagMode(s.ctx)
 	data, err := bagMode.Query(serverId, uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
 	if err != nil {
-		if errors.Is(err.GetErr(), sql.ErrNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
 				Code:    300000000,
 				Err:     err.GetErr(),
@@ -49,7 +48,7 @@ func (s *TestService) QueryMap(serverId, uid int) (map[int]map[string]any, xerro
 	bagMode := model.NewBagMode(s.ctx)
 	data, err := bagMode.QueryMap(serverId, uid, []string{"uid", "item", "expire", "itime"})
 	if err != nil {
-		if errors.Is(err.GetErr(), sql.ErrNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
 				Code:    300000010,
 				Err:     err.GetErr(),
@@ -70,7 +69,7 @@ func (s *TestService) Insert(serverId, uid int, params map[string]any) (int, xer
 	bagMode := model.NewBagMode(s.ctx)
 	data, err := bagMode.Insert(serverId, uid, params)
 	if err != nil {
-		if errors.Is(err.GetErr(), sql.ErrNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
 				Code:    300000030,
 				Err:     err.GetErr(),
@@ -91,7 +90,7 @@ func (s *TestService) Modify(serverId, uid int, params map[string]any) (int, xer
 	bagMode := model.NewBagMode(s.ctx)
 	data, err := bagMode.Modify(serverId, uid, params)
 	if err != nil {
-		if errors.Is(err.GetErr(), sql.ErrNoRows) {
+		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
 				Code:    300000040,
 				Err:     err.GetErr(),

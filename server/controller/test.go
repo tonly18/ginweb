@@ -24,7 +24,7 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 	//raw := []int{1, 2, 3, 4, 4, 5, 5, 6}
 	fmt.Printf("raw:::::: %T %p %v\n", raw, raw, raw)
 
-	ret := command.MapKeys[int, int](raw, 2)
+	ret := command.MapKeys[int, int](raw, 1)
 	fmt.Printf("ret:::::: %T %p %v\n", ret, ret, ret)
 
 	//fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
