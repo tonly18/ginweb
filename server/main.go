@@ -6,7 +6,6 @@ import (
 	"server/config"
 	"server/global"
 	"server/router"
-	"server/utils"
 )
 
 func main() {
@@ -21,9 +20,6 @@ func main() {
 	if err := endless.ListenAndServe(config.Config.Http.Host+":"+config.Config.Http.Port, r); err != nil {
 		fmt.Println(err)
 	}
-
-	//程序结束后,完成清理工作
-	utils.Finish()
 
 	//over
 	fmt.Println("Game Server is ready to stop!")
