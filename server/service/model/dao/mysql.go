@@ -59,16 +59,16 @@ func createConnDB(ctx context.Context) xerror.Error {
 	dataSource := fmt.Sprintf("%s:%s@tcp(%s:%s)/test?charset=utf8", user, pass, host, port)
 	db, err := sql.Open("mysql", dataSource)
 	if err != nil {
-		return xerror.Wrap(nil, &xerror.NewError{
+		return xerror.Wrap(&xerror.NewError{
 			Code: 100000,
 			Err:  err,
-		})
+		}, nil)
 	}
 	if err := db.Ping(); err != nil {
-		return xerror.Wrap(nil, &xerror.NewError{
+		return xerror.Wrap(&xerror.NewError{
 			Code: 100005,
 			Err:  err,
-		})
+		}, nil)
 	}
 	//设置连接可以重用的最长时间
 	db.SetConnMaxLifetime(5 * time.Minute)
@@ -81,7 +81,9 @@ func createConnDB(ctx context.Context) xerror.Error {
 	//dbConn
 	dbConn = db
 
-	runtime.SetFinalizer(dbConn, CleanMySQL)
+	runtime.SetFinalizer(dbConn, func(db *sql.DB) {
+		db.Close()
+	})
 
 	//return
 	return nil
@@ -209,11 +211,11 @@ func (d *DBBase) Query() (*sql.Rows, xerror.Error) {
 	//QUERY
 	rows, err := d.db.Query(d.sql)
 	if err != nil {
-		return nil, xerror.Wrap(nil, &xerror.NewError{
+		return nil, xerror.Wrap(&xerror.NewError{
 			Code:    100059,
 			Err:     err,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
+			Message: d.sql,
+		}, nil)
 	}
 
 	//return
@@ -283,9 +285,12 @@ func (d *DBBase) Delete() *DBBase {
 
 // Exec 执行SQL
 //
-//@params:
+// @params:
+//
 //	mark	bool	true插入 | false修改,删除
-//@return:
+//
+// @return:
+//
 //	int		insert时返回新增ID或影响行数 | modify时返回影响的行数
 //	xerror.Error
 func (d *DBBase) Exec(mark bool) (int, xerror.Error) {
@@ -293,47 +298,47 @@ func (d *DBBase) Exec(mark bool) (int, xerror.Error) {
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
-		return 0, xerror.Wrap(nil, &xerror.NewError{
+		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100080,
 			Err:     err,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
+			Message: d.sql,
+		}, nil)
 	}
 	defer stmt.Close()
 
 	result, err := stmt.Exec(d.values...)
 	if err != nil {
-		return 0, xerror.Wrap(nil, &xerror.NewError{
+		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100082,
 			Err:     err,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
+			Message: d.sql,
+		}, nil)
 	}
 
 	//the number of rows affected
 	count, err := result.RowsAffected()
 	if err != nil {
-		return 0, xerror.Wrap(nil, &xerror.NewError{
+		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100085,
 			Err:     err,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
+			Message: d.sql,
+		}, nil)
 	}
 	if count == 0 {
-		return 0, xerror.Wrap(nil, &xerror.NewError{
+		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100086,
 			Err:     sql.ErrNoRows,
-			Message: fmt.Sprintf(`SQL: %v`, d.sql),
-		})
+			Message: d.sql,
+		}, nil)
 	}
 	if mark {
 		newId, err := result.LastInsertId()
 		if err != nil {
-			return 0, xerror.Wrap(nil, &xerror.NewError{
+			return 0, xerror.Wrap(&xerror.NewError{
 				Code:    100088,
 				Err:     err,
-				Message: fmt.Sprintf(`SQL: %v`, d.sql),
-			})
+				Message: d.sql,
+			}, nil)
 		}
 		if newId > 0 {
 			return int(newId), nil
@@ -363,10 +368,10 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Erro
 	//list, _ := db.Query(fmt.Sprintf(`show columns from %s`, tableName))
 	list, err := d.db.Query(fmt.Sprintf("SELECT `TABLE_SCHEMA`,`TABLE_NAME`,`COLUMN_NAME`,`DATA_TYPE`,`COLUMN_COMMENT` FROM `COLUMNS` WHERE TABLE_NAME='%v'", tableName))
 	if err != nil {
-		return nil, xerror.Wrap(nil, &xerror.NewError{
+		return nil, xerror.Wrap(&xerror.NewError{
 			Code: 100090,
 			Err:  err,
-		})
+		}, nil)
 	}
 	defer list.Close()
 
@@ -375,10 +380,10 @@ func (d *DBBase) GetTableSchemaMeta(tableName string) ([]SchemaMeta, xerror.Erro
 		var data SchemaMeta
 		err := list.Scan(&data.DBName, &data.TableName, &data.Field, &data.Type, &data.Comment)
 		if err != nil {
-			return nil, xerror.Wrap(nil, &xerror.NewError{
+			return nil, xerror.Wrap(&xerror.NewError{
 				Code: 100099,
 				Err:  err,
-			})
+			}, nil)
 		}
 		metas = append(metas, data)
 	}
@@ -435,8 +440,4 @@ func (d *DBBase) GenTableStruct(tableName string, metas []SchemaMeta) string {
 	return fmt.Sprintf("%stype %s struct {\n%s}", structComment, tableName, fieldValue)
 }
 
-/* -------------------------------------function------------------------------------- */
-
-func CleanMySQL(db *sql.DB) {
-	db.Close()
-}
+/* -------------------------------------schema meta------------------------------------- */

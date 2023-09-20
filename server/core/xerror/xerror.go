@@ -8,7 +8,7 @@ type NewError struct {
 	Err     error
 	Code    uint32
 	Message string
-	error   []Error
+	stack   []Error
 }
 
 func (e *NewError) Error() string {
@@ -39,55 +39,50 @@ func (e *NewError) SetMsg(msg string) {
 	e.Message = msg
 }
 
-func (e *NewError) addError(err Error) Error {
-	if len(e.error) == 0 {
-		e.error = make([]Error, 0, 10)
+func (e *NewError) GetStack() []Error {
+	return e.stack
+}
+
+func (e *NewError) addStack(err Error) {
+	if len(e.stack) == 0 {
+		e.stack = make([]Error, 0, 10)
 	}
-	e.error = append(e.error, err)
+	e.stack = append(e.stack, err)
 
 	//设置err为当前最新的Error
 	e.SetErr(err.GetErr())
 	e.SetCode(err.GetCode())
 	e.SetMsg(err.GetMsg())
-
-	return e
-}
-
-func (e *NewError) GetError() []Error {
-	return e.error
-}
-
-func (e *NewError) copy() Error {
-	return &NewError{
-		Err:     e.Err,
-		Code:    e.Code,
-		Message: e.Message,
-		error:   e.error,
-	}
 }
 
 func (e *NewError) Is(err error) bool {
 	return e.GetErr() == err
 }
 
-//Wrap 老的错误信息包裹新的错误信息
+// Wrap 老的错误信息包裹新的错误信息
 //
-//@params
-//	ctx				context.Context	上下文
+// @params
+//
 //	originalError	Error			原始Error
-//	newError		Error			新的Error
-//@return
+//	newErrors		[]Error			新的Error
+//
+// @return
+//
 //	Error
 func Wrap(originalError, newError Error) Error {
-	if newError == nil {
-		panic("the parameter newError cannot be nil")
+	if originalError == nil {
+		panic("the parameter originalError is nil")
 	}
 
-	//error
-	if originalError == nil {
-		originalError = newError.copy()
+	if newError == nil {
+		originalError.addStack(&NewError{
+			Err:     originalError.GetErr(),
+			Code:    originalError.GetCode(),
+			Message: originalError.GetMsg(),
+		})
+	} else {
+		originalError.addStack(newError)
 	}
-	originalError.addError(newError)
 
 	//return
 	return originalError

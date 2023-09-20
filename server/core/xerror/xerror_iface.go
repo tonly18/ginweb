@@ -10,9 +10,8 @@ type Error interface {
 	GetMsg() string
 	SetMsg(string)
 
-	addError(Error) Error
-	GetError() []Error
+	GetStack() []Error
+	addStack(Error)
 
-	copy() Error
 	Is(error) bool
 }

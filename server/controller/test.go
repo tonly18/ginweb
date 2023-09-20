@@ -10,12 +10,12 @@ import (
 	"server/service"
 )
 
-//TestHandler Test测试接口
+// TestHandler Test测试接口
 type TestHandler struct {
 	controller.BaseHandle
 }
 
-//PreHandler 在Handler之前执行
+// PreHandler 在Handler之前执行
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
@@ -30,16 +30,16 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("StringGenRandom::::", string(command.StringGenRandom(6, []byte("asdfasdfasdf")...)))
 }
 
-//Handler 业务处理
+// Handler 业务处理
 func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
 	testService := service.NewTestService(req)
-	//data, err := testService.Query(1, 4)
+	data, err := testService.Query(1, 4)
 	//data, err := testService.QueryMap(1, 2)
-	id, err := testService.Insert(1, 8, map[string]any{
-		"uid":    8,
-		"item":   "item-8",
-		"expire": 1694086514,
-	})
+	//id, err := testService.Insert(1, 8, map[string]any{
+	//	"uid":    8,
+	//	"item":   "item-8",
+	//	"expire": 1694086514,
+	//})
 	//id, err := testService.Modify(1, 6, map[string]any{
 	//	"item":   "item-666",
 	//	"expire": 1694086514,
@@ -59,11 +59,11 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 	//}
 
 	return &response.Response{
-		Data: id,
+		Data: data,
 	}, nil
 }
 
-//PostHandler 在Handler之后执行
+// PostHandler 在Handler之后执行
 func (c *TestHandler) PostHandler(req *request.Request) {
 	//fmt.Println("test.PostHandler - 333333333333333")
 }

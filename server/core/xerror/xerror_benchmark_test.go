@@ -18,9 +18,9 @@ func BenchmarkBXError(b *testing.B) {
 		Wrap(err, &NewError{
 			Code:    uint32(n * 100000000),
 			Err:     fmt.Errorf(`test handler bag.query:%d`, n),
-			Message: "test error",
+			Message: "test stack",
 		})
 	}
 
-	fmt.Println("over::::::", len(err.GetError()), err.GetCode(), err.GetMsg())
+	fmt.Println("over::::::", len(err.GetStack()), err.GetCode(), err.GetMsg())
 }

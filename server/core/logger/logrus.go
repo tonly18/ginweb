@@ -13,7 +13,7 @@ func handlerLogrus() {
 	fmt.Println("logrus handler......")
 }
 
-//Logrus日志
+// Logrus日志
 func init() {
 	//设置日志级别
 	logrus.SetLevel(logrus.DebugLevel)
@@ -41,7 +41,7 @@ func init() {
 	}
 }
 
-//Error
+// Error
 func Error(ctx context.Context, args string) {
 	logrus.WithFields(logrus.Fields{
 		"TraceId": ctx.Value("trace_id"),
@@ -58,7 +58,7 @@ func Error(ctx context.Context, args string) {
 //	logrus.Errorf(format, args...)
 //}
 
-//Warning
+// Warning
 func Warning(ctx context.Context, args string) {
 	logrus.WithFields(logrus.Fields{
 		"TraceId": ctx.Value("trace_id"),
@@ -71,7 +71,7 @@ func Warning(ctx context.Context, args string) {
 //	logrus.Warningf(format, args...)
 //}
 
-//Debug
+// Debug
 func Debug(ctx context.Context, args string) {
 	logrus.WithFields(logrus.Fields{
 		"TraceId": ctx.Value("trace_id"),
@@ -84,7 +84,7 @@ func Debug(ctx context.Context, args string) {
 //	logrus.Debugf(format, args...)
 //}
 
-//Info
+// Info
 func Info(ctx context.Context, args string) {
 	logrus.WithFields(logrus.Fields{
 		"TraceId": ctx.Value("trace_id"),
@@ -97,7 +97,7 @@ func Info(ctx context.Context, args string) {
 //	logrus.Infof(format, args...)
 //}
 
-//FinishClear 关闭文件句柄
+// FinishClear 关闭文件句柄
 func FinishClear(f *os.File) {
 	f.Close()
 }

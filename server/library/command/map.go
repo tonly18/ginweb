@@ -1,31 +1,35 @@
 package command
 
 import (
-	"golang.org/x/exp/constraints"
-	"golang.org/x/exp/maps"
-	"golang.org/x/exp/slices"
+	"cmp"
+	"sort"
 )
 
-//MapKeys 获取map所有key
+// MapKeys 获取map所有key
 //
-//@params:
+// @params:
+//
 //	m		map[K]V	map
 //	order	int8	0不排序|1升序|2降序
-//@return:
-func MapKeys[K constraints.Ordered, V any](m map[K]V, order int8) []K {
+//
+// @return:
+func MapKeys[K cmp.Ordered, V any](m map[K]V, order int8) []K {
 	//keys
-	result := maps.Keys(m)
+	keys := make([]K, 0, len(m))
+	for k, _ := range m {
+		keys = append(keys, k)
+	}
 
 	//order by
 	if order == 1 {
-		slices.SortStableFunc(result, func(a, b K) bool {
-			return a < b
+		sort.SliceStable(keys, func(i, j int) bool {
+			return keys[i] < keys[j]
 		})
 	} else if order == 2 {
-		slices.SortStableFunc(result, func(a, b K) bool {
-			return a > b
+		sort.SliceStable(keys, func(i, j int) bool {
+			return keys[i] > keys[j]
 		})
 	}
 
-	return result
+	return keys
 }
