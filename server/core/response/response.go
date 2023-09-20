@@ -1,16 +1,16 @@
 package response
 
-//Response
+// Response
 type Response struct {
-	Code int `json:"code"`
-	Data any `json:"data"`
-	Msg  any `json:"msg"`
+	Code uint32 `json:"code"`
+	Data any    `json:"data"`
+	Msg  string `json:"msg"`
 }
 
-func (r *Response) GetCode() int {
+func (r *Response) GetCode() uint32 {
 	return r.Code
 }
-func (r *Response) SetCode(code int) {
+func (r *Response) SetCode(code uint32) {
 	r.Code = code
 }
 
@@ -21,9 +21,9 @@ func (r *Response) SetData(data any) {
 	r.Data = data
 }
 
-func (r *Response) GetMsg() any {
+func (r *Response) GetMsg() string {
 	return r.Msg
 }
-func (r *Response) SetMsg(msg any) {
+func (r *Response) SetMsg(msg string) {
 	r.Msg = msg
 }

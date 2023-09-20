@@ -45,14 +45,14 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 			//gin
 			c.JSON(http.StatusOK, gin.H{
 				"code": err.GetCode(),
-				"msg":  err.GetMsg(),
 				"data": nil,
+				"msg":  err.GetMsg(),
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
 				"code": resp.Code,
-				"msg":  resp.Msg,
 				"data": resp.Data,
+				"msg":  resp.Msg,
 			})
 		}
 	}
