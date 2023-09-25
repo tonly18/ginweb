@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/fvbock/endless"
+	"github.com/gin-contrib/pprof"
 	"server/config"
 	"server/global"
 	"server/router"
@@ -15,6 +16,9 @@ func main() {
 
 	//init router
 	r := router.InitRouter()
+
+	//pprof
+	pprof.Register(r)
 
 	//listen: 0.0.0.0:8080
 	if err := endless.ListenAndServe(config.Config.Http.Host+":"+config.Config.Http.Port, r); err != nil {

@@ -19,6 +19,17 @@ type TestHandler struct {
 func (c *TestHandler) PreHandler(req *request.Request) {
 	//fmt.Println("test.PerHandler - 1111111111111111")
 
+	mb := 15821793512
+	mb62 := command.Encode62(mb)
+	fmt.Println(mb62)
+	fmt.Println(command.Decode62(mb62))
+
+	ha := command.HashMurmur32("http://baidu.com/abc/123.html")
+	fmt.Println("ha::::::::", ha)
+	cd := command.Encode62(int(ha))
+	fmt.Println("cd::::::::", cd)
+	fmt.Println(command.Decode62(cd))
+
 	raw := map[int]int{1: 11, 4: 44, 3: 33, 2: 22, 5: 55, 6: 66}
 	//raw := []string{"1", "2", "3", "4", "5", "6", "abcdf", "abc"}
 	//raw := []int{1, 2, 3, 4, 4, 5, 5, 6}
