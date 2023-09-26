@@ -1,7 +1,7 @@
 package httpclient
 
 import (
-	"io/ioutil"
+	"errors"
 	"net/http"
 )
 
@@ -31,11 +31,5 @@ func (c *HttpResponse) GetData() ([]byte, error) {
 	if c.Close {
 		return c.Data, nil
 	}
-	c.Close = true
-	if data, err := ioutil.ReadAll(c.Response.Body); err != nil {
-		return nil, err
-	} else {
-		c.Data = data
-		return c.Data, nil
-	}
+	return nil, errors.New("response data happen error")
 }
