@@ -42,8 +42,12 @@ func hashValue(value any) uint64 {
 }
 
 // 获取表名
-func getTableName(key any, table string) string {
-	hash := hashValue(key) % uint64(2)
+func getTableName(key any, table string, tblNum ...int) string {
+	num := 33 //默认分33张表
+	if len(tblNum) > 0 {
+		num = tblNum[0]
+	}
+	hash := hashValue(key) % uint64(num)
 	tblSuffix := fmt.Sprintf(`%04d`, hash)
 
 	return fmt.Sprintf(`%v_%v`, table, tblSuffix)
