@@ -284,21 +284,12 @@ func (d *DBBase) Delete() *DBBase {
 }
 
 // Exec 执行SQL
-//
-// @params:
-//
-//	mark	bool	true插入 | false修改,删除
-//
-// @return:
-//
-//	int		insert时返回新增ID或影响行数 | modify时返回影响的行数
-//	xerror.Error
-func (d *DBBase) Exec(mark bool) (int, xerror.Error) {
+func (d *DBBase) Exec() (sql.Result, xerror.Error) {
 	defer d.RestSQL()
 
 	stmt, err := d.db.Prepare(d.sql)
 	if err != nil {
-		return 0, xerror.Wrap(&xerror.NewError{
+		return nil, xerror.Wrap(&xerror.NewError{
 			Code:    100080,
 			Err:     err,
 			Message: d.sql,
@@ -308,44 +299,14 @@ func (d *DBBase) Exec(mark bool) (int, xerror.Error) {
 
 	result, err := stmt.Exec(d.values...)
 	if err != nil {
-		return 0, xerror.Wrap(&xerror.NewError{
+		return nil, xerror.Wrap(&xerror.NewError{
 			Code:    100082,
 			Err:     err,
 			Message: d.sql,
 		}, nil)
 	}
 
-	//the number of rows affected
-	count, err := result.RowsAffected()
-	if err != nil {
-		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100085,
-			Err:     err,
-			Message: d.sql,
-		}, nil)
-	}
-	if count == 0 {
-		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100086,
-			Err:     sql.ErrNoRows,
-			Message: d.sql,
-		}, nil)
-	}
-	if mark {
-		newId, err := result.LastInsertId()
-		if err != nil {
-			return 0, xerror.Wrap(&xerror.NewError{
-				Code:    100088,
-				Err:     err,
-				Message: d.sql,
-			}, nil)
-		}
-		if newId > 0 {
-			return int(newId), nil
-		}
-	}
-
-	return int(count), nil
+	return result, nil
 }
 
 // RestSQL 重置SQL(属性)

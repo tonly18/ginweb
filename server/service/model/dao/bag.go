@@ -14,7 +14,7 @@ import (
 	"server/library/command"
 )
 
-//BagDao struct
+// BagDao struct
 type BagDao struct {
 	ctx     context.Context
 	db      *DBBase
@@ -124,7 +124,7 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 }
 
 func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
-	id, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec(true)
+	result, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000030,
@@ -133,11 +133,32 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 		})
 	}
 
-	return id, nil
+	//newId, oerr := result.LastInsertId()
+	//if oerr != nil {
+	//	return 0, xerror.Wrap(&xerror.NewError{
+	//		Code:    100000031,
+	//		Err:     oerr,
+	//		Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+	//	}, nil)
+	//}
+	//if newId > 0 {
+	//	return int(newId), nil
+	//}
+
+	count, oerr := result.RowsAffected()
+	if oerr != nil {
+		return 0, xerror.Wrap(&xerror.NewError{
+			Code:    100000033,
+			Err:     oerr,
+			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+		}, nil)
+	}
+
+	return int(count), nil
 }
 
 func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
-	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec(false)
+	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000040,
@@ -145,12 +166,20 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 			Message: "bag.Modify",
 		})
 	}
+	count, oerr := result.RowsAffected()
+	if oerr != nil {
+		return 0, xerror.Wrap(&xerror.NewError{
+			Code:    100000042,
+			Err:     oerr,
+			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+		}, nil)
+	}
 
-	return count, nil
+	return int(count), nil
 }
 
 func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
-	count, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec(false)
+	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
 		return 0, xerror.Wrap(err, &xerror.NewError{
 			Code:    100000045,
@@ -158,6 +187,14 @@ func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 			Message: "bag.Delete",
 		})
 	}
+	count, oerr := result.RowsAffected()
+	if oerr != nil {
+		return 0, xerror.Wrap(&xerror.NewError{
+			Code:    100000042,
+			Err:     oerr,
+			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+		}, nil)
+	}
 
-	return count, nil
+	return int(count), nil
 }

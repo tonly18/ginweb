@@ -44,3 +44,7 @@ func TestGogroup(t *testing.T) {
 	}
 
 }
+
+func TestGenerics(t *testing.T) {
+
+}
