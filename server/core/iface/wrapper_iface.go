@@ -1,9 +1,9 @@
 package iface
 
 import (
+	"github.com/tonly18/xerror"
 	"server/core/request"
 	"server/core/response"
-	"server/core/xerror"
 )
 
 type IWrapperHandler interface {

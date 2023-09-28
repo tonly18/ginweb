@@ -8,11 +8,11 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"server/core/xerror"
+	"github.com/tonly18/xerror"
 	"server/service/model/dao"
 )
 
-//BagMode Struct
+// BagMode Struct
 type BagMode struct {
 	ctx context.Context
 	dao *dao.BagDao

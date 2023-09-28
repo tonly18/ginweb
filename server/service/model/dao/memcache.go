@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/bradfitz/gomemcache/memcache"
+	"github.com/tonly18/xerror"
 	"server/config"
-	"server/core/xerror"
 	"strings"
 )
 

@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/spf13/cast"
-	"server/core/xerror"
+	"github.com/tonly18/xerror"
 	"server/global"
 	"server/library/command"
 )
@@ -192,7 +192,7 @@ func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000042,
 			Err:     oerr,
-			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+			Message: fmt.Sprintf(`serverId:%v, uid:%v`, serverId, uid),
 		}, nil)
 	}
 

@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/samber/lo"
-	"server/core/xerror"
+	"github.com/tonly18/xerror"
 	"server/service/model"
 )
 
