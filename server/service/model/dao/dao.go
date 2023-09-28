@@ -5,9 +5,23 @@ import (
 	"fmt"
 	"github.com/spf13/cast"
 	"hash/crc32"
+	"server/config"
 	"strconv"
 	"unsafe"
 )
+
+// 数据库配置
+var dbConfig *Config
+
+func init() {
+	dbConfig = &Config{
+		Host:     config.Config.Mysql.Host,
+		Port:     cast.ToInt(config.Config.Mysql.Port),
+		UserName: config.Config.Mysql.Username,
+		Password: config.Config.Mysql.Password,
+		DBName:   "test",
+	}
+}
 
 // bytesToString []byte转string
 func bytesToString(b []byte) string {
@@ -17,6 +31,24 @@ func bytesToString(b []byte) string {
 // stringToBytes string 转[]byte
 func stringToBytes(s string) []byte {
 	return unsafe.Slice(unsafe.StringData(s), len(s))
+}
+
+func genEntity(length int) []any {
+	entity := make([]any, 0, length)
+	for i := 0; i < length; i++ {
+		entity = append(entity, new(sql.RawBytes))
+	}
+
+	return entity
+}
+
+func genRecord(data []any, fields []string) map[string]any {
+	record := make(map[string]any, len(fields))
+	for k, v := range data {
+		record[fields[k]] = bytesToString(*v.(*sql.RawBytes))
+	}
+
+	return record
 }
 
 // 生成对应hash值
@@ -51,22 +83,4 @@ func getTableName(key any, table string, tblNum ...int) string {
 	tblSuffix := fmt.Sprintf(`%04d`, hash)
 
 	return fmt.Sprintf(`%v_%v`, table, tblSuffix)
-}
-
-func genEntity(length int) []any {
-	entity := make([]any, 0, length)
-	for i := 0; i < length; i++ {
-		entity = append(entity, new(sql.RawBytes))
-	}
-
-	return entity
-}
-
-func genRecord(data []any, fields []string) map[string]any {
-	record := make(map[string]any, len(fields))
-	for k, v := range data {
-		record[fields[k]] = bytesToString(*v.(*sql.RawBytes))
-	}
-
-	return record
 }
