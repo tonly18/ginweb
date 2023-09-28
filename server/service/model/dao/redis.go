@@ -6,7 +6,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/tonly18/xerror"
 	"runtime"
-	"server/config"
+	"sync"
 	"time"
 )
 
@@ -16,38 +16,33 @@ type RedisPoolConn struct {
 	ctx context.Context
 }
 
-// redis conn
+var once sync.Once
 var redisConn *redis.Client
 
 // NewRedis
-func NewRedis(ctx context.Context) *RedisPoolConn {
-	if redisConn == nil {
-		if err := createRedisCluster(ctx); err != nil {
-			return nil
-		}
-	}
-
-	//return
-	return &RedisPoolConn{
-		rd:  redisConn,
+func NewRedis(ctx context.Context, rdConfig *RedisConfig) *RedisPoolConn {
+	redis := &RedisPoolConn{
 		ctx: ctx,
 	}
-}
-
-// init
-func init() {
-	if err := createRedisCluster(context.TODO()); err != nil {
-		panic("[create new redis cluster error: " + err.Error() + "]")
-	} else {
-		fmt.Println("[redis init successfully] host:", config.Config.Redis.Host)
+	once.Do(func() {
+		if err := redis.createRedisCluster(rdConfig); err != nil {
+			panic(fmt.Errorf(`redis connect happened error:%v`, err))
+		}
+	})
+	if redisConn == nil {
+		redis.createRedisCluster(rdConfig)
 	}
+	redis.rd = redisConn
+
+	//return
+	return redis
 }
 
 // create redis cluster
-func createRedisCluster(ctx context.Context) xerror.Error {
+func (d *RedisPoolConn) createRedisCluster(rdConfig *RedisConfig) xerror.Error {
 	redisConn = redis.NewClient(&redis.Options{
-		Addr:     config.Config.Redis.Host,
-		Password: config.Config.Redis.Password,
+		Addr:     rdConfig.Host,
+		Password: rdConfig.Password,
 
 		//连接池容量及闲置连接数量
 		PoolSize:     100, //链接池最大链接数，默认为cup * 5。

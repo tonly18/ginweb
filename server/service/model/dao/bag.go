@@ -9,13 +9,14 @@ import (
 	"errors"
 	"fmt"
 	"github.com/tonly18/xerror"
+	"github.com/tonly18/xsql"
 	"server/library/command"
 )
 
 // BagDao struct
 type BagDao struct {
 	ctx     context.Context
-	db      *XSQL
+	db      *xsql.XSQL
 	redis   *RedisPoolConn
 	tbl     string   //表名
 	fields  []string //表字段
@@ -25,8 +26,8 @@ type BagDao struct {
 func NewBagDao(ctx context.Context) *BagDao {
 	return &BagDao{
 		ctx:     ctx,
-		db:      NewXSQL(ctx, dbConfig),
-		redis:   NewRedis(ctx),
+		db:      xsql.NewXSQL(ctx, dbConfig),
+		redis:   NewRedis(ctx, rdConfig),
 		tbl:     "bag",
 		fields:  []string{"uid", "item", "expire", "itime"},
 		primary: "uid",
@@ -120,11 +121,11 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 			Message: "bag.Modify",
 		}, nil)
 	}
-	count, oerr := result.RowsAffected()
-	if oerr != nil {
+	count, err := result.RowsAffected()
+	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000042,
-			Err:     oerr,
+			Err:     err,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
 		}, nil)
 	}
@@ -141,11 +142,11 @@ func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 			Message: "bag.Delete",
 		}, nil)
 	}
-	count, oerr := result.RowsAffected()
-	if oerr != nil {
+	count, err := result.RowsAffected()
+	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000042,
-			Err:     oerr,
+			Err:     err,
 			Message: fmt.Sprintf(`serverId:%v, uid:%v`, serverId, uid),
 		}, nil)
 	}

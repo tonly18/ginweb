@@ -1,25 +1,40 @@
 package dao
 
 import (
-	"database/sql"
 	"fmt"
 	"github.com/spf13/cast"
+	"github.com/tonly18/xsql"
 	"hash/crc32"
 	"server/config"
 	"strconv"
 	"unsafe"
 )
 
-// 数据库配置
-var dbConfig *Config
+// redis配置
+type RedisConfig struct {
+	Host     string
+	Password string
+}
+
+// DB配置
+var dbConfig *xsql.Config
+
+// redis配置
+var rdConfig *RedisConfig
 
 func init() {
-	dbConfig = &Config{
+	// DB配置
+	dbConfig = &xsql.Config{
 		Host:     config.Config.Mysql.Host,
 		Port:     cast.ToInt(config.Config.Mysql.Port),
 		UserName: config.Config.Mysql.Username,
 		Password: config.Config.Mysql.Password,
 		DBName:   "test",
+	}
+	// redis配置
+	rdConfig = &RedisConfig{
+		Host:     config.Config.Redis.Host,
+		Password: config.Config.Redis.Password,
 	}
 }
 
@@ -31,24 +46,6 @@ func bytesToString(b []byte) string {
 // stringToBytes string 转[]byte
 func stringToBytes(s string) []byte {
 	return unsafe.Slice(unsafe.StringData(s), len(s))
-}
-
-func genEntity(length int) []any {
-	entity := make([]any, 0, length)
-	for i := 0; i < length; i++ {
-		entity = append(entity, new(sql.RawBytes))
-	}
-
-	return entity
-}
-
-func genRecord(data []any, fields []string) map[string]any {
-	record := make(map[string]any, len(fields))
-	for k, v := range data {
-		record[fields[k]] = bytesToString(*v.(*sql.RawBytes))
-	}
-
-	return record
 }
 
 // 生成对应hash值
