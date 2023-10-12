@@ -26,7 +26,7 @@ func NewBagMode(ctx context.Context) *BagMode {
 }
 
 func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
-	data, err := m.dao.Query(serverId, uid, fields, "uid5 = 444", order...)
+	data, err := m.dao.Query(serverId, uid, fields, "uid = 444", order...)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
