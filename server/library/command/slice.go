@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"cmp"
 	"fmt"
-	"math/rand"
 	"server/library/generic"
 	"slices"
 	"sort"
@@ -23,7 +22,7 @@ func SliceTrans[E generic.Number, T generic.Number](s []E) []T {
 
 // SliceShuffle 随机打乱[]int
 func SliceShuffle[T comparable](s []T) []T {
-	rnd := rand.New(rand.NewSource(GenRandom()))
+	rnd := GenRand()
 	rnd.Shuffle(len(s), func(i, j int) {
 		s[i], s[j] = s[j], s[i]
 	})
@@ -38,7 +37,7 @@ func SliceRandomElement[T comparable](s []T, count int) []T {
 		return s
 	}
 
-	rnd := rand.New(rand.NewSource(GenRandom()))
+	rnd := GenRand()
 	rnd.Shuffle(length, func(i, j int) {
 		s[i], s[j] = s[j], s[i]
 	})
@@ -46,7 +45,7 @@ func SliceRandomElement[T comparable](s []T, count int) []T {
 	ret := make([]T, 0, count)
 	for i := 0; i < count; i++ {
 		length = len(s)
-		rnd = rand.New(rand.NewSource(GenRandom()))
+		rnd = GenRand()
 		ind := rnd.Intn(length)
 		ret = append(ret, s[ind])
 		s = SliceRemoveElement(s, s[ind]) //从切片中删除已随机的元素

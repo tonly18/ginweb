@@ -12,7 +12,7 @@ import (
 func Global() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		//start time
-		startTime := time.Now()
+		start := time.Now()
 
 		//gin context
 		userId := c.Request.Header.Get("user_id")   //user id
@@ -29,7 +29,7 @@ func Global() gin.HandlerFunc {
 		//after request
 
 		//执行耗时(ms)
-		endTime := time.Since(startTime).Milliseconds()
+		etime := time.Since(start).Milliseconds()
 		//请求方式
 		reqMethod := c.Request.Method
 		//请求路由
@@ -38,6 +38,6 @@ func Global() gin.HandlerFunc {
 		statusCode := c.Writer.Status()
 
 		//日志格式
-		logger.Debug(c, fmt.Sprintf(`[URI:%s | Status Code:%d | Execution Time(ms):%d | Method:%s]`, reqUri, statusCode, endTime, reqMethod))
+		logger.Debug(c, fmt.Sprintf(`[URI:%s | Status Code:%d | Execution Time(ms):%d | Method:%s]`, reqUri, statusCode, etime, reqMethod))
 	}
 }

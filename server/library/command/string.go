@@ -1,7 +1,6 @@
 package command
 
 import (
-	"math/rand"
 	"unsafe"
 )
 
@@ -11,7 +10,7 @@ func StringGenRandom(count int, letters ...byte) []byte {
 		letters = []byte(`abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ`)
 	}
 	length := len(letters)
-	rnd := rand.New(rand.NewSource(GenRandom()))
+	rnd := GenRand()
 	rnd.Shuffle(length, func(i, j int) {
 		letters[i], letters[j] = letters[j], letters[i]
 	})
@@ -26,7 +25,7 @@ func StringGenRandom(count int, letters ...byte) []byte {
 // StringShuffle 随机打乱字符串
 func StringShuffle(s string) string {
 	re := []rune(s)
-	rnd := rand.New(rand.NewSource(GenRandom()))
+	rnd := GenRand()
 	rnd.Shuffle(len(re), func(i, j int) {
 		re[i], re[j] = re[j], re[i]
 	})

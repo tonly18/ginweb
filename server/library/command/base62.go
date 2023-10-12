@@ -8,6 +8,7 @@ import (
 var chars string = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
 // 10进制转62进制
+// Encode62(15821793512) output:HGkdFw
 func Encode62(num int) string {
 	bytes := []byte{}
 	for num > 0 {
@@ -18,10 +19,12 @@ func Encode62(num int) string {
 		bytes[left], bytes[right] = bytes[right], bytes[left]
 	}
 
-	return string(bytes)
+	//return string(bytes)
+	return BytesToString(bytes)
 }
 
 // 62进制转10进制
+// Decode62("HGkdFw") output:15821793512
 func Decode62(str string) int64 {
 	var num int64
 	n := len(str)
@@ -31,11 +34,3 @@ func Decode62(str string) int64 {
 	}
 	return num
 }
-
-//func main() {
-//	mobile := 15821793512
-//	str := Encode62(mobile)
-//	fmt.Println(str)//output: HGkdFw
-//	num := Decode62(str)
-//	fmt.Println(num)//output: 15821793512
-//｝
