@@ -7,7 +7,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"github.com/samber/lo"
 	"github.com/tonly18/xerror"
 	"server/service/model"
 )
@@ -105,13 +104,4 @@ func (s *TestService) Modify(serverId, uid int, params map[string]any) (int, xer
 	}
 
 	return data, nil
-}
-
-func (s *TestService) FilterSlice(serverId, uid int) ([]int, xerror.Error) {
-	stu := []int{1, 2, 3, 4, 5, 6}
-	stu = lo.Filter(stu, func(item int, _ int) bool {
-		return item%2 == 0
-	})
-
-	return stu, nil
 }

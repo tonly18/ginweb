@@ -2,10 +2,11 @@ package request
 
 import (
 	"context"
+	"server/library/command"
 	"time"
 )
 
-//Request 请求
+// Request 请求
 type Request struct {
 	ctx      context.Context //context
 	userID   int             //user id
@@ -14,7 +15,7 @@ type Request struct {
 	data     map[string]any  //data
 }
 
-//NewRequest
+// NewRequest
 func NewRequest(ctx context.Context, userId int, clientIp, traceId string) *Request {
 	return &Request{
 		ctx:      ctx,
@@ -25,27 +26,27 @@ func NewRequest(ctx context.Context, userId int, clientIp, traceId string) *Requ
 	}
 }
 
-//GetCtx
+// GetCtx
 func (r *Request) GetCtx() context.Context {
 	return r.ctx
 }
 
-//GetUserID
+// GetUserID
 func (r *Request) GetUserID() int {
 	return r.userID
 }
 
-//GetClientIP
+// GetClientIP
 func (r *Request) GetClientIP() string {
 	return r.clientIP
 }
 
-//GetTraceID
+// GetTraceID
 func (r *Request) GetTraceID() string {
 	return r.traceId
 }
 
-//GetData
+// GetData
 func (r *Request) GetData(key string) any {
 	return r.data[key]
 }
@@ -53,22 +54,31 @@ func (r *Request) SetData(key string, value any) {
 	r.data[key] = value
 }
 
-//Deadline
+// Deadline
 func (r *Request) Deadline() (deadline time.Time, ok bool) {
 	return r.ctx.Deadline()
 }
 
-//Done
+// Done
 func (r *Request) Done() <-chan struct{} {
 	return r.ctx.Done()
 }
 
-//Err
+// Err
 func (r *Request) Err() error {
 	return r.ctx.Err()
 }
 
-//Value
+// Value
 func (r *Request) Value(key any) any {
-	return r.ctx.Value(key)
+	value := r.ctx.Value(key)
+	if command.IsValueNil(value) {
+		if k, ok := key.(string); ok {
+			value = r.GetData(k)
+			if command.IsValueNil(value) {
+				return nil
+			}
+		}
+	}
+	return value
 }

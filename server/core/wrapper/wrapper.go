@@ -50,9 +50,9 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 			})
 		} else {
 			c.JSON(http.StatusOK, gin.H{
-				"code": resp.Code,
+				"code": 0,
 				"data": resp.Data,
-				"msg":  resp.Msg,
+				"msg":  "",
 			})
 		}
 	}
