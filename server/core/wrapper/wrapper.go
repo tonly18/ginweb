@@ -42,7 +42,6 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 			for _, e := range err.GetStack() {
 				logger.Error(req, fmt.Sprintf(`[%d] message:%v, error:%v`, e.GetCode(), e.GetMsg(), e.GetErr()))
 			}
-			//gin
 			c.JSON(http.StatusOK, gin.H{
 				"code": err.GetCode(),
 				"data": nil,
