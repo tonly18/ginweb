@@ -75,9 +75,6 @@ func (r *Request) Value(key any) any {
 	if command.IsValueNil(value) {
 		if k, ok := key.(string); ok {
 			value = r.GetData(k)
-			if command.IsValueNil(value) {
-				return nil
-			}
 		}
 	}
 	return value
