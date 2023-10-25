@@ -25,9 +25,9 @@ func NewBagMode(ctx context.Context) *BagMode {
 	}
 }
 
-func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
+func (m *BagMode) Query(uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
 	where := fmt.Sprintf(`uid=%v`, uid)
-	data, err := m.dao.Query(serverId, uid, fields, where, order...)
+	data, err := m.dao.Query(uid, fields, where, order...)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -46,8 +46,8 @@ func (m *BagMode) Query(serverId, uid int, fields []string, order ...string) ([]
 	return data, nil
 }
 
-func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[string]any, xerror.Error) {
-	data, err := m.dao.QueryMap(serverId, uid, fields, "uid < 40")
+func (m *BagMode) QueryMap(uid int, fields []string) (map[int]map[string]any, xerror.Error) {
+	data, err := m.dao.QueryMap(uid, fields, "uid < 40")
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -66,14 +66,14 @@ func (m *BagMode) QueryMap(serverId, uid int, fields []string) (map[int]map[stri
 	return data, nil
 }
 
-func (m *BagMode) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
-	return m.dao.Insert(serverId, uid, params)
+func (m *BagMode) Insert(uid int, params map[string]any) (int, xerror.Error) {
+	return m.dao.Insert(uid, params)
 }
 
-func (m *BagMode) Modify(serverId, uid int, params map[string]any) (int, xerror.Error) {
-	return m.dao.Modify(serverId, uid, fmt.Sprintf(`uid=%v`, uid), params)
+func (m *BagMode) Modify(uid int, params map[string]any) (int, xerror.Error) {
+	return m.dao.Modify(uid, fmt.Sprintf(`uid=%v`, uid), params)
 }
 
-func (m *BagMode) Delete(serverId, uid int, where string) (int, xerror.Error) {
-	return m.dao.Delete(serverId, uid, where)
+func (m *BagMode) Delete(uid int, where string) (int, xerror.Error) {
+	return m.dao.Delete(uid, where)
 }

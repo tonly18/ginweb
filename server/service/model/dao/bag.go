@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/tonly18/xerror"
 	"github.com/tonly18/xsql"
-	"server/library/command"
 )
 
 // BagDao struct
@@ -34,15 +33,11 @@ func NewBagDao(ctx context.Context) *BagDao {
 	}
 }
 
-func (d *BagDao) Query(serverId, uid int, fields []string, where string, order ...string) ([]map[string]any, xerror.Error) {
+func (d *BagDao) Query(uid int, fields []string, where string, order ...string) ([]map[string]any, xerror.Error) {
 	if len(fields) == 0 {
 		fields = d.fields
 	}
-	if !command.SliceContains(fields, d.primary) {
-		fields = append(fields, d.primary)
-	}
-
-	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
+	d.db.Table(getTableName(uid, d.tbl)).Primary(d.primary).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
 	}
@@ -58,15 +53,11 @@ func (d *BagDao) Query(serverId, uid int, fields []string, where string, order .
 	return data, nil
 }
 
-func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
+func (d *BagDao) QueryMap(uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
 	if len(fields) == 0 {
 		fields = d.fields
 	}
-	if !command.SliceContains(fields, d.primary) {
-		fields = append(fields, d.primary)
-	}
-
-	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
+	d.db.Table(getTableName(uid, d.tbl)).Primary(d.primary).Fields(fields...).Where(where)
 	data, err := d.db.QueryMap()
 	if err != nil {
 		return nil, xerror.Wrap(&xerror.NewError{
@@ -79,12 +70,12 @@ func (d *BagDao) QueryMap(serverId, uid int, fields []string, where string) (map
 	return data, nil
 }
 
-func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (d *BagDao) Insert(uid int, params map[string]any) (int, xerror.Error) {
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code: 100000030,
-			Err:  fmt.Errorf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+			Err:  fmt.Errorf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 	count, err := result.RowsAffected()
@@ -92,7 +83,7 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000033,
 			Err:     err,
-			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+			Message: fmt.Sprintf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 	if count > 0 {
@@ -100,7 +91,7 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 		if err != nil {
 			return 0, xerror.Wrap(&xerror.NewError{
 				Code: 100000034,
-				Err:  fmt.Errorf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+				Err:  fmt.Errorf(` uid:%v, params:%v`, uid, params),
 			}, nil)
 		}
 		return int(newId), nil
@@ -112,7 +103,7 @@ func (d *BagDao) Insert(serverId, uid int, params map[string]any) (int, xerror.E
 	}, nil)
 }
 
-func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) (int, xerror.Error) {
+func (d *BagDao) Modify(uid int, where string, params map[string]any) (int, xerror.Error) {
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
@@ -126,14 +117,14 @@ func (d *BagDao) Modify(serverId, uid int, where string, params map[string]any) 
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000042,
 			Err:     err,
-			Message: fmt.Sprintf(`serverId:%v, uid:%v, params:%v`, serverId, uid, params),
+			Message: fmt.Sprintf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 
 	return int(count), nil
 }
 
-func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
+func (d *BagDao) Delete(uid int, where string) (int, xerror.Error) {
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
@@ -147,7 +138,7 @@ func (d *BagDao) Delete(serverId, uid int, where string) (int, xerror.Error) {
 		return 0, xerror.Wrap(&xerror.NewError{
 			Code:    100000042,
 			Err:     err,
-			Message: fmt.Sprintf(`serverId:%v, uid:%v`, serverId, uid),
+			Message: fmt.Sprintf(` uid:%v`, uid),
 		}, nil)
 	}
 

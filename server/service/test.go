@@ -22,9 +22,9 @@ func NewTestService(ctx context.Context) *TestService {
 	}
 }
 
-func (s *TestService) Query(serverId, uid int) ([]map[string]any, xerror.Error) {
+func (s *TestService) Query(uid int) ([]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Query(serverId, uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
+	data, err := bagMode.Query(uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -43,9 +43,9 @@ func (s *TestService) Query(serverId, uid int) ([]map[string]any, xerror.Error) 
 	return data, nil
 }
 
-func (s *TestService) QueryMap(serverId, uid int) (map[int]map[string]any, xerror.Error) {
+func (s *TestService) QueryMap(uid int) (map[int]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.QueryMap(serverId, uid, []string{"uid", "item", "expire", "itime"})
+	data, err := bagMode.QueryMap(uid, []string{"uid", "item", "expire", "itime"})
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
@@ -64,9 +64,9 @@ func (s *TestService) QueryMap(serverId, uid int) (map[int]map[string]any, xerro
 	return data, nil
 }
 
-func (s *TestService) Insert(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (s *TestService) Insert(uid int, params map[string]any) (int, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Insert(serverId, uid, params)
+	data, err := bagMode.Insert(uid, params)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
@@ -85,9 +85,9 @@ func (s *TestService) Insert(serverId, uid int, params map[string]any) (int, xer
 	return data, nil
 }
 
-func (s *TestService) Modify(serverId, uid int, params map[string]any) (int, xerror.Error) {
+func (s *TestService) Modify(uid int, params map[string]any) (int, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Modify(serverId, uid, params)
+	data, err := bagMode.Modify(uid, params)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
