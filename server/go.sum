@@ -266,10 +266,10 @@ github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcU
 github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/subosito/gotenv v1.4.0 h1:yAzM1+SmVcz5R4tXGsNMu1jUl2aOJXoiWUCEwwnGrvs=
 github.com/subosito/gotenv v1.4.0/go.mod h1:mZd6rFysKEcUhUHXJk0C/08wAgyDBFuwEYL7vWWGaGo=
-github.com/tonly18/xerror v0.0.1 h1:PpftQFnkidEB5gHlv6iIATAYbuql6kVYX5TymLRlBgw=
-github.com/tonly18/xerror v0.0.1/go.mod h1:EPGc94nV5j778mKIkTXS1Z6IYhQRdPNkVvBiwQhx4eI=
-github.com/tonly18/xsql v0.0.3 h1:fCE+5Vsp+otSvXoXdrgw/08ssl+5llivORbk0Nc/u/I=
-github.com/tonly18/xsql v0.0.3/go.mod h1:tqzDGKfgAonXcXo7x7s9qvgY+tv3SrbzSvf+w6doNS4=
+github.com/tonly18/xerror v0.0.2 h1:hQhd4LRlKqboeJ9/COSvy/b6Qgndx1kdu4SJgyubLx0=
+github.com/tonly18/xerror v0.0.2/go.mod h1:Clr8Yvn+Kk2U/VHsrwOsi7LGmPSxaTEPnKpMsaY3Pb8=
+github.com/tonly18/xsql v0.0.4 h1:74fzlLdNAAZC2IS2TUEWeqt2Vv/MbfDeqkkhnywknns=
+github.com/tonly18/xsql v0.0.4/go.mod h1:tqzDGKfgAonXcXo7x7s9qvgY+tv3SrbzSvf+w6doNS4=
 github.com/twitchyliquid64/golang-asm v0.15.1 h1:SU5vSMR7hnwNxj24w34ZyCi/FmDZTkS4MhqMhdFk5YI=
 github.com/twitchyliquid64/golang-asm v0.15.1/go.mod h1:a1lVb/DtPvCB8fslRZhAngC2+aY1QWCk3Cedj/Gdt08=
 github.com/ugorji/go v1.2.7/go.mod h1:nF9osbDWLy6bDVv/Rtoh6QgnvNDpmCalQV5urGCCS6M=

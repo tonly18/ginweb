@@ -28,15 +28,15 @@ func (s *TestService) Query(uid int) ([]map[string]any, xerror.Error) {
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000000,
-				Err:     err.GetErr(),
-				Message: "bag.Query(service)",
+				Code:     300000000,
+				RawError: err.GetRawError(),
+				Message:  "bag.Query(service)",
 			})
 		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000009,
-			Err:     err.GetErr(),
-			Message: "bag.Query(service)",
+			Code:     300000009,
+			RawError: err.GetRawError(),
+			Message:  "bag.Query(service)",
 		})
 	}
 
@@ -49,15 +49,15 @@ func (s *TestService) QueryMap(uid int) (map[int]map[string]any, xerror.Error) {
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000010,
-				Err:     err.GetErr(),
-				Message: "bag.Query(service)",
+				Code:     300000010,
+				RawError: err.GetRawError(),
+				Message:  "bag.Query(service)",
 			})
 		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000011,
-			Err:     err.GetErr(),
-			Message: "bag.Query(service)",
+			Code:     300000011,
+			RawError: err.GetRawError(),
+			Message:  "bag.Query(service)",
 		})
 	}
 
@@ -70,15 +70,15 @@ func (s *TestService) Insert(uid int, params map[string]any) (int, xerror.Error)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000030,
-				Err:     err.GetErr(),
-				Message: "bag.Insert(service)",
+				Code:     300000030,
+				RawError: err.GetRawError(),
+				Message:  "bag.Insert(service)",
 			})
 		}
 		return 0, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000039,
-			Err:     err.GetErr(),
-			Message: "bag.Insert(service)",
+			Code:     300000039,
+			RawError: err.GetRawError(),
+			Message:  "bag.Insert(service)",
 		})
 	}
 
@@ -91,15 +91,15 @@ func (s *TestService) Modify(uid int, params map[string]any) (int, xerror.Error)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return 0, xerror.Wrap(err, &xerror.NewError{
-				Code:    300000040,
-				Err:     err.GetErr(),
-				Message: "bag.Modify(service)",
+				Code:     300000040,
+				RawError: err.GetRawError(),
+				Message:  "bag.Modify(service)",
 			})
 		}
 		return 0, xerror.Wrap(err, &xerror.NewError{
-			Code:    300000049,
-			Err:     err.GetErr(),
-			Message: "bag.Modify(service)",
+			Code:     300000049,
+			RawError: err.GetRawError(),
+			Message:  "bag.Modify(service)",
 		})
 	}
 

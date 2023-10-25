@@ -44,7 +44,7 @@ func (c *TestHandler) PreHandler(req *request.Request) {
 // Handler 业务处理
 func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.Error) {
 	testService := service.NewTestService(req)
-	data, err := testService.Query(1)
+	data, err := testService.Query(33)
 	//data, err := testService.QueryMap(1, 2)
 	//id, err := testService.Insert(1, 8, map[string]any{
 	//	"uid":    8,
@@ -67,9 +67,9 @@ func (c *TestHandler) Handler(req *request.Request) (*response.Response, xerror.
 
 	if err != nil {
 		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    500000011,
-			Err:     err.GetErr(),
-			Message: "test handler bag.query",
+			Code:     500000011,
+			RawError: err.GetRawError(),
+			Message:  "test handler bag.query",
 		})
 	}
 	//for k, v := range data {

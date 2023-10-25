@@ -44,9 +44,9 @@ func (d *BagDao) Query(uid int, fields []string, where string, order ...string) 
 	data, err := d.db.Query()
 	if err != nil {
 		return nil, xerror.Wrap(&xerror.NewError{
-			Code:    100000000,
-			Err:     err,
-			Message: "bag.Query(dao)",
+			Code:     100000000,
+			RawError: err,
+			Message:  "bag.Query(dao)",
 		}, nil)
 	}
 
@@ -61,9 +61,9 @@ func (d *BagDao) QueryMap(uid int, fields []string, where string) (map[int]map[s
 	data, err := d.db.QueryMap()
 	if err != nil {
 		return nil, xerror.Wrap(&xerror.NewError{
-			Code:    100000020,
-			Err:     err,
-			Message: fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
+			Code:     100000020,
+			RawError: err,
+			Message:  fmt.Sprintf(`bag.QueryMap uid:%v`, uid),
 		}, nil)
 	}
 
@@ -74,32 +74,32 @@ func (d *BagDao) Insert(uid int, params map[string]any) (int, xerror.Error) {
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Insert(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code: 100000030,
-			Err:  fmt.Errorf(`uid:%v, params:%v`, uid, params),
+			Code:     100000030,
+			RawError: fmt.Errorf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100000033,
-			Err:     err,
-			Message: fmt.Sprintf(`uid:%v, params:%v`, uid, params),
+			Code:     100000033,
+			RawError: err,
+			Message:  fmt.Sprintf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 	if count > 0 {
 		newId, err := result.LastInsertId()
 		if err != nil {
 			return 0, xerror.Wrap(&xerror.NewError{
-				Code: 100000034,
-				Err:  fmt.Errorf(` uid:%v, params:%v`, uid, params),
+				Code:     100000034,
+				RawError: fmt.Errorf(` uid:%v, params:%v`, uid, params),
 			}, nil)
 		}
 		return int(newId), nil
 	}
 
 	return 0, xerror.Wrap(&xerror.NewError{
-		Code: 100000035,
-		Err:  errors.New("insert error"),
+		Code:     100000035,
+		RawError: errors.New("insert error"),
 	}, nil)
 }
 
@@ -107,17 +107,17 @@ func (d *BagDao) Modify(uid int, where string, params map[string]any) (int, xerr
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Modify(params).Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100000040,
-			Err:     err,
-			Message: "bag.Modify",
+			Code:     100000040,
+			RawError: err,
+			Message:  "bag.Modify",
 		}, nil)
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100000042,
-			Err:     err,
-			Message: fmt.Sprintf(`uid:%v, params:%v`, uid, params),
+			Code:     100000042,
+			RawError: err,
+			Message:  fmt.Sprintf(`uid:%v, params:%v`, uid, params),
 		}, nil)
 	}
 
@@ -128,17 +128,17 @@ func (d *BagDao) Delete(uid int, where string) (int, xerror.Error) {
 	result, err := d.db.Table(getTableName(uid, d.tbl)).Where(where).Delete().Exec()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100000045,
-			Err:     err,
-			Message: "bag.Delete",
+			Code:     100000045,
+			RawError: err,
+			Message:  "bag.Delete",
 		}, nil)
 	}
 	count, err := result.RowsAffected()
 	if err != nil {
 		return 0, xerror.Wrap(&xerror.NewError{
-			Code:    100000042,
-			Err:     err,
-			Message: fmt.Sprintf(` uid:%v`, uid),
+			Code:     100000042,
+			RawError: err,
+			Message:  fmt.Sprintf(` uid:%v`, uid),
 		}, nil)
 	}
 

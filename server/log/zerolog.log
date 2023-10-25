@@ -30,3 +30,19 @@
 {"level":"debug","ip":"127.0.0.1","trace_id":"4896121334326712970","user_id":"111","time":"2023-10-25 11:50:07","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
 {"level":"debug","ip":"127.0.0.1","trace_id":"8612115372848610711","user_id":"111","time":"2023-10-25 11:50:17","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):15 | Method:GET]"}
 {"level":"debug","ip":"127.0.0.1","trace_id":"6924493909936048162","user_id":"111","time":"2023-10-25 11:50:18","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7094306937816846094","user_id":"","time":"2023-10-25 12:18:17","message":"[URI:/n/v1/stu | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"208441377915221305","user_id":"111","time":"2023-10-25 12:18:22","message":"[100000000] message:bag.Query(dao), error:Error 1146 (42S02): Table 'test.bag_0010' doesn't exist"}
+{"level":"error","ip":"127.0.0.1","trace_id":"208441377915221305","user_id":"111","time":"2023-10-25 12:18:22","message":"[200000009] message:bag.query, error:Error 1146 (42S02): Table 'test.bag_0010' doesn't exist"}
+{"level":"error","ip":"127.0.0.1","trace_id":"208441377915221305","user_id":"111","time":"2023-10-25 12:18:22","message":"[300000009] message:bag.Query(service), error:Error 1146 (42S02): Table 'test.bag_0010' doesn't exist"}
+{"level":"error","ip":"127.0.0.1","trace_id":"208441377915221305","user_id":"111","time":"2023-10-25 12:18:22","message":"[500000011] message:test handler bag.query, error:Error 1146 (42S02): Table 'test.bag_0010' doesn't exist"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"208441377915221305","user_id":"111","time":"2023-10-25 12:18:22","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):10 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2049047234951968966","user_id":"111","time":"2023-10-25 12:18:40","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2049047234951968966","user_id":"111","time":"2023-10-25 12:18:40","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2049047234951968966","user_id":"111","time":"2023-10-25 12:18:40","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2049047234951968966","user_id":"111","time":"2023-10-25 12:18:40","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"2049047234951968966","user_id":"111","time":"2023-10-25 12:18:40","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):11 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6480103777697065872","user_id":"111","time":"2023-10-25 12:18:42","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6480103777697065872","user_id":"111","time":"2023-10-25 12:18:42","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6480103777697065872","user_id":"111","time":"2023-10-25 12:18:42","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6480103777697065872","user_id":"111","time":"2023-10-25 12:18:42","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6480103777697065872","user_id":"111","time":"2023-10-25 12:18:42","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}

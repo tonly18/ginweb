@@ -31,15 +31,15 @@ func (m *BagMode) Query(uid int, fields []string, order ...string) ([]map[string
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    200000000,
-				Err:     err.GetErr(),
-				Message: "bag.query",
+				Code:     200000000,
+				RawError: err.GetRawError(),
+				Message:  "bag.query",
 			})
 		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    200000009,
-			Err:     err.GetErr(),
-			Message: "bag.query",
+			Code:     200000009,
+			RawError: err.GetRawError(),
+			Message:  "bag.query",
 		})
 	}
 
@@ -51,15 +51,15 @@ func (m *BagMode) QueryMap(uid int, fields []string) (map[int]map[string]any, xe
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{
-				Code:    200000030,
-				Err:     err.GetErr(),
-				Message: "bag.query map",
+				Code:     200000030,
+				RawError: err.GetRawError(),
+				Message:  "bag.query map",
 			})
 		}
 		return nil, xerror.Wrap(err, &xerror.NewError{
-			Code:    200000040,
-			Err:     err.GetErr(),
-			Message: "bag.query map",
+			Code:     200000040,
+			RawError: err.GetRawError(),
+			Message:  "bag.query map",
 		})
 	}
 
