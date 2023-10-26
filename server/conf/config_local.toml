@@ -5,22 +5,21 @@ host = "0.0.0.0"
 port = "8000"
 
 [log]
-logFilePath = "./log/zerolog.log"
+logFilePath = "./log/server.log"
 
 [mysql]
 host = "localhost"
 port = "3306"
 username = "root"
 password = ""
+maxOpenConns = 50
+maxIdleConns = 10
+maxLifetime = 3600
+maxIdleTime = 600
 
 [redis]
 host = "192.168.1.14:6379"
 password = ""
 poolSize = 50
 minIdleConns = 20
-db = 0
-
-[memcache]
-host = "192.168.1.14:11211"
-maxIdleConns = 2
-timeout = 100
+db = 11

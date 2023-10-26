@@ -7,13 +7,17 @@ import (
 	"hash/crc32"
 	"server/config"
 	"strconv"
+	"time"
 	"unsafe"
 )
 
 // redis配置
 type RedisConfig struct {
-	Host     string
-	Password string
+	Host         string
+	Password     string
+	MinIdleConns int //最小空闲链接数
+	PoolSize     int //链接池最大链接数
+	DB           int //redis 库
 }
 
 // DB配置
@@ -25,16 +29,23 @@ var rdConfig *RedisConfig
 func init() {
 	// DB配置
 	dbConfig = &xsql.Config{
-		Host:     config.Config.Mysql.Host,
-		Port:     cast.ToInt(config.Config.Mysql.Port),
-		UserName: config.Config.Mysql.Username,
-		Password: config.Config.Mysql.Password,
-		DBName:   "test",
+		Host:         config.Config.Mysql.Host,
+		Port:         cast.ToInt(config.Config.Mysql.Port),
+		UserName:     config.Config.Mysql.Username,
+		Password:     config.Config.Mysql.Password,
+		DBName:       "test",
+		MaxOpenConns: config.Config.Mysql.MaxOpenConns,
+		MaxIdleConns: config.Config.Mysql.MaxIdleConns,
+		MaxLifetime:  time.Second * time.Duration(config.Config.Mysql.MaxLifetime),
+		MaxIdleTime:  time.Second * time.Duration(config.Config.Mysql.MaxIdleTime),
 	}
 	// redis配置
 	rdConfig = &RedisConfig{
-		Host:     config.Config.Redis.Host,
-		Password: config.Config.Redis.Password,
+		Host:         config.Config.Redis.Host,
+		Password:     config.Config.Redis.Password,
+		MinIdleConns: config.Config.Redis.MinIdleConns,
+		PoolSize:     config.Config.Redis.PoolSize,
+		DB:           config.Config.Redis.Db,
 	}
 }
 

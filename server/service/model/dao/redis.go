@@ -43,10 +43,11 @@ func (d *RedisPoolConn) createRedisCluster(rdConfig *RedisConfig) xerror.Error {
 	redisConn = redis.NewClient(&redis.Options{
 		Addr:     rdConfig.Host,
 		Password: rdConfig.Password,
+		DB:       rdConfig.DB,
 
 		//连接池容量及闲置连接数量
-		PoolSize:     100, //链接池最大链接数，默认为cup * 5。
-		MinIdleConns: 50,  //在启动阶段，链接池最小链接数，并长期维持idle状态的链接数不少于指定数量。
+		PoolSize:     rdConfig.PoolSize,     //链接池最大链接数，默认为cup * 5。
+		MinIdleConns: rdConfig.MinIdleConns, //在启动阶段，链接池最小链接数，并长期维持idle状态的链接数不少于指定数量。
 		//超时设置
 		DialTimeout:  5 * time.Second, //建立链接超时时间，默认为5秒。
 		ReadTimeout:  3 * time.Second, //读超时，默认3秒，-1表示取消读超时。

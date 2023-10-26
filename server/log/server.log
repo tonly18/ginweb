@@ -1,0 +1,35 @@
+{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):10 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):11 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):10 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
+{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
