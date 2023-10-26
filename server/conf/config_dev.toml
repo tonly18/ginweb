@@ -21,5 +21,6 @@ maxIdleTime = 600
 host = "192.168.1.14:6379"
 password = ""
 poolSize = 50
+maxIdleConns = 50
 minIdleConns = 20
 db = 0

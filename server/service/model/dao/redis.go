@@ -3,7 +3,7 @@ package dao
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"github.com/redis/go-redis/v9"
 	"github.com/tonly18/xerror"
 	"runtime"
 	"sync"
@@ -48,15 +48,13 @@ func (d *RedisPoolConn) createRedisCluster(rdConfig *RedisConfig) xerror.Error {
 		//连接池容量及闲置连接数量
 		PoolSize:     rdConfig.PoolSize,     //链接池最大链接数，默认为cup * 5。
 		MinIdleConns: rdConfig.MinIdleConns, //在启动阶段，链接池最小链接数，并长期维持idle状态的链接数不少于指定数量。
+		MaxIdleConns: rdConfig.MaxIdleConns,
 		//超时设置
-		DialTimeout:  5 * time.Second, //建立链接超时时间，默认为5秒。
-		ReadTimeout:  3 * time.Second, //读超时，默认3秒，-1表示取消读超时。
-		WriteTimeout: 3 * time.Second, //写超时，默认等于读超时。
-		PoolTimeout:  5 * time.Second, //当所有连接都处在繁忙状态时，客户端等待可用连接的最大等待时长，默认为读超时+1秒。
-		//闲置链接检查
-		IdleCheckFrequency: 60 * time.Second,   //闲置链接检查的周期，默认为1分钟，-1表示不做周期性检查，只在客户端获取连接时对闲置连接进行处理。
-		IdleTimeout:        1200 * time.Second, //闲置链接超时时长，默认5分钟，-1表示取消闲置超时。
-		MaxConnAge:         0 * time.Second,    //连接存活时长，从创建开始计时，超过指定时长则关闭连接，默认为0，即不关闭存活时长较长的连接。
+		DialTimeout:     5 * time.Second,    //建立链接超时时间，默认为5秒。
+		ReadTimeout:     3 * time.Second,    //读超时，默认3秒，-1表示取消读超时。
+		WriteTimeout:    3 * time.Second,    //写超时，默认等于读超时。
+		PoolTimeout:     5 * time.Second,    //当所有连接都处在繁忙状态时，客户端等待可用连接的最大等待时长，默认为读超时+1秒。
+		ConnMaxLifetime: 3600 * time.Second, //链接存活时长
 		//命令执行失败时的重试策略
 		MaxRetries:      3,                      //命令执行失败时，最多重试多少次，默认为0即不重试。
 		MinRetryBackoff: 8 * time.Microsecond,   //每次计算重试间隔时间的下限，默认8毫秒，-1表示取消间隔。

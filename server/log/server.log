@@ -37,3 +37,5 @@
 {"level":"debug","ip":"127.0.0.1","trace_id":"6133531038151506173","user_id":"111","time":"2023-10-26 06:04:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
 {"level":"debug","ip":"127.0.0.1","trace_id":"2144574687934537922","user_id":"111","time":"2023-10-26 06:04:57","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
 {"level":"debug","ip":"127.0.0.1","trace_id":"467179929703657393","user_id":"111","time":"2023-10-26 06:04:58","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7879239652242456268","user_id":"111","time":"2023-10-26 06:48:32","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):18 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"352669002250710066","user_id":"111","time":"2023-10-26 06:48:33","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}

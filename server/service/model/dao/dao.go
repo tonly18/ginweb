@@ -15,6 +15,7 @@ import (
 type RedisConfig struct {
 	Host         string
 	Password     string
+	MaxIdleConns int //最大空闲链接数
 	MinIdleConns int //最小空闲链接数
 	PoolSize     int //链接池最大链接数
 	DB           int //redis 库
