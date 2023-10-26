@@ -33,3 +33,7 @@
 {"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
 {"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
 {"level":"debug","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4066108357845476788","user_id":"111","time":"2023-10-26 06:04:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):16 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6133531038151506173","user_id":"111","time":"2023-10-26 06:04:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"2144574687934537922","user_id":"111","time":"2023-10-26 06:04:57","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"467179929703657393","user_id":"111","time":"2023-10-26 06:04:58","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
