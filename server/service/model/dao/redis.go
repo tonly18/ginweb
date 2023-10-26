@@ -68,8 +68,8 @@ func (d *RedisPoolConn) createRedisCluster(rdConfig *RedisConfig) xerror.Error {
 	})
 	if _, err := redisConn.Ping(context.Background()).Result(); err != nil {
 		return xerror.Wrap(&xerror.NewError{
-			Code: 110000,
-			Err:  err,
+			Code:     110000,
+			RawError: err,
 		}, nil)
 	}
 
@@ -85,13 +85,13 @@ func (d *RedisPoolConn) HGetRd(key, id string) (string, xerror.Error) {
 	data, err := d.rd.HGet(context.Background(), key, id).Result()
 	if err == redis.Nil { //Key不存在
 		return "", xerror.Wrap(&xerror.NewError{
-			Code: 110020,
-			Err:  redis.Nil,
+			Code:     110020,
+			RawError: redis.Nil,
 		}, nil)
 	} else if err != nil { //panic(err)
 		return "", xerror.Wrap(&xerror.NewError{
-			Code: 110022,
-			Err:  err,
+			Code:     110022,
+			RawError: err,
 		}, nil)
 	} else {
 		return data, nil
@@ -102,8 +102,8 @@ func (d *RedisPoolConn) HSetRd(key string, id, value any) xerror.Error {
 	_, err := d.rd.HSet(context.Background(), key, id, value).Result()
 	if err != nil {
 		return xerror.Wrap(&xerror.NewError{
-			Code: 110030,
-			Err:  err,
+			Code:     110030,
+			RawError: err,
 		}, nil)
 	}
 
@@ -114,8 +114,8 @@ func (d *RedisPoolConn) HDelRd(key, id string) xerror.Error {
 	_, err := d.rd.HDel(context.Background(), key, id).Result()
 	if err != nil {
 		return xerror.Wrap(&xerror.NewError{
-			Code: 110040,
-			Err:  err,
+			Code:     110040,
+			RawError: err,
 		}, nil)
 	}
 
@@ -126,13 +126,13 @@ func (d *RedisPoolConn) GetRd(key string) (string, xerror.Error) {
 	data, err := d.rd.Get(context.Background(), key).Result()
 	if err == redis.Nil {
 		return "", xerror.Wrap(&xerror.NewError{
-			Code: 110050,
-			Err:  redis.Nil,
+			Code:     110050,
+			RawError: redis.Nil,
 		}, nil)
 	} else if err != nil {
 		return "", xerror.Wrap(&xerror.NewError{
-			Code: 110051,
-			Err:  err,
+			Code:     110051,
+			RawError: err,
 		}, nil)
 	} else {
 		return data, nil
@@ -142,8 +142,8 @@ func (d *RedisPoolConn) GetRd(key string) (string, xerror.Error) {
 func (d *RedisPoolConn) SetRd(key string, value any) xerror.Error {
 	if _, err := d.rd.Set(context.Background(), key, value, time.Hour*24*30).Result(); err != nil {
 		return xerror.Wrap(&xerror.NewError{
-			Code: 110060,
-			Err:  err,
+			Code:     110060,
+			RawError: err,
 		}, nil)
 	}
 
@@ -153,8 +153,8 @@ func (d *RedisPoolConn) SetRd(key string, value any) xerror.Error {
 func (d *RedisPoolConn) DelRd(key string) xerror.Error {
 	if _, err := d.rd.Del(context.Background(), key).Result(); err != nil {
 		return xerror.Wrap(&xerror.NewError{
-			Code: 110070,
-			Err:  err,
+			Code:     110070,
+			RawError: err,
 		}, nil)
 	}
 
