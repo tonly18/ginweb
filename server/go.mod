@@ -12,7 +12,7 @@ require (
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/viper v1.12.0
 	github.com/tonly18/xerror v0.0.2
-	github.com/tonly18/xsql v0.0.4
+	github.com/tonly18/xsql v0.0.5
 )
 
 require (
