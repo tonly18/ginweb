@@ -10,10 +10,10 @@ import (
 )
 
 // SliceTrans slice数据类型之间的相互转换
-func SliceTrans[E generic.Number, T generic.Number](s []E) []T {
-	slice := make([]T, 0, len(s))
+func SliceTrans[T generic.Number, R generic.Number](s []T) []R {
+	slice := make([]R, 0, len(s))
 	for _, v := range s {
-		slice = append(slice, T(v))
+		slice = append(slice, R(v))
 	}
 
 	//return
@@ -188,4 +188,18 @@ func SliceSum[T cmp.Ordered](s []T) T {
 // SliceContains 是否包含指定的值
 func SliceContains[E comparable](s []E, v E) bool {
 	return slices.Contains(s, v)
+}
+
+// SliceJoin
+func SliceJoin[T comparable](s []T, sep string) string {
+	if len(s) == 0 {
+		return ""
+	}
+
+	var result bytes.Buffer
+	for _, v := range s {
+		result.WriteString(fmt.Sprintf(`%v%v`, sep, v))
+	}
+
+	return result.String()[len(sep):]
 }
