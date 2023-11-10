@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/tonly18/xerror"
 	"github.com/tonly18/xsql"
+	"slices"
 )
 
 // BagDao struct
@@ -17,9 +18,8 @@ type BagDao struct {
 	ctx     context.Context
 	db      *xsql.XSQL
 	redis   *RedisPoolConn
-	tbl     string   //表名
-	fields  []string //表字段
-	primary string   //表主键
+	tbl     string //表名
+	primary string //表主键
 }
 
 func NewBagDao(ctx context.Context) *BagDao {
@@ -28,16 +28,12 @@ func NewBagDao(ctx context.Context) *BagDao {
 		db:      xsql.NewXSQL(ctx, dbConfig),
 		redis:   NewRedis(ctx, rdConfig),
 		tbl:     "bag",
-		fields:  []string{"uid", "item", "expire", "itime"},
 		primary: "uid",
 	}
 }
 
 func (d *BagDao) Query(uid int, fields []string, where string, order ...string) ([]map[string]any, xerror.Error) {
-	if len(fields) == 0 {
-		fields = d.fields
-	}
-	d.db.Table(getTableName(uid, d.tbl)).Primary(d.primary).Fields(fields...).Where(where)
+	d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where)
 	if len(order) > 0 {
 		d.db.OrderBy(order[0])
 	}
@@ -54,11 +50,10 @@ func (d *BagDao) Query(uid int, fields []string, where string, order ...string) 
 }
 
 func (d *BagDao) QueryMap(uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
-	if len(fields) == 0 {
-		fields = d.fields
+	if len(fields) > 0 && false == slices.Contains(fields, d.primary) {
+		fields = append(fields, d.primary)
 	}
-	d.db.Table(getTableName(uid, d.tbl)).Primary(d.primary).Fields(fields...).Where(where)
-	data, err := d.db.QueryMap()
+	data, err := d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where).QueryMap(d.primary)
 	if err != nil {
 		return nil, xerror.Wrap(&xerror.NewError{
 			Code:     100000020,

@@ -45,7 +45,7 @@ func (s *TestService) Query(uid int) ([]map[string]any, xerror.Error) {
 
 func (s *TestService) QueryMap(uid int) (map[int]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.QueryMap(uid, []string{"uid", "item", "expire", "itime"})
+	data, err := bagMode.QueryMap(uid, nil)
 	if err != nil {
 		if err.Is(sql.ErrNoRows) {
 			return nil, xerror.Wrap(err, &xerror.NewError{

@@ -1,41 +1,33 @@
-{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"2939216365035430384","user_id":"111","time":"2023-10-26 05:56:33","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):10 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"6939630124824274291","user_id":"111","time":"2023-10-26 05:57:52","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):11 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"2732410012791193127","user_id":"111","time":"2023-10-26 05:58:10","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):10 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"4806167295368217034","user_id":"111","time":"2023-10-26 05:58:10","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"4371158418056774131","user_id":"111","time":"2023-10-26 05:58:11","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"6806087010784996104","user_id":"111","time":"2023-10-26 06:04:37","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
-{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[100000000] message:bag.Query(dao), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[200000000] message:bag.query, error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[300000000] message:bag.Query(service), error:sql: no rows in result set"}
-{"level":"error","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[500000011] message:test handler bag.query, error:sql: no rows in result set"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"3108628774384246060","user_id":"111","time":"2023-10-26 06:04:38","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"4066108357845476788","user_id":"111","time":"2023-10-26 06:04:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):16 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"6133531038151506173","user_id":"111","time":"2023-10-26 06:04:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"2144574687934537922","user_id":"111","time":"2023-10-26 06:04:57","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"467179929703657393","user_id":"111","time":"2023-10-26 06:04:58","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):2 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"7879239652242456268","user_id":"111","time":"2023-10-26 06:48:32","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):18 | Method:GET]"}
-{"level":"debug","ip":"127.0.0.1","trace_id":"352669002250710066","user_id":"111","time":"2023-10-26 06:48:33","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7697157906921479061","user_id":"","time":"2023-11-10 07:22:13","message":"[100000000] message:bag.Query(dao), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7697157906921479061","user_id":"","time":"2023-11-10 07:22:13","message":"[200000009] message:bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7697157906921479061","user_id":"","time":"2023-11-10 07:22:13","message":"[300000009] message:bag.Query(service), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7697157906921479061","user_id":"","time":"2023-11-10 07:22:13","message":"[500000011] message:test handler bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7697157906921479061","user_id":"","time":"2023-11-10 07:22:13","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):14 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7650636038525675207","user_id":"","time":"2023-11-10 07:34:45","message":"[100000000] message:bag.Query(dao), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7650636038525675207","user_id":"","time":"2023-11-10 07:34:45","message":"[200000009] message:bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7650636038525675207","user_id":"","time":"2023-11-10 07:34:45","message":"[300000009] message:bag.Query(service), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"7650636038525675207","user_id":"","time":"2023-11-10 07:34:45","message":"[500000011] message:test handler bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7650636038525675207","user_id":"","time":"2023-11-10 07:34:45","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):50 | Method:GET]"}
+{"level":"error","ip":"127.0.0.1","trace_id":"8033140452825465769","user_id":"","time":"2023-11-10 07:34:46","message":"[100000000] message:bag.Query(dao), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"8033140452825465769","user_id":"","time":"2023-11-10 07:34:46","message":"[200000009] message:bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"8033140452825465769","user_id":"","time":"2023-11-10 07:34:46","message":"[300000009] message:bag.Query(service), error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"error","ip":"127.0.0.1","trace_id":"8033140452825465769","user_id":"","time":"2023-11-10 07:34:46","message":"[500000011] message:test handler bag.query, error:Error 1054 (42S22): Unknown column 'id' in 'field list'"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"8033140452825465769","user_id":"","time":"2023-11-10 07:34:46","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4258065593277168597","user_id":"","time":"2023-11-10 07:35:21","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):23 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"3562461963502032354","user_id":"","time":"2023-11-10 07:35:22","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"8529568728095448281","user_id":"","time":"2023-11-10 07:35:23","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"1034216775377204321","user_id":"","time":"2023-11-10 07:35:24","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6536347096939246591","user_id":"","time":"2023-11-10 08:31:11","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):22 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"398704556379589291","user_id":"","time":"2023-11-10 08:31:12","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4031683393113961105","user_id":"","time":"2023-11-10 08:32:36","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):12 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"6793555333041255891","user_id":"","time":"2023-11-10 08:32:37","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"1148705433696172008","user_id":"","time":"2023-11-10 08:32:38","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):3 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7005150451918866910","user_id":"","time":"2023-11-10 08:32:39","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"3096623641883942771","user_id":"","time":"2023-11-10 08:32:39","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"3038223916579005003","user_id":"","time":"2023-11-10 08:32:40","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"8582176353403303241","user_id":"","time":"2023-11-10 08:32:52","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):16 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"7726815318174358153","user_id":"","time":"2023-11-10 08:32:53","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"5904389711696228821","user_id":"","time":"2023-11-10 08:32:54","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"5673731880710586913","user_id":"","time":"2023-11-10 08:32:54","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"3593462429077052715","user_id":"","time":"2023-11-10 08:32:55","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):1 | Method:GET]"}
+{"level":"debug","ip":"127.0.0.1","trace_id":"4565794626392726577","user_id":"","time":"2023-11-10 08:32:56","message":"[URI:/n/v1/test | Status Code:200 | Execution Time(ms):0 | Method:GET]"}
