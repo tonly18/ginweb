@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"github.com/tonly18/xerror"
 	"github.com/tonly18/xsql"
-	"slices"
 )
 
 // BagDao struct
@@ -50,9 +49,6 @@ func (d *BagDao) Query(uid int, fields []string, where string, order ...string) 
 }
 
 func (d *BagDao) QueryMap(uid int, fields []string, where string) (map[int]map[string]any, xerror.Error) {
-	if len(fields) > 0 && false == slices.Contains(fields, d.primary) {
-		fields = append(fields, d.primary)
-	}
 	data, err := d.db.Table(getTableName(uid, d.tbl)).Fields(fields...).Where(where).QueryMap(d.primary)
 	if err != nil {
 		return nil, xerror.Wrap(&xerror.NewError{
