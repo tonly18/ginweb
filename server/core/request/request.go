@@ -2,21 +2,22 @@ package request
 
 import (
 	"context"
+	"github.com/gin-gonic/gin"
 	"server/library/command"
 	"time"
 )
 
 // Request 请求
 type Request struct {
-	ctx      context.Context //context
-	userID   int             //user id
-	clientIP string          //client ip
-	traceId  string          //trace id
-	data     map[string]any  //data
+	ctx      *gin.Context   //context
+	userID   int            //user id
+	clientIP string         //client ip
+	traceId  string         //trace id
+	data     map[string]any //data
 }
 
 // NewRequest
-func NewRequest(ctx context.Context, userId int, clientIp, traceId string) *Request {
+func NewRequest(ctx *gin.Context, userId int, clientIp, traceId string) *Request {
 	return &Request{
 		ctx:      ctx,
 		userID:   userId,
@@ -71,6 +72,10 @@ func (r *Request) Err() error {
 
 // Value
 func (r *Request) Value(key any) any {
+	if r.ctx == nil {
+		return nil
+	}
+
 	value := r.ctx.Value(key)
 	if command.IsValueNil(value) {
 		if k, ok := key.(string); ok {
