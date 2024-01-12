@@ -266,6 +266,8 @@ github.com/subosito/gotenv v1.4.0 h1:yAzM1+SmVcz5R4tXGsNMu1jUl2aOJXoiWUCEwwnGrvs
 github.com/subosito/gotenv v1.4.0/go.mod h1:mZd6rFysKEcUhUHXJk0C/08wAgyDBFuwEYL7vWWGaGo=
 github.com/tonly18/xerror v0.0.2 h1:hQhd4LRlKqboeJ9/COSvy/b6Qgndx1kdu4SJgyubLx0=
 github.com/tonly18/xerror v0.0.2/go.mod h1:Clr8Yvn+Kk2U/VHsrwOsi7LGmPSxaTEPnKpMsaY3Pb8=
+github.com/tonly18/xerror v0.0.3 h1:6UsVZ/PsUdhzSaKPnCb81Tx9GW3vZcibBZ2v2wFViSk=
+github.com/tonly18/xerror v0.0.3/go.mod h1:Clr8Yvn+Kk2U/VHsrwOsi7LGmPSxaTEPnKpMsaY3Pb8=
 github.com/tonly18/xsql v0.0.6 h1:c1D/z7D4w+Ay7Y/BFQDIB34aXoeLjZmXP4hdgyoweYM=
 github.com/tonly18/xsql v0.0.6/go.mod h1:tqzDGKfgAonXcXo7x7s9qvgY+tv3SrbzSvf+w6doNS4=
 github.com/tonly18/xsql v0.0.7 h1:felqSEEyz7sc4jlVPe9fSsbTatLDWJ5SsM/1PHX2okw=

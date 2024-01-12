@@ -11,7 +11,7 @@ require (
 	github.com/spaolacci/murmur3 v1.1.0
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/viper v1.12.0
-	github.com/tonly18/xerror v0.0.2
+	github.com/tonly18/xerror v0.0.3
 	github.com/tonly18/xsql v0.1.0
 )
 
