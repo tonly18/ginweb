@@ -27,18 +27,18 @@ func NewBagMode(ctx context.Context) *BagMode {
 
 func (m *BagMode) Query(uid int, fields []string, order ...string) ([]map[string]any, xerror.Error) {
 	where := fmt.Sprintf(`uid=%v`, uid)
-	data, err := m.dao.Query(uid, fields, where, order...)
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := m.dao.Query(uid, fields, where, order...)
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return nil, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     200000000,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.query",
 			})
 		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
+		return nil, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     200000009,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.query",
 		})
 	}
@@ -47,18 +47,18 @@ func (m *BagMode) Query(uid int, fields []string, order ...string) ([]map[string
 }
 
 func (m *BagMode) QueryMap(uid int, fields []string) (map[int]map[string]any, xerror.Error) {
-	data, err := m.dao.QueryMap(uid, fields, "uid < 40")
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := m.dao.QueryMap(uid, fields, "uid < 40")
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return nil, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     200000030,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.query map",
 			})
 		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
+		return nil, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     200000040,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.query map",
 		})
 	}

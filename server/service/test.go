@@ -24,18 +24,18 @@ func NewTestService(ctx context.Context) *TestService {
 
 func (s *TestService) Query(uid int) ([]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Query(uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := bagMode.Query(uid, []string{"uid", "item", "expire", "itime"}, "uid desc")
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return nil, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     300000000,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.Query(service)",
 			})
 		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
+		return nil, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     300000009,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.Query(service)",
 		})
 	}
@@ -45,18 +45,18 @@ func (s *TestService) Query(uid int) ([]map[string]any, xerror.Error) {
 
 func (s *TestService) QueryMap(uid int) (map[int]map[string]any, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.QueryMap(uid, nil)
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return nil, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := bagMode.QueryMap(uid, nil)
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return nil, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     300000010,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.Query(service)",
 			})
 		}
-		return nil, xerror.Wrap(err, &xerror.NewError{
+		return nil, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     300000011,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.Query(service)",
 		})
 	}
@@ -66,18 +66,18 @@ func (s *TestService) QueryMap(uid int) (map[int]map[string]any, xerror.Error) {
 
 func (s *TestService) Insert(uid int, params map[string]any) (int, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Insert(uid, params)
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return 0, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := bagMode.Insert(uid, params)
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return 0, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     300000030,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.Insert(service)",
 			})
 		}
-		return 0, xerror.Wrap(err, &xerror.NewError{
+		return 0, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     300000039,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.Insert(service)",
 		})
 	}
@@ -87,18 +87,18 @@ func (s *TestService) Insert(uid int, params map[string]any) (int, xerror.Error)
 
 func (s *TestService) Modify(uid int, params map[string]any) (int, xerror.Error) {
 	bagMode := model.NewBagMode(s.ctx)
-	data, err := bagMode.Modify(uid, params)
-	if err != nil {
-		if err.Is(sql.ErrNoRows) {
-			return 0, xerror.Wrap(err, &xerror.NewError{
+	data, xerr := bagMode.Modify(uid, params)
+	if xerr != nil {
+		if xerr.Contain(sql.ErrNoRows) {
+			return 0, xerror.Wrap(xerr, &xerror.NewError{
 				Code:     300000040,
-				RawError: err.GetRawError(),
+				RawError: xerr.GetRawError(),
 				Message:  "bag.Modify(service)",
 			})
 		}
-		return 0, xerror.Wrap(err, &xerror.NewError{
+		return 0, xerror.Wrap(xerr, &xerror.NewError{
 			Code:     300000049,
-			RawError: err.GetRawError(),
+			RawError: xerr.GetRawError(),
 			Message:  "bag.Modify(service)",
 		})
 	}

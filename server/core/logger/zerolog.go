@@ -16,7 +16,7 @@ var logger zerolog.Logger
 
 // init
 func init() {
-	fs, err := os.OpenFile(config.Config.Log.LogFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	fs, err := os.OpenFile(config.Config.Log.File, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic(fmt.Sprint(`open log file is error: %w`, err))
 	}

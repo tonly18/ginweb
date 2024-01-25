@@ -12,7 +12,6 @@ import (
 func main() {
 	//Running Environment
 	fmt.Printf("[Server] Running Environment: %v\n", global.SERVER_RUN_ENV)
-	fmt.Printf("[Server] Running Gin Mode: %v\n", global.GIN_MODE)
 
 	//init router
 	router := router.InitRouter()

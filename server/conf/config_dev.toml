@@ -4,8 +4,11 @@ title = "develop config"
 host = "0.0.0.0"
 port = "8000"
 
+[work]
+path = "E:/itemtest/github.com/ginweb/server"
+
 [log]
-logFilePath = "./log/server.log"
+path = "log/server.log"
 
 [mysql]
 host = "localhost"

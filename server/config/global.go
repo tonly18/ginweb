@@ -8,7 +8,7 @@ import (
 
 // 获取配置文件并解析到指定的struck
 func loadConfigFile(fname string, configStruck any) error {
-	viper.AddConfigPath(global.SERVER_WORK_PATH + "/conf")
+	viper.AddConfigPath(fmt.Sprintf("%v/conf", global.SERVER_WORK_PATH))
 	viper.SetConfigName(getConfigFileName(fname))
 	viper.SetConfigType("toml")
 

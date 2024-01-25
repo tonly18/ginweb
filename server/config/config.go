@@ -17,7 +17,7 @@ type httpConfig struct {
 
 // log file
 type logConfig struct {
-	LogFilePath string
+	File string
 }
 
 // mysql config
