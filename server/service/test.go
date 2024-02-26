@@ -8,7 +8,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/tonly18/xerror"
-	"server/service/model"
+	"server/model"
 )
 
 // TestService Struct

@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"github.com/tonly18/xerror"
-	"server/service/model/dao"
+	"server/model/dao"
 )
 
 // BagMode Struct
