@@ -57,16 +57,16 @@ case "$1" in
         fi
 
         ##synchronize
-        echo "server config is rsync..."
+        echo "${APP_NAME} config is rsync..."
         rsync -av ${GIT_WORKPATH}/conf/* ${APP_WORKPATH}/conf/
         if [ $? -ne 0 ]; then
-            echo "server config rsync failed!!!"
+            echo "${APP_NAME} config rsync failed!!!"
             exit 1
         fi
-        echo "server is rsync..."
+        echo "${APP_NAME} is rsync..."
         rsync -av ${GIT_WORKPATH}/${APP_NAME} ${APP_WORKPATH}
         if [ $? -ne 0 ]; then
-            echo "server rsync failed!!!"
+            echo "${APP_NAME} rsync failed!!!"
             exit 1
         fi
 	      ;;
@@ -80,9 +80,9 @@ case "$1" in
         ${SERVICE_CMD} >> ${RUNTIME_LOG} 2>&1 &
         if [ $? -eq 0 ];then
             /bin/sleep 2
-            echo "server start success!"
+            echo "${APP_NAME} start success!"
         else
-            echo "server start failed!"
+            echo "${APP_NAME} start failed!"
             exit 1
         fi
         ;;
@@ -113,13 +113,13 @@ case "$1" in
             sudo kill -SIGQUIT $PID
             if [ $? -eq 0 ];then
                 /bin/sleep 5
-                echo "server stop success!"
+                echo "${APP_NAME} stop success!"
             else
-                echo "server stop failed!"
+                echo "${APP_NAME} stop failed!"
                 exit 1
             fi
         else
-            echo "server stop error"
+            echo "${APP_NAME} stop error"
             exit 1
         fi
         ;;
@@ -131,9 +131,9 @@ case "$1" in
         ##delete app
         sudo rm -rf ${APP_NAME}
          if [ $? -eq 0 ];then
-            echo "clean server success!"
+            echo "${APP_NAME} clean success!"
          else
-            echo "clean server failed!"
+            echo "${APP_NAME} clean failed!"
             exit 1
         fi
         ;;
