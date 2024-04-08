@@ -33,11 +33,14 @@ case "$1" in
         GIT_REVISION=$(git rev-parse --short HEAD)
         GIT_BRANCH=$(git name-rev --name-only HEAD)
         GO_VERSION=$(go version)
+        GOOS=linux
+        GOARCH=amd64
+        CGO_ENABLED=0
 
         ##go build
         go mod tidy
         go mod download
-        go build -ldflags " \
+        go build -ldflags "-s -w \
         	-X 'main.AppName=${APP_NAME}' \
         	-X 'main.AppVersion=${APP_VERSION}' \
         	-X 'main.BuildVersion=${BUILD_VERSION//\'/_}' \
