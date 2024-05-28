@@ -4,8 +4,11 @@
 
 package global
 
-//常量
+// 常量
 const (
-	//默认map、slice容量
-	DefaultCount = 20
+	//运行环境: local、dev、test、prod
+	ServerRunEnvLocal = "local"
+	ServerRunEnvDev   = "dev"
+	ServerRunEnvTest  = "test"
+	ServerRunEnvProd  = "prod"
 )

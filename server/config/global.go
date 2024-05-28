@@ -29,9 +29,5 @@ func loadConfigFile(fname string, configStruck any) error {
 
 // 获取配置文件
 func getConfigFileName(fname string) string {
-	if global.SERVER_RUN_ENV == "" {
-		return fname
-	}
-
-	return fname + "_" + global.SERVER_RUN_ENV
+	return fmt.Sprintf(`%v_%v`, fname, global.SERVER_RUN_ENV)
 }

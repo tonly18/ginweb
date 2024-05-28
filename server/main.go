@@ -12,6 +12,7 @@ import (
 func main() {
 	//Running Environment
 	fmt.Printf("[Server] Running Environment: %v\n", global.SERVER_RUN_ENV)
+	fmt.Printf("[Server] Running Path: %v\n", global.SERVER_WORK_PATH)
 
 	//init router
 	router := router.InitRouter()
