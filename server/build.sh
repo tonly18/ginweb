@@ -15,6 +15,7 @@ RUNTIME_LOG="${APP_WORKPATH}/log/runtime.log"
 
 ##parameter
 APP_NAME=$2
+BRANCH=$3
 
 ##build start restart stop clean
 case "$1" in
@@ -24,7 +25,7 @@ case "$1" in
         cd ${GIT_WORKPATH}
 
         ##git
-        git pull origin develop:develop
+        git pull --force origin ${BRANCH}:${BRANCH}
 
         ##go build
         BUILD_VERSION=$(git log -1 --oneline)

@@ -1,29 +1,33 @@
-PROJECT_NAME:="main-server"
+SERVER_NAME:=main-server
+VERSION:=V0.0.1
+BRANCH:=master
 
 .PHONY: build start restart stop clean image run
 
+default: build
+
 build:
-	bash build.sh compile ${PROJECT_NAME}
+	bash build.sh compile ${SERVER_NAME} ${BRANCH}
 
 
 start:
-	bash build.sh start ${PROJECT_NAME}
+	bash build.sh start ${SERVER_NAME}
 
 
 restart:
-	bash build.sh restart ${PROJECT_NAME}
+	bash build.sh restart ${SERVER_NAME}
 
 
 stop:
-	bash build.sh stop ${PROJECT_NAME}
+	bash build.sh stop ${SERVER_NAME}
 
 
 clean:
-	bash build.sh clean ${PROJECT_NAME}
+	bash build.sh clean ${SERVER_NAME}
 
 
 image:
-	docker build -t ${PROJECT_NAME}:${VERSION} .
+	docker build -t ${SERVER_NAME}:${VERSION} .
 
 run:
-	docker run -itd -p 8080:8080 ${PROJECT_NAME}:${VERSION}
+	docker run -itd -p 8080:8080 ${SERVER_NAME}:${VERSION}
