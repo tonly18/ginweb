@@ -18,8 +18,10 @@ var (
 )
 
 func init() {
-	if err := godotenv.Load(".env"); err != nil {
-		panic(err)
+	if _, err := os.Stat(".env"); err == nil {
+		if err := godotenv.Load(".env"); err != nil {
+			panic(err)
+		}
 	}
 
 	SERVER_RUN_ENV = os.Getenv("SERVER_RUN_ENV")
