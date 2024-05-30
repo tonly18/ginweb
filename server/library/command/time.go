@@ -24,13 +24,13 @@ func NowDate() string {
 }
 
 // 当前年-月-日 时:分:钞
-func NowDateHour() string {
+func NowDateTime() string {
 	tz, _ := time.LoadLocation("Local") //设置时区
 	return time.Unix(time.Now().In(tz).Unix(), 0).In(tz).Format(time.DateTime)
 }
 
 // 字符串 => 时间戳
-func ParseTimeFromString(data string, mark int8) time.Time {
+func ParseDateTimeFromString(data string, mark int8) time.Time {
 	tz, _ := time.LoadLocation("Local") //设置时区
 	if mark == 1 {
 		t, _ := time.Parse(time.DateTime, data)
@@ -45,15 +45,15 @@ func ParseTimeFromString(data string, mark int8) time.Time {
 }
 
 // 时间戳 => 年-月-日
-func TransDateByTime(date int64) time.Time {
+func TransDateByTime(date int64) string {
 	tz, _ := time.LoadLocation("Local") //设置时区
-	return time.Unix(date, 0).In(tz)
+	return time.Unix(date, 0).In(tz).Format(time.DateOnly)
 }
 
 // 时间戳 => 年-月-日 时:分:钞
-func TransDateHourByTime(itime int64) time.Time {
+func TransDateHourByTime(itime int64) string {
 	tz, _ := time.LoadLocation("Local") //设置时区
-	return time.Unix(itime, 0).In(tz)
+	return time.Unix(itime, 0).In(tz).Format(time.DateTime)
 }
 
 // 获取指定时间戳零点时间
@@ -63,7 +63,7 @@ func WhichTimestamp(itime int64) time.Time {
 	return time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, tz).In(tz)
 }
 
-// 获取今日零点时间
+// 获取昨日零点时间
 func YesterdayTimestamp() time.Time {
 	tz, _ := time.LoadLocation("Local") //设置时区
 	t := time.Now().In(tz)
@@ -105,15 +105,15 @@ func GetMonthFirstAndLastDay(month int) (time.Time, time.Time) {
 }
 
 // 获取指定周的第一天(周一)、最后一天(周日)时间
-// 第一天为周一,最后一天为周日
+//
 // @params:
 //
 //	week int	-1上周|0本周|1下周 以此类推
 //
 // @return:
 //
-//	time.Time
-//	time.Time
+//	time.Time	第一天(周一)
+//	time.Time	最后一天(周日)
 func GetWeekFirstAndLastDay(week int) (time.Time, time.Time) {
 	tz, _ := time.LoadLocation("Local") //设置时区
 
