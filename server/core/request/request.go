@@ -1,45 +1,31 @@
 package request
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
+	"server/core"
 	"server/library/command"
 	"time"
 )
 
 // Request 请求
 type Request struct {
-	ctx      *gin.Context   //context
-	userID   int            //user id
-	clientIP string         //client ip
-	traceId  string         //trace id
-	data     map[string]any //data
+	ctx     *gin.Context   //context
+	traceId string         //trace id
+	data    map[string]any //data
 }
 
 // NewRequest
-func NewRequest(ctx *gin.Context, userId int, clientIp, traceId string) *Request {
+func NewRequest(ctx *gin.Context) *Request {
 	return &Request{
-		ctx:      ctx,
-		userID:   userId,
-		clientIP: clientIp,
-		traceId:  traceId,
-		data:     make(map[string]any, 10),
+		ctx:     ctx,
+		traceId: ctx.GetString(core.TraceID), //链路追踪ID
+		data:    make(map[string]any, 10),
 	}
 }
 
 // GetCtx
-func (r *Request) GetCtx() context.Context {
+func (r *Request) GetCtx() *gin.Context {
 	return r.ctx
-}
-
-// GetUserID
-func (r *Request) GetUserID() int {
-	return r.userID
-}
-
-// GetClientIP
-func (r *Request) GetClientIP() string {
-	return r.clientIP
 }
 
 // GetTraceID
@@ -76,11 +62,13 @@ func (r *Request) Value(key any) any {
 		return nil
 	}
 
-	value := r.ctx.Value(key)
-	if command.IsNil(value) {
-		if k, ok := key.(string); ok {
-			value = r.GetData(k)
+	if k, ok := key.(string); ok {
+		value := r.GetData(k)
+		if command.IsNil(value) {
+			value = r.ctx.Value(key)
 		}
+		return value
 	}
-	return value
+
+	return nil
 }

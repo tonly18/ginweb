@@ -8,7 +8,7 @@ import (
 	"server/core/response"
 )
 
-//StudentHandler
+// StudentHandler
 type StudentHandler struct {
 	controller.BaseHandle
 }
@@ -25,8 +25,8 @@ func (c *StudentHandler) Handler(req *request.Request) (*response.Response, xerr
 
 	//ip := req.GinCtx.ClientIP()
 	//ip := req.ClientIP
-	ip := req.GetClientIP()
-	fmt.Println("ip::::", ip)
+	//ip := req.GetClientIP()
+	//fmt.Println("ip::::", ip)
 
 	//go func() {
 	//	fmt.Println("00000000000000")

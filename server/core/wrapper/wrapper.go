@@ -8,7 +8,6 @@ import (
 	"server/core/iface"
 	"server/core/logger"
 	"server/core/request"
-	"strconv"
 )
 
 func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
@@ -25,13 +24,8 @@ func HandlerFuncWrapper(handler iface.IWrapperHandler) gin.HandlerFunc {
 			}
 		}()
 
-		//gin context
-		clientIp := c.GetString("client_ip")              //client ip
-		userId, _ := strconv.Atoi(c.GetString("user_id")) //user id
-		traceId := c.GetString("trace_id")                //链路追踪ID
-
 		//handle request
-		req := request.NewRequest(c, userId, clientIp, traceId)
+		req := request.NewRequest(c)
 		handler.PreHandler(req)
 		resp, err := handler.Handler(req)
 		handler.PostHandler(req)

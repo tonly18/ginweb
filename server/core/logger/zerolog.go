@@ -7,6 +7,7 @@ import (
 	"os"
 	"runtime"
 	"server/config"
+	"server/core"
 	"server/core/logger/hook"
 	"time"
 )
@@ -23,6 +24,7 @@ func init() {
 	runtime.SetFinalizer(fs, func(f *os.File) {
 		f.Close()
 	})
+	runtime.KeepAlive(fs)
 
 	zerolog.TimeFieldFormat = time.DateTime
 	zerolog.SetGlobalLevel(zerolog.DebugLevel)
@@ -35,9 +37,8 @@ func Debug(ctx context.Context, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Debug().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msg(fmt.Sprint(args...))
 }
 func Debugf(ctx context.Context, format string, args ...any) {
@@ -45,9 +46,8 @@ func Debugf(ctx context.Context, format string, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Debug().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msgf(format, args...)
 }
 
@@ -57,9 +57,8 @@ func Info(ctx context.Context, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Info().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msg(fmt.Sprint(args...))
 }
 func Infof(ctx context.Context, format string, args ...any) {
@@ -67,9 +66,8 @@ func Infof(ctx context.Context, format string, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Info().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msgf(format, args...)
 }
 
@@ -79,9 +77,8 @@ func Warning(ctx context.Context, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Warn().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msg(fmt.Sprint(args...))
 
 }
@@ -90,9 +87,8 @@ func Warningf(ctx context.Context, format string, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Warn().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msgf(format, args...)
 }
 
@@ -102,9 +98,8 @@ func Error(ctx context.Context, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Error().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msg(fmt.Sprint(args...))
 }
 func Errorf(ctx context.Context, format string, args ...any) {
@@ -112,8 +107,7 @@ func Errorf(ctx context.Context, format string, args ...any) {
 		ctx = context.Background()
 	}
 	logger.Error().Fields(map[string]any{
-		"trace_id": ctx.Value("trace_id"),
-		"user_id":  ctx.Value("user_id"),
-		"ip":       ctx.Value("client_ip"),
+		"trace_id": ctx.Value(core.TraceID),
+		"ip":       ctx.Value(core.ClientIP),
 	}).Msgf(format, args...)
 }
