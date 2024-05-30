@@ -75,6 +75,7 @@ func (d *RedisPoolConn) createRedisCluster(rdConfig *RedisConfig) xerror.Error {
 	runtime.SetFinalizer(redisConn, func(conn *redis.Client) {
 		conn.Close()
 	})
+	runtime.KeepAlive(redisConn)
 
 	//return
 	return nil
