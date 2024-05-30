@@ -77,7 +77,7 @@ func (r *Request) Value(key any) any {
 	}
 
 	value := r.ctx.Value(key)
-	if command.IsValueNil(value) {
+	if command.IsNil(value) {
 		if k, ok := key.(string); ok {
 			value = r.GetData(k)
 		}
