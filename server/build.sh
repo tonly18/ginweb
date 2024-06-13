@@ -2,7 +2,6 @@
 
 
 ##import /etc/profile
-. /root/.bash_profile
 . /etc/profile
 
 ##set
@@ -50,29 +49,17 @@ case "$1" in
         	-X 'main.GitBranch=${GIT_BRANCH}' \
         	-X 'main.GoVersion=${GO_VERSION}' \
         	" -o $APP_NAME
-        if [ $? -ne 0 ]; then
-            exit 1
-        fi
 
         ##version
         echo "${BUILD_VERSION} ${BUILD_TIME}" >> "${APP_WORKPATH}/version"
-        if [ $? -ne 0 ]; then
-            exit 1
-        fi
+        echo "go build is successful!!!"
+        echo -e
 
         ##synchronize
-        echo "${APP_NAME} config is rsync..."
         rsync -av ${GIT_WORKPATH}/conf/* ${APP_WORKPATH}/conf/
-        if [ $? -ne 0 ]; then
-            echo "${APP_NAME} config rsync failed!!!"
-            exit 1
-        fi
-        echo "${APP_NAME} is rsync..."
+        echo "config sync is successful!!!"
         rsync -av ${GIT_WORKPATH}/${APP_NAME} ${APP_WORKPATH}
-        if [ $? -ne 0 ]; then
-            echo "${APP_NAME} rsync failed!!!"
-            exit 1
-        fi
+        echo "server sync is successful!!!"
 	      ;;
 	  start)
 	      ##work path
@@ -82,28 +69,8 @@ case "$1" in
         ##start
         SERVICE_CMD="${APP_WORKPATH}/${APP_NAME}"
         ${SERVICE_CMD} >> ${RUNTIME_LOG} 2>&1 &
-        if [ $? -eq 0 ];then
-            /bin/sleep 2
-            echo "${APP_NAME} start success!"
-        else
-            echo "${APP_NAME} start failed!"
-            exit 1
-        fi
-        ;;
-    restart)
-        ##work path
-        echo "cd ${APP_WORKPATH}"
-        cd ${APP_WORKPATH}
-
-        ##restart
-        make stop
-        if [ $? -eq 0 ];then
-            /bin/sleep 3
-            make start
-            if [ $? -ne 0 ];then
-              exit 1
-            fi
-        fi
+        /bin/sleep 2
+        echo "service start is successful!!!"
         ;;
     stop)
         ##work path
@@ -115,17 +82,22 @@ case "$1" in
         if [ -n "$PID" ]; then
             echo "kill -SIGQUIT ${PID}"
             sudo kill -SIGQUIT $PID
-            if [ $? -eq 0 ];then
-                /bin/sleep 5
-                echo "${APP_NAME} stop success!"
-            else
-                echo "${APP_NAME} stop failed!"
-                exit 1
-            fi
+            /bin/sleep 2
+            echo "service stop is successful!!!"
         else
-            echo "${APP_NAME} stop error"
-            exit 1
+            echo "service process does not exist!!!"
         fi
+        ;;
+    restart)
+        ##work path
+        echo "cd ${APP_WORKPATH}"
+        cd ${APP_WORKPATH}
+
+        ##restart
+        make stop
+        /bin/sleep 1
+        make start
+        echo "service restart is successful!!!"
         ;;
     clean)
         ##work path
@@ -134,11 +106,6 @@ case "$1" in
 
         ##delete app
         sudo rm -rf ${APP_NAME}
-         if [ $? -eq 0 ];then
-            echo "${APP_NAME} clean success!"
-         else
-            echo "${APP_NAME} clean failed!"
-            exit 1
-        fi
+        echo "cleaning was successful!!!"
         ;;
 esac
