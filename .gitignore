@@ -26,5 +26,6 @@ go.work
 .idea
 server/tmp
 pag.sql
-server/log/logrus.log
+server/log/*.log
 wph.md
+.DS_Store

@@ -1,6 +1,6 @@
 module server
 
-go 1.21
+go 1.25
 
 require (
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6
